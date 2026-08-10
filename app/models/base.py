@@ -4,11 +4,14 @@ Event timestamps are timezone-aware UTC (PLAN.md §2.3). Wall-clock session
 times, added in P3, are deliberately *naive* local time and must not use these.
 """
 
-from datetime import UTC, datetime
+from datetime import datetime, timezone
 
 import sqlalchemy as sa
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.types import TypeDecorator
+
+
+UTC = timezone.utc
 
 
 def utcnow() -> datetime:

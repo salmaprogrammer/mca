@@ -5,7 +5,7 @@ Ground rule 3 (PLAN.md §7): every mutating service call writes an audit row.
 
 from __future__ import annotations
 
-from datetime import UTC, date, datetime
+from datetime import date, datetime, timezone
 from decimal import Decimal
 from enum import Enum
 from typing import Any
@@ -124,11 +124,11 @@ def search(
         query = query.where(AuditLog.entity_id == str(entity_id))
     if since:
         query = query.where(
-            AuditLog.created_at >= datetime.combine(since, time.min, tzinfo=UTC)
+            AuditLog.created_at >= datetime.combine(since, time.min, tzinfo=timezone.utc)
         )
     if until:
         query = query.where(
-            AuditLog.created_at <= datetime.combine(until, time.max, tzinfo=UTC)
+            AuditLog.created_at <= datetime.combine(until, time.max, tzinfo=timezone.utc)
         )
 
     return list(
