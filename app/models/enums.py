@@ -4,7 +4,16 @@ Stored as VARCHAR + CHECK (`native_enum=False`) so SQLite and Postgres agree
 and the values stay readable in a raw table dump.
 """
 
-from enum import StrEnum
+try:
+    from enum import StrEnum
+except ImportError:  # Python < 3.11 (e.g. PythonAnywhere's default 3.10)
+    from enum import Enum
+
+    class StrEnum(str, Enum):
+        """Minimal backport: members compare/serialise as their string value."""
+
+        def __str__(self) -> str:
+            return str(self.value)
 
 import sqlalchemy as sa
 
