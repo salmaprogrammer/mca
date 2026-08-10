@@ -1,0 +1,17 @@
+{
+  "teacher:demo_teacher": {
+    "kind": "teacher",
+    "identifier": "demo_teacher",
+    "accepted_at": "2026-08-01 22:00:49.755647"
+  },
+  "parent:100000000": {
+    "kind": "parent",
+    "identifier": "100000000",
+    "accepted_at": "2026-08-01 22:00:49.756254"
+  },
+  "parent:1229502011": {
+    "kind": "parent",
+    "identifier": "1229502011",
+    "accepted_at": "2026-08-01 22:07:34.326320"
+  }
+}

@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}{{ _('Terms and conditions') }} — {{ center_name }}{% endblock %}
+
+{#
+  Gate 2 (sprint S1.5). Rendered as a full page, not a modal: there is no
+  overlay to click away, no escape key to press, and no dashboard behind it.
+  The only two exits are accepting or signing out.
+#}
+{% block body %}
+{% set body_locale = get_locale()|string %}
+<div class="terms-page">
+  <div class="terms-panel" dir="{{ 'ltr' if body_locale == 'en' and version.body_en else 'rtl' }}">
+    <div class="terms-panel__head">
+      {% if version.audience.value == 'teacher' %}
+        {{ _('Terms and conditions for teachers') }}
+      {% else %}
+        {{ _('General terms and conditions') }}
+      {% endif %}
+      <span style="opacity:.7;font-weight:600;">· v{{ version.version }}</span>
+    </div>
+
+    <div class="terms-panel__body">{{ version.body_for(body_locale) }}</div>
+
+    <div class="terms-panel__foot">
+      {% include "partials/flashes.html" %}
+      <form method="post" novalidate>
+        {{ form.hidden_tag() }}
+        <label class="checkbox-row">
+          {{ form.agree() }}
+          <span>{{ _('I agree to the terms and conditions') }}</span>
+        </label>
+        <div class="btn-row">
+          <button type="submit" class="btn">{{ _('Continue to dashboard') }}</button>
+        </div>
+      </form>
+      <form method="post" action="{{ url_for('auth.logout') }}" style="margin-block-start:8px;">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button type="submit" class="btn btn--ghost">{{ _('Log out') }}</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

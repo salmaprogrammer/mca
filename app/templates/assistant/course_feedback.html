@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% from "partials/field.html" import section_title %}
+{% from "partials/teaching.html" import feedback_list %}
+{% block title %}{{ _('Feedback') }} — {{ center_name }}{% endblock %}
+
+{% block content %}
+  {% set locale = get_locale()|string %}
+  {{ section_title('💬', _('Feedback'), course.display_title(locale) ~ ' · ' ~ course.name) }}
+
+  <div class="btn-row" style="margin-block-end:16px;">
+    <a class="btn btn--ghost btn--small"
+       href="{{ url_for('assistant.course_detail', course_id=course.id) }}">
+      {{ _('Back to course') }}
+    </a>
+    <a class="btn btn--ghost btn--small"
+       href="{{ url_for('assistant.course_homework', course_id=course.id) }}">
+      {{ _('Homework') }}
+    </a>
+  </div>
+
+  <div class="two-col">
+    <div class="card">
+      <div class="field__label">{{ _('Write feedback') }}</div>
+      {% if not course.enrollments %}
+        <div class="muted">{{ _('Nobody enrolled yet.') }}</div>
+      {% else %}
+        <form method="post">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <label class="field">
+            <span class="field__label">{{ _('Student') }}</span>
+            <select name="student_id">
+              {% for enrollment in course.enrollments %}
+                <option value="{{ enrollment.student_id }}">{{ enrollment.student.full_name }}</option>
+              {% endfor %}
+            </select>
+          </label>
+          <label class="field">
+            <span class="field__label">{{ _('Date') }}</span>
+            <input type="date" name="for_date" value="{{ today }}">
+          </label>
+          <label class="field">
+            <span class="field__label">{{ _('Feedback') }}</span>
+            <textarea name="text" placeholder="{{ _('How did the student do today?') }}"></textarea>
+          </label>
+          <button type="submit" class="btn">{{ _('Save feedback') }}</button>
+        </form>
+      {% endif %}
+      <div class="muted" style="margin-block-start:10px; font-size:12px;">
+        ⚠️ {{ _('Only this student and their parents can read this. Classmates cannot.') }}
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="field__label">{{ _('Feedback so far') }}</div>
+      {{ feedback_list(feedback, show_student=True,
+                       delete_endpoint='assistant.feedback_delete') }}
+    </div>
+  </div>
+{% endblock %}

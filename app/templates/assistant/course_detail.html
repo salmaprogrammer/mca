@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+{% from "partials/field.html" import section_title %}
+{% from "partials/enrollment_controls.html" import enrollment_controls, payment_pill %}
+{% block title %}{{ course.display_title(get_locale()|string) }} — {{ center_name }}{% endblock %}
+
+{% block content %}
+  {% set locale = get_locale()|string %}
+  {{ section_title('📚', course.display_title(locale), course.name) }}
+
+  <div class="btn-row" style="margin-block-end:16px;">
+    <a class="btn btn--ghost" href="{{ url_for('assistant.course_edit', course_id=course.id) }}">
+      {{ _('Edit course') }}
+    </a>
+    <a class="btn btn--ghost" href="{{ url_for('assistant.course_sessions', course_id=course.id) }}">
+      {{ _('Sessions') }}
+    </a>
+    <a class="btn btn--ghost" href="{{ url_for('assistant.course_homework', course_id=course.id) }}">
+      {{ _('Homework') }}
+    </a>
+    <a class="btn btn--ghost" href="{{ url_for('assistant.course_feedback', course_id=course.id) }}">
+      {{ _('Feedback') }}
+    </a>
+    <a class="btn btn--ghost" href="{{ url_for('assistant.course_materials', course_id=course.id) }}">
+      {{ _('Materials') }}
+    </a>
+    {% if course.status.value != 'archived' %}
+      <form class="inline-form" method="post"
+            action="{{ url_for('assistant.course_archive', course_id=course.id) }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button type="submit" class="btn btn--danger btn--small">{{ _('Archive') }}</button>
+      </form>
+    {% else %}
+      <span class="pill pill--warn">{{ label_for(course.status) }}</span>
+    {% endif %}
+  </div>
+
+  <div class="two-col">
+    <div class="card">
+      <div class="field__label">{{ _('Details') }}</div>
+      <div class="row-list__item">
+        <span>{{ _('Type') }}</span><span>{{ course.course_type.label(locale) }}</span>
+      </div>
+      <div class="row-list__item">
+        <span>{{ _('Teacher') }}</span><span>{{ course.teacher.full_name }}</span>
+      </div>
+      <div class="row-list__item">
+        <span>{{ _('Schedule') }}</span>
+        <span>
+          {% for slot in course.slots_ordered_for_display() %}
+            <span class="pill">{{ slot.label(locale) }}</span>
+          {% endfor %}
+        </span>
+      </div>
+      <div class="row-list__item">
+        <span>{{ _('Sessions') }}</span>
+        <span>{{ course.course_type.total_sessions }}
+          {{ _('per month') if course.course_type.cycle.value == 'month' else _('per round') }}</span>
+      </div>
+      <div class="row-list__item">
+        <span>{{ _('Start date') }}</span>
+        <span>{{ course.start_date or '—' }}</span>
+      </div>
+      <div class="row-list__item">
+        <span>{{ _('Price') }}</span>
+        <span>{{ course.price_egp|round(0, 'floor')|int }} {{ _('EGP') }}</span>
+      </div>
+      {% if course.description %}
+        <p class="muted" style="margin-block-start:10px;">{{ course.description }}</p>
+      {% endif %}
+    </div>
+
+    <div class="card">
+      <div class="field__label">{{ _('Enrolled students') }}</div>
+      {% if not course.enrollments %}
+        <div class="muted">{{ _('Nobody enrolled yet.') }}</div>
+      {% endif %}
+      {% for enrollment in course.enrollments %}
+        <div class="enrollment-row">
+          <div class="row-list__item">
+            <span>{{ enrollment.student.full_name }}</span>
+            <span class="btn-row">
+              <span class="pill">{{ label_for(enrollment.booking_status) }}</span>
+              {{ payment_pill(enrollment) }}
+              <form class="inline-form" method="post"
+                    action="{{ url_for('assistant.enrollment_remove', enrollment_id=enrollment.id) }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit" class="btn btn--small btn--danger">{{ _('Remove') }}</button>
+              </form>
+            </span>
+          </div>
+          {{ enrollment_controls(enrollment, booking_statuses, payment_statuses) }}
+        </div>
+      {% endfor %}
+
+      {% if available_students %}
+        <form method="post" style="margin-block-start:14px;"
+              action="{{ url_for('assistant.course_enroll', course_id=course.id) }}">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <label class="field">
+            <span class="field__label">{{ _('Add a student') }}</span>
+            <select name="student_id">
+              {% for student in available_students %}
+                <option value="{{ student.id }}">{{ student.full_name }}</option>
+              {% endfor %}
+            </select>
+          </label>
+          <button type="submit" class="btn btn--small">{{ _('Enroll') }}</button>
+        </form>
+      {% endif %}
+
+      <div class="btn-row" style="margin-block-start:12px;">
+        <a class="btn btn--small btn--ghost" href="{{ url_for('assistant.payments') }}">
+          {{ _('All outstanding payments') }}
+        </a>
+      </div>
+    </div>
+  </div>
+{% endblock %}

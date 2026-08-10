@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% from "partials/field.html" import section_title %}
+{% block title %}{{ _('Audit log') }} — {{ center_name }}{% endblock %}
+
+{% block content %}
+  {{ section_title('🧾', _('Audit log'),
+                   _('Who changed what, when — read only')) }}
+
+  <div class="card" style="margin-block-end:16px;">
+    <form method="get" class="filter-row">
+      <label class="field">
+        <span class="field__label">{{ _('Who') }}</span>
+        <select name="actor_id">
+          <option value="">{{ _('Anyone') }}</option>
+          {% for actor in actors %}
+            <option value="{{ actor.id }}"
+              {% if selected.actor_id == actor.id %}selected{% endif %}>
+              {{ actor.full_name }}
+            </option>
+          {% endfor %}
+        </select>
+      </label>
+      <label class="field">
+        <span class="field__label">{{ _('Action') }}</span>
+        <select name="action">
+          <option value="">{{ _('Any action') }}</option>
+          {% for a in actions %}
+            <option value="{{ a }}" {% if selected.action == a %}selected{% endif %}>{{ a }}</option>
+          {% endfor %}
+        </select>
+      </label>
+      <label class="field">
+        <span class="field__label">{{ _('Record type') }}</span>
+        <select name="entity_type">
+          <option value="">{{ _('Any record') }}</option>
+          {% for t in entity_types %}
+            <option value="{{ t }}" {% if selected.entity_type == t %}selected{% endif %}>{{ t }}</option>
+          {% endfor %}
+        </select>
+      </label>
+      <label class="field">
+        <span class="field__label">{{ _('Record ID') }}</span>
+        <input type="text" name="entity_id" class="ltr" value="{{ selected.entity_id or '' }}">
+      </label>
+      <label class="field">
+        <span class="field__label">{{ _('From') }}</span>
+        <input type="date" name="since" value="{{ selected.since or '' }}">
+      </label>
+      <label class="field">
+        <span class="field__label">{{ _('To') }}</span>
+        <input type="date" name="until" value="{{ selected.until or '' }}">
+      </label>
+      <button type="submit" class="btn btn--small">{{ _('Apply') }}</button>
+    </form>
+  </div>
+
+  {% if not entries %}
+    <div class="card"><div class="muted">{{ _('No matching entries.') }}</div></div>
+  {% endif %}
+
+  {% for entry in entries %}
+    <div class="card audit-entry">
+      <div class="row-list__item">
+        <span>
+          <strong class="ltr">{{ entry.action }}</strong>
+          <span class="muted ltr">{{ entry.entity_type }}{% if entry.entity_id %}#{{ entry.entity_id }}{% endif %}</span>
+          <div class="muted">
+            {{ entry.actor.full_name if entry.actor else _('Scheduled job') }}
+            <span class="ltr">
+              · {{ entry.created_at|localdate }} {{ entry.created_at|localtime }}
+              {%- if entry.ip %} · {{ entry.ip }}{% endif %}
+            </span>
+          </div>
+        </span>
+      </div>
+
+      {% set changes = diff(entry.before_json, entry.after_json) %}
+      {% if changes %}
+        <table class="audit-diff">
+          <tbody>
+            {% for field, change in changes.items() %}
+              <tr>
+                <th class="ltr">{{ field }}</th>
+                <td class="audit-diff__from ltr">{{ change['from'] if change['from'] is not none else '—' }}</td>
+                <td class="audit-diff__arrow">→</td>
+                <td class="audit-diff__to ltr">{{ change['to'] if change['to'] is not none else '—' }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      {% endif %}
+    </div>
+  {% endfor %}
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% from "partials/field.html" import section_title %}
+{% from "partials/whatsapp.html" import message_status_pill %}
+{% block title %}{{ _('Messages') }} — {{ center_name }}{% endblock %}
+
+{% block content %}
+  {{ section_title('💬', _('Messages from the centre'), student.full_name) }}
+
+  <div class="card">
+    {% if not messages %}
+      <div class="muted">{{ _('No messages yet.') }}</div>
+    {% endif %}
+    {% for message in messages %}
+      <div class="message-entry">
+        <div class="row-list__item">
+          <span class="muted ltr" style="font-size:12px;">
+            {{ message.created_at|localdate }} {{ message.created_at|localtime }}
+          </span>
+          {{ message_status_pill(message) }}
+        </div>
+        <pre class="whatsapp-preview">{{ message.body }}</pre>
+      </div>
+    {% endfor %}
+  </div>
+{% endblock %}

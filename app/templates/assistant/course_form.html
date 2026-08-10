@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% from "partials/field.html" import render_field, section_title %}
+{% block title %}{{ _('Course') }} — {{ center_name }}{% endblock %}
+
+{% block content %}
+  {{ section_title('📚', _('Edit course') if course else _('Create a course'),
+                   _('Appears on enrolled students and parents dashboards straight away')) }}
+
+  <div class="card" style="max-width:620px;">
+    <form method="post" enctype="multipart/form-data" novalidate
+          hx-post="{{ url_for('assistant.course_check_conflicts') }}"
+          hx-trigger="change from:find select, change from:find input[type=time]"
+          hx-target="#conflict-warning"
+          hx-swap="outerHTML">
+      {{ form.hidden_tag() }}
+      {% if course %}<input type="hidden" name="course_id" value="{{ course.id }}">{% endif %}
+
+      {{ render_field(form.name) }}
+      <div class="muted" style="margin-block-start:-8px; margin-block-end:12px; font-size:12px;">
+        {{ _('Students see the course type below. This name tells your staff which round or group it is.') }}
+      </div>
+
+      <label class="field">
+        <span class="field__label">{{ form.course_type_id.label.text }}</span>
+        {{ form.course_type_id(
+             **{'hx-post': url_for('assistant.course_slot_rows'),
+                'hx-target': '#slot-rows',
+                'hx-swap': 'outerHTML',
+                'hx-include': 'closest form'}) }}
+        {% for error in form.course_type_id.errors %}
+          <span class="field__error">{{ error }}</span>
+        {% endfor %}
+      </label>
+
+      {{ render_field(form.teacher_id) }}
+
+      <div class="field__label">{{ _('Weekly schedule') }}</div>
+      {% include "partials/slot_rows.html" %}
+
+      {% include "partials/conflict_warning.html" %}
+
+      {{ render_field(form.description) }}
+      {{ render_field(form.price_egp) }}
+      {{ render_field(form.start_date) }}
+      <div class="muted" style="margin-block-start:-8px; margin-block-end:12px; font-size:12px;">
+        {{ _('All sessions for the round are generated from this date.') }}
+      </div>
+
+      <label class="checkbox-row">
+        {{ form.trial_enabled() }}
+        <span>{{ _('Allow trial session booking') }}</span>
+      </label>
+
+      {{ render_field(form.cover_image) }}
+      {% if course and course.cover_image_path %}
+        <img src="{{ url_for('assistant.course_cover', course_id=course.id) }}"
+             alt="" style="max-inline-size:180px; border-radius:8px; margin-block-end:12px;">
+      {% endif %}
+
+      <div class="btn-row">
+        <button type="submit" class="btn">{{ _('Save course') }}</button>
+        <a class="btn btn--ghost" href="{{ url_for('assistant.courses') }}">{{ _('Cancel') }}</a>
+      </div>
+    </form>
+  </div>
+{% endblock %}

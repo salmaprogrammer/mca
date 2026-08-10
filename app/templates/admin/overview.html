@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% from "partials/field.html" import section_title %}
+{% from "partials/dashboard.html" import stat, action_panel %}
+{% from "partials/session_row.html" import session_status_pill %}
+{% block title %}{{ _('Overview') }} — {{ center_name }}{% endblock %}
+
+{% block content %}
+  {% set locale = get_locale()|string %}
+  {{ section_title('🏠', _('Overview'), _('Full visibility across the whole centre')) }}
+
+  <div class="stat-grid">
+    {{ stat(_('Assistants'), dash.counts.get(Role.ASSISTANT, 0),
+            href=url_for('admin.assistants')) }}
+    {{ stat(_('Teachers'), dash.counts.get(Role.TEACHER, 0),
+            href=url_for('assistant.teachers')) }}
+    {{ stat(_('Students'), dash.counts.get(Role.STUDENT, 0),
+            href=url_for('assistant.students')) }}
+    {{ stat(_('Parents'), dash.counts.get(Role.PARENT, 0)) }}
+    {{ stat(_('Courses'), dash.counts.get('courses', 0),
+            href=url_for('assistant.courses')) }}
+  </div>
+
+  <div class="stat-grid">
+    {{ stat(_('Sessions today'), dash.sessions_today|length,
+            href=url_for('assistant.sessions_today')) }}
+    {{ stat(_('Still to mark'), dash.unmarked_sessions|length,
+            tone='is-warn' if dash.unmarked_sessions else '') }}
+    {{ stat(_('Unpaid enrolments'), dash.unpaid|length,
+            tone='is-bad' if dash.unpaid else '',
+            href=url_for('assistant.payments')) }}
+    {{ stat(_('Total outstanding'), dash.outstanding_total|round(0, 'floor')|int,
+            suffix=_('EGP'), tone='is-bad' if dash.unpaid else '',
+            href=url_for('assistant.payments')) }}
+  </div>
+
+  {% call action_panel(_('Sessions still waiting for attendance'), dash.unmarked_sessions) %}
+    {% for session in dash.unmarked_sessions %}
+      <div class="row-list__item">
+        <span>
+          <a href="{{ url_for('assistant.session_detail', session_id=session.id) }}">
+            {{ session.course.display_title(locale) }}
+          </a>
+        </span>
+        <span class="muted">
+          {{ session.attendance|length }}/{{ session.course.enrollments|length }}
+          {{ _('marked') }}
+        </span>
+      </div>
+    {% endfor %}
+  {% endcall %}
+
+  {% call action_panel(_('Updates written but never sent'), dash.unsent_messages, tone='bad') %}
+    {% for message in dash.unsent_messages %}
+      <div class="row-list__item">
+        <span>{{ message.student.full_name }}</span>
+        <span class="muted ltr">{{ message.created_at|localdate }}</span>
+      </div>
+    {% endfor %}
+  {% endcall %}
+
+  <div class="card">
+    <div class="row-list__item">
+      <span class="field__label" style="margin:0;">{{ _('Outstanding payments') }}</span>
+      <a class="btn btn--small btn--ghost" href="{{ url_for('assistant.payments') }}">
+        {{ _('View') }}
+      </a>
+    </div>
+    {% if not dash.unpaid %}
+      <div class="muted">{{ _('Nothing outstanding. Everyone is paid up.') }}</div>
+    {% endif %}
+    {% for enrollment in dash.unpaid[:8] %}
+      <div class="row-list__item">
+        <span>
+          {{ enrollment.student.full_name }}
+          <span class="muted">· {{ enrollment.course.display_title(locale) }}</span>
+        </span>
+        <span class="amount-due">
+          {{ enrollment.amount_due|round(0, 'floor')|int }} {{ _('EGP') }}
+        </span>
+      </div>
+    {% endfor %}
+  </div>
+{% endblock %}

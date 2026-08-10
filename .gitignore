@@ -34,8 +34,12 @@ ENV/
 # IDE
 .vscode/
 .idea/
+.claude/
 *.swp
 *.swo
+
+# Office lock files
+~$*
 
 # OS
 .DS_Store
@@ -46,3 +50,13 @@ ENV/
 mca.json
 *.secret*
 *.pem
+
+# Flask app
+.venv-flask/
+.venv-1/
+.venv-2/
+.venv-3.12/
+instance/
+*.sqlite
+*.db
+app/translations/**/*.mo

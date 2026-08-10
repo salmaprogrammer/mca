@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% from "partials/field.html" import section_title %}
+{% from "partials/teaching.html" import material_list %}
+{% block title %}{{ _('Materials') }} — {{ center_name }}{% endblock %}
+
+{% block content %}
+  {% set locale = get_locale()|string %}
+  {{ section_title('🔗', _('Materials'), course.display_title(locale)) }}
+
+  <div class="btn-row" style="margin-block-end:16px;">
+    <a class="btn btn--ghost btn--small"
+       href="{{ url_for('teacher.course_detail', course_id=course.id) }}">
+      {{ _('Back to course') }}
+    </a>
+  </div>
+
+  <div class="two-col">
+    <div class="card">
+      <div class="field__label">{{ _('Add a link') }}</div>
+      <form method="post">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <label class="field">
+          <span class="field__label">{{ _('Title') }}</span>
+          <input type="text" name="title">
+        </label>
+        <label class="field">
+          <span class="field__label">{{ _('Link') }}</span>
+          <input type="text" name="url" class="ltr" placeholder="https://...">
+        </label>
+        <button type="submit" class="btn">{{ _('Add material') }}</button>
+      </form>
+      <div class="muted" style="margin-block-start:10px; font-size:12px;">
+        {{ _('Enrolled students and their parents can open this.') }}
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="field__label">{{ _('Course materials') }}</div>
+      {{ material_list(materials, delete_endpoint='teacher.material_delete') }}
+    </div>
+  </div>
+{% endblock %}

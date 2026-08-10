@@ -1,0 +1,31 @@
+# systemd unit for the web app (sprint S10.2).
+# Install: sudo cp deploy/mca.service /etc/systemd/system/ && sudo systemctl daemon-reload
+
+[Unit]
+Description=MCA Academy web app
+After=network.target postgresql.service
+Wants=postgresql.service
+
+[Service]
+Type=notify
+User=mca
+Group=mca
+WorkingDirectory=/srv/mca
+EnvironmentFile=/srv/mca/.env
+ExecStart=/srv/mca/.venv/bin/gunicorn --config deploy/gunicorn.conf.py wsgi:app
+ExecReload=/bin/kill -s HUP $MAINPID
+Restart=always
+RestartSec=5
+
+# The app only ever writes to instance/ (uploads and, in a pilot, SQLite).
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/srv/mca/instance
+ProtectKernelTunables=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+
+[Install]
+WantedBy=multi-user.target

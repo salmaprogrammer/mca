@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% from "partials/field.html" import section_title %}
+{% from "partials/attendance_row.html" import status_pill, mark_buttons %}
+{% from "partials/session_row.html" import session_status_pill %}
+{% block title %}{{ _('Attendance') }} — {{ center_name }}{% endblock %}
+
+{% block content %}
+  {% set locale = get_locale()|string %}
+  {{ section_title('📋', _('Attendance'),
+                   course.display_title(locale) ~ ' · ' ~ session.session_date|string) }}
+
+  <div class="btn-row" style="margin-block-end:16px;">
+    <a class="btn btn--ghost btn--small"
+       href="{{ url_for('teacher.course_detail', course_id=course.id) }}">
+      {{ _('Back to course') }}
+    </a>
+    {{ session_status_pill(session) }}
+    <span class="muted ltr">
+      {{ '%02d:%02d'|format(session.start_time.hour, session.start_time.minute) }}–{{ '%02d:%02d'|format(session.end_time.hour, session.end_time.minute) }}
+    </span>
+  </div>
+
+  {% if not session.needs_attendance %}
+    <div class="card" style="margin-block-end:14px;">
+      <div class="muted">
+        {% if session.status.value == 'rescheduled' %}
+          {{ _('This session was moved to another date. Mark the replacement instead.') }}
+        {% else %}
+          {{ _('This session was cancelled, so there is nothing to mark.') }}
+        {% endif %}
+      </div>
+    </div>
+  {% endif %}
+
+  <div class="card">
+    <div class="field__label">{{ _('Students') }}</div>
+    {% if not course.enrollments %}
+      <div class="muted">{{ _('Nobody enrolled yet.') }}</div>
+    {% endif %}
+    {% for enrollment in course.enrollments %}
+      {% set record = session.attendance_for(enrollment.student_id) %}
+      <div class="row-list__item attendance-line">
+        <span>{{ enrollment.student.full_name }}</span>
+        <span class="btn-row">
+          {% if record %}
+            {{ status_pill(record.status, record.checked_in_at) }}
+          {% endif %}
+          {% if session.needs_attendance %}
+            {{ mark_buttons(
+                 url_for('teacher.mark_student',
+                         session_id=session.id, student_id=enrollment.student_id),
+                 statuses,
+                 record.status if record else None) }}
+          {% endif %}
+        </span>
+      </div>
+    {% endfor %}
+
+    <div class="muted" style="margin-block-start:12px; font-size:12px;">
+      {{ _('Cancellations and schedule changes go through the assistant.') }}
+    </div>
+  </div>
+{% endblock %}

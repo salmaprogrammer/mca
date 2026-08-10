@@ -1,0 +1,26 @@
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "RUF"]
+ignore = [
+    "B008",  # Depends-style defaults are not used here
+    "RUF001",  # Arabic text legitimately contains non-ASCII punctuation
+    "RUF002",
+    "RUF003",
+]
+
+[tool.ruff.lint.per-file-ignores]
+# Blueprint packages import their routes at the bottom to register them.
+"app/blueprints/*/__init__.py" = ["E402", "F401"]
+"wsgi.py" = ["E402"]
+# Contractual Arabic text, stored verbatim. Rewrapping it would change what
+# users are shown to agree to, so line length is not negotiable here.
+"app/seeds/terms_v1.py" = ["E501"]
+# Flask config classes are plain class attributes by convention.
+"app/config.py" = ["RUF012"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+filterwarnings = ["ignore::DeprecationWarning"]

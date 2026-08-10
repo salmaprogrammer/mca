@@ -1,0 +1,1721 @@
+# Arabic translations for PROJECT.
+# Copyright (C) 2026 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2026-08-09 10:14+0300\n"
+"PO-Revision-Date: 2026-08-06 01:19+0300\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ar\n"
+"Language-Team: ar <LL@li.org>\n"
+"Plural-Forms: nplurals=6; plural=(n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : "
+"n%100>=3 && n%100<=10 ? 3 : n%100>=0 && n%100<=2 ? 4 : 5);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: app/__init__.py:46
+msgid "Please sign in to continue."
+msgstr "برجاء تسجيل الدخول للمتابعة."
+
+#: app/labels.py:28 app/templates/portal/attendance.html:11
+#: app/templates/portal/home.html:42
+msgid "present"
+msgstr "حاضر"
+
+#: app/labels.py:29 app/templates/portal/attendance.html:12
+#: app/templates/portal/home.html:43
+msgid "absent"
+msgstr "غائب"
+
+#: app/labels.py:30 app/templates/portal/attendance.html:11
+msgid "late"
+msgstr "متأخر"
+
+#: app/labels.py:31 app/templates/portal/attendance.html:12
+msgid "excused"
+msgstr "بعذر"
+
+#: app/labels.py:35
+msgid "scheduled"
+msgstr "مجدولة"
+
+#: app/labels.py:36
+msgid "held"
+msgstr "تم عقدها"
+
+#: app/labels.py:37
+msgid "cancelled by teacher"
+msgstr "ملغاة من المدرس"
+
+#: app/labels.py:38
+msgid "cancelled by the centre"
+msgstr "ملغاة من الأكاديمية"
+
+#: app/labels.py:39
+msgid "moved"
+msgstr "تم نقلها"
+
+#: app/labels.py:43
+msgid "trial"
+msgstr "تجريبي"
+
+#: app/labels.py:44
+msgid "booked"
+msgstr "محجوز"
+
+#: app/labels.py:45
+msgid "not booked"
+msgstr "غير محجوز"
+
+#: app/labels.py:49
+msgid "paid"
+msgstr "مدفوع"
+
+#: app/labels.py:50
+msgid "unpaid"
+msgstr "غير مدفوع"
+
+#: app/labels.py:54
+msgid "draft"
+msgstr "مسودة"
+
+#: app/labels.py:55
+msgid "active"
+msgstr "نشط"
+
+#: app/labels.py:56
+msgid "archived"
+msgstr "مؤرشف"
+
+#: app/labels.py:60
+msgid "Admin"
+msgstr "مدير"
+
+#: app/labels.py:61
+msgid "Assistant"
+msgstr "مساعد"
+
+#: app/blueprints/assistant/course_forms.py:34 app/labels.py:62
+#: app/templates/assistant/attendance_log.html:26
+#: app/templates/assistant/attendance_log.html:68
+#: app/templates/assistant/course_detail.html:44
+#: app/templates/assistant/session_detail.html:63
+#: app/templates/partials/course_card.html:54
+#: app/templates/portal/course_detail.html:20
+msgid "Teacher"
+msgstr "المدرس"
+
+#: app/labels.py:63 app/templates/assistant/course_feedback.html:30
+msgid "Student"
+msgstr "طالب"
+
+#: app/labels.py:64
+msgid "Parent"
+msgstr "ولي أمر"
+
+#: app/labels.py:68 app/templates/assistant/whatsapp.html:62
+msgid "prepared"
+msgstr "تم التجهيز"
+
+#: app/labels.py:69 app/templates/assistant/whatsapp.html:60
+msgid "sent"
+msgstr "تم الإرسال"
+
+#: app/blueprints/admin/forms.py:8
+msgid "Full name"
+msgstr "الاسم الكامل"
+
+#: app/blueprints/admin/forms.py:10 app/blueprints/assistant/forms.py:22
+#: app/blueprints/auth/forms.py:11
+msgid "Phone number"
+msgstr "رقم الهاتف"
+
+#: app/blueprints/admin/forms.py:14 app/templates/admin/assistants.html:15
+msgid "Create assistant"
+msgstr "إنشاء حساب مساعد"
+
+#: app/blueprints/admin/routes.py:44
+msgid "Assistant account created."
+msgstr "تم إنشاء حساب المساعد."
+
+#: app/blueprints/admin/routes.py:47 app/blueprints/assistant/routes.py:50
+#: app/blueprints/assistant/routes.py:82
+msgid "That phone number is not valid. Use the format 01xxxxxxxxx."
+msgstr "رقم الهاتف غير صحيح. استخدم الصيغة 01xxxxxxxxx."
+
+#: app/blueprints/admin/routes.py:76 app/blueprints/assistant/routes.py:109
+msgid "New password issued"
+msgstr "تم إصدار كلمة مرور جديدة"
+
+#: app/blueprints/admin/routes.py:85
+msgid "You cannot deactivate your own account."
+msgstr "لا يمكنك إيقاف حسابك الخاص."
+
+#: app/blueprints/admin/routes.py:88
+msgid "Account deactivated."
+msgstr "تم إيقاف الحساب."
+
+#: app/blueprints/assistant/course_forms.py:29
+msgid "Course name"
+msgstr "اسم الكورس"
+
+#: app/blueprints/assistant/course_forms.py:31
+msgid "Internal label, e.g. “November round — Mr Ahmed”"
+msgstr "اسم داخلي، مثال: «راوند نوفمبر — مستر أحمد»"
+
+#: app/blueprints/assistant/course_forms.py:33
+msgid "Course type"
+msgstr "نوع الكورس"
+
+#: app/blueprints/assistant/course_forms.py:35
+msgid "Description"
+msgstr "الوصف"
+
+#: app/blueprints/assistant/course_forms.py:37
+msgid "Price (EGP)"
+msgstr "السعر (جنيه)"
+
+#: app/blueprints/assistant/course_forms.py:39
+#: app/templates/assistant/course_detail.html:60
+msgid "Start date"
+msgstr "تاريخ البداية"
+
+#: app/blueprints/assistant/course_forms.py:40
+#: app/templates/assistant/course_form.html:51
+msgid "Allow trial session booking"
+msgstr "السماح بحجز حصة تجريبية"
+
+#: app/blueprints/assistant/course_forms.py:42
+msgid "Cover image"
+msgstr "صورة الغلاف"
+
+#: app/blueprints/assistant/course_forms.py:45
+msgid "Images only (jpg, png, webp)."
+msgstr "صور فقط (jpg، png، webp)."
+
+#: app/blueprints/assistant/course_forms.py:48
+#: app/templates/assistant/course_form.html:61
+msgid "Save course"
+msgstr "حفظ الكورس"
+
+#: app/blueprints/assistant/course_forms.py:54
+msgid "Select teacher"
+msgstr "اختر المدرس"
+
+#: app/blueprints/assistant/course_routes.py:57
+msgid "No course types are set up yet. Run “flask seed-course-types” first."
+msgstr ""
+"لم يتم إعداد أنواع الكورسات بعد. شغّل الأمر «flask seed-course-types» "
+"أولاً."
+
+#: app/blueprints/assistant/course_routes.py:85
+msgid "Course created."
+msgstr "تم إنشاء الكورس."
+
+#: app/blueprints/assistant/course_routes.py:155
+msgid "Course updated."
+msgstr "تم تحديث الكورس."
+
+#: app/blueprints/assistant/course_routes.py:179
+msgid "Course archived."
+msgstr "تم أرشفة الكورس."
+
+#: app/blueprints/assistant/course_routes.py:253
+#, python-format
+msgid "%(student)s enrolled."
+msgstr "تم تسجيل %(student)s."
+
+#: app/blueprints/assistant/course_routes.py:270
+msgid "Student removed from the course."
+msgstr "تم إزالة الطالب من الكورس."
+
+#: app/blueprints/assistant/enrollment_routes.py:36
+msgid "Choose a valid booking status."
+msgstr "اختر حالة حجز صحيحة."
+
+#: app/blueprints/assistant/enrollment_routes.py:41
+msgid "Booking status updated."
+msgstr "تم تحديث حالة الحجز."
+
+#: app/blueprints/assistant/enrollment_routes.py:54
+msgid "Choose a valid payment status."
+msgstr "اختر حالة دفع صحيحة."
+
+#: app/blueprints/assistant/enrollment_routes.py:58
+msgid "Payment status updated."
+msgstr "تم تحديث حالة الدفع."
+
+#: app/blueprints/assistant/enrollment_routes.py:70
+msgid "Amount updated."
+msgstr "تم تحديث المبلغ."
+
+#: app/blueprints/assistant/forms.py:21
+msgid "Teacher name"
+msgstr "اسم المدرس"
+
+#: app/blueprints/assistant/forms.py:24
+msgid "Subject"
+msgstr "المادة"
+
+#: app/blueprints/assistant/forms.py:28
+#: app/templates/assistant/teachers.html:16
+msgid "Create teacher account"
+msgstr "إنشاء حساب مدرس"
+
+#: app/blueprints/assistant/forms.py:38
+msgid "Student name"
+msgstr "اسم الطالب"
+
+#: app/blueprints/assistant/forms.py:40
+msgid "Student phone (optional)"
+msgstr "رقم هاتف الطالب (اختياري)"
+
+#: app/blueprints/assistant/forms.py:42
+msgid "Parent name"
+msgstr "اسم ولي الأمر"
+
+#: app/blueprints/assistant/forms.py:44
+msgid "Parent phone"
+msgstr "رقم هاتف ولي الأمر"
+
+#: app/blueprints/assistant/forms.py:46
+msgid "School (optional)"
+msgstr "المدرسة (اختياري)"
+
+#: app/blueprints/assistant/forms.py:47
+msgid "Grade (optional)"
+msgstr "الصف الدراسي (اختياري)"
+
+#: app/blueprints/assistant/forms.py:48
+#: app/templates/assistant/students.html:19
+msgid "Create student and parent accounts"
+msgstr "إنشاء حساب الطالب وولي الأمر"
+
+#: app/blueprints/assistant/routes.py:47
+msgid "Teacher account created."
+msgstr "تم إنشاء حساب المدرس."
+
+#: app/blueprints/assistant/routes.py:79
+msgid "Student created."
+msgstr "تم إنشاء حساب الطالب."
+
+#: app/blueprints/assistant/session_routes.py:53
+#, python-format
+msgid "%(count)d session(s) created."
+msgstr "تم إنشاء %(count)d حصة."
+
+#: app/blueprints/assistant/session_routes.py:55
+msgid "All sessions for this course already exist."
+msgstr "كل حصص هذا الكورس موجودة بالفعل."
+
+#: app/blueprints/assistant/session_routes.py:104
+#: app/blueprints/assistant/session_routes.py:128
+#: app/blueprints/teacher/routes.py:92
+msgid "Choose a valid attendance status."
+msgstr "اختر حالة حضور صحيحة."
+
+#: app/blueprints/assistant/session_routes.py:111
+#: app/blueprints/teacher/routes.py:99
+#, python-format
+msgid "%(student)s marked %(status)s."
+msgstr "تم تسجيل %(student)s كـ %(status)s."
+
+#: app/blueprints/assistant/session_routes.py:133
+msgid "Teacher attendance recorded."
+msgstr "تم تسجيل حضور المدرس."
+
+#: app/blueprints/assistant/session_routes.py:148
+msgid "Session cancelled."
+msgstr "تم إلغاء الحصة."
+
+#: app/blueprints/assistant/session_routes.py:167
+msgid "Enter a new date and time."
+msgstr "أدخل التاريخ والوقت الجديد."
+
+#: app/blueprints/assistant/session_routes.py:174
+msgid "Session moved."
+msgstr "تم نقل الحصة."
+
+#: app/blueprints/assistant/teaching_routes.py:48
+msgid "Homework saved."
+msgstr "تم حفظ الواجب."
+
+#: app/blueprints/assistant/teaching_routes.py:67
+msgid "Homework removed."
+msgstr "تم حذف الواجب."
+
+#: app/blueprints/assistant/teaching_routes.py:81
+msgid "Choose a student."
+msgstr "اختر طالباً."
+
+#: app/blueprints/assistant/teaching_routes.py:89
+msgid "Feedback saved."
+msgstr "تم حفظ التقييم."
+
+#: app/blueprints/assistant/teaching_routes.py:108
+msgid "Feedback removed."
+msgstr "تم حذف التقييم."
+
+#: app/blueprints/assistant/teaching_routes.py:125
+#: app/blueprints/teacher/routes.py:150
+msgid "Material added."
+msgstr "تمت إضافة المادة."
+
+#: app/blueprints/assistant/teaching_routes.py:143
+#: app/blueprints/teacher/routes.py:168
+msgid "Material removed."
+msgstr "تم حذف المادة."
+
+#: app/blueprints/assistant/whatsapp_routes.py:97
+#, python-format
+msgid ""
+"%(prepared)d update(s) prepared, %(skipped)d skipped. Each still needs "
+"sending from WhatsApp."
+msgstr ""
+"تم تجهيز %(prepared)d تحديث، وتخطّي %(skipped)d. كل تحديث ما زال يحتاج "
+"إلى إرساله من واتساب."
+
+#: app/blueprints/auth/forms.py:13
+msgid "Password"
+msgstr "كلمة المرور"
+
+#: app/blueprints/auth/forms.py:14 app/templates/auth/login.html:3
+#: app/templates/auth/login.html:20
+msgid "Sign in"
+msgstr "تسجيل الدخول"
+
+#: app/blueprints/auth/forms.py:18
+msgid "Current password"
+msgstr "كلمة المرور الحالية"
+
+#: app/blueprints/auth/forms.py:20
+msgid "New password"
+msgstr "كلمة المرور الجديدة"
+
+#: app/blueprints/auth/forms.py:23
+msgid "Use at least 8 characters."
+msgstr "استخدم ٨ أحرف على الأقل."
+
+#: app/blueprints/auth/forms.py:27
+msgid "Confirm new password"
+msgstr "تأكيد كلمة المرور الجديدة"
+
+#: app/blueprints/auth/forms.py:28
+msgid "Passwords do not match."
+msgstr "كلمتا المرور غير متطابقتين."
+
+#: app/blueprints/auth/forms.py:30 app/templates/auth/change_password.html:27
+msgid "Save password"
+msgstr "حفظ كلمة المرور"
+
+#: app/blueprints/auth/forms.py:35 app/templates/auth/terms.html:30
+msgid "I agree to the terms and conditions"
+msgstr "أوافق على الشروط والأحكام"
+
+#: app/blueprints/auth/forms.py:36 app/blueprints/auth/routes.py:133
+msgid "You must agree before continuing."
+msgstr "يجب الموافقة قبل المتابعة."
+
+#: app/blueprints/auth/forms.py:38 app/templates/auth/terms.html:33
+msgid "Continue to dashboard"
+msgstr "متابعة إلى لوحة التحكم"
+
+#: app/blueprints/auth/routes.py:39
+msgid "Too many failed attempts. Try again in a few minutes."
+msgstr "محاولات فاشلة كثيرة. حاول مرة أخرى بعد دقائق."
+
+#: app/blueprints/auth/routes.py:47
+msgid "Incorrect phone number or password."
+msgstr "رقم الهاتف أو كلمة المرور غير صحيحة."
+
+#: app/blueprints/auth/routes.py:75
+msgid "You have been signed out."
+msgstr "تم تسجيل الخروج."
+
+#: app/blueprints/auth/routes.py:88
+msgid "Your current password is not correct."
+msgstr "كلمة المرور الحالية غير صحيحة."
+
+#: app/blueprints/auth/routes.py:92
+msgid "Choose a password different from your current one."
+msgstr "اختر كلمة مرور مختلفة عن كلمة المرور الحالية."
+
+#: app/blueprints/auth/routes.py:104
+msgid "Your password has been updated."
+msgstr "تم تحديث كلمة المرور."
+
+#: app/blueprints/auth/routes.py:129
+msgid "Thank you — your acceptance has been recorded."
+msgstr "شكراً لك — تم تسجيل موافقتك."
+
+#: app/services/attendance.py:34
+msgid "This session was moved; mark the replacement instead."
+msgstr "تم نقل هذه الحصة؛ سجّل الحضور في الحصة البديلة."
+
+#: app/services/attendance.py:36 app/templates/assistant/session_detail.html:29
+#: app/templates/teacher/session_detail.html:29
+msgid "This session was cancelled, so there is nothing to mark."
+msgstr "تم إلغاء هذه الحصة، لا يوجد ما يُسجَّل."
+
+#: app/services/attendance.py:63 app/services/teaching.py:119
+#, python-format
+msgid "%(student)s is not enrolled in this course."
+msgstr "%(student)s غير مسجّل في هذا الكورس."
+
+#: app/services/courses.py:73
+msgid "That is not a valid time of day."
+msgstr "هذا ليس وقتاً صحيحاً."
+
+#: app/services/courses.py:79
+msgid "Choose a teacher for this course."
+msgstr "اختر مدرساً لهذا الكورس."
+
+#: app/services/courses.py:99 app/services/courses.py:177
+msgid "Choose a course type."
+msgstr "اختر نوع الكورس."
+
+#: app/services/courses.py:106 app/services/courses.py:184
+#, python-format
+msgid ""
+"%(type)s needs exactly %(expected)d session(s) per week; %(given)d were "
+"given."
+msgstr "%(type)s يحتاج %(expected)d حصة أسبوعياً بالضبط؛ تم إدخال %(given)d."
+
+#: app/services/enrollments.py:51
+msgid "Only students can be enrolled in a course."
+msgstr "الطلاب فقط يمكن تسجيلهم في الكورس."
+
+#: app/services/enrollments.py:60
+#, python-format
+msgid "%(student)s is already enrolled in this course."
+msgstr "%(student)s مسجّل بالفعل في هذا الكورس."
+
+#: app/services/enrollments.py:111
+msgid "Trial bookings are not enabled for this course."
+msgstr "الحجز التجريبي غير مفعّل لهذا الكورس."
+
+#: app/services/enrollments.py:160
+msgid "Enter a valid amount."
+msgstr "أدخل مبلغاً صحيحاً."
+
+#: app/services/enrollments.py:162
+msgid "The amount cannot be negative."
+msgstr "لا يمكن أن يكون المبلغ بالسالب."
+
+#: app/services/scheduling.py:123
+msgid "This teacher"
+msgstr "هذا المدرس"
+
+#: app/services/scheduling.py:125
+#, python-format
+msgid ""
+"%(teacher)s already teaches «%(course)s» on %(day)s "
+"%(existing_start)s–%(existing_end)s, which overlaps "
+"%(new_start)s–%(new_end)s."
+msgstr ""
+"%(teacher)s يدرّس بالفعل «%(course)s» يوم %(day)s من %(existing_start)s "
+"إلى %(existing_end)s، وهو ما يتعارض مع %(new_start)s–%(new_end)s."
+
+#: app/services/scheduling.py:166
+#, python-format
+msgid ""
+"This course has two sessions that overlap on %(day)s: "
+"%(a_start)s–%(a_end)s and %(b_start)s–%(b_end)s."
+msgstr ""
+"هذا الكورس به حصتان متعارضتان يوم %(day)s: %(a_start)s–%(a_end)s و "
+"%(b_start)s–%(b_end)s."
+
+#: app/services/sessions.py:39
+msgid "Set a start date on the course before generating sessions."
+msgstr "حدد تاريخ بداية الكورس قبل إنشاء الحصص."
+
+#: app/services/sessions.py:41
+msgid "This course has no weekly schedule yet."
+msgstr "هذا الكورس ليس له جدول أسبوعي بعد."
+
+#: app/services/sessions.py:60
+msgid "Could not lay out this course's schedule."
+msgstr "تعذّر ترتيب جدول هذا الكورس."
+
+#: app/services/sessions.py:117
+msgid "This session is already cancelled."
+msgstr "هذه الحصة ملغاة بالفعل."
+
+#: app/services/sessions.py:151
+msgid "A cancelled session cannot be rescheduled."
+msgstr "لا يمكن نقل حصة ملغاة."
+
+#: app/services/sessions.py:153
+msgid "This session has already been moved."
+msgstr "تم نقل هذه الحصة من قبل."
+
+#: app/services/teaching.py:38
+msgid "Enter a link."
+msgstr "أدخل الرابط."
+
+#: app/services/teaching.py:40
+msgid "That link is too long."
+msgstr "هذا الرابط طويل جداً."
+
+#: app/services/teaching.py:44
+msgid "Links must start with http:// or https://"
+msgstr "يجب أن يبدأ الرابط بـ http:// أو https://"
+
+#: app/services/teaching.py:46
+msgid "That does not look like a valid link."
+msgstr "هذا لا يبدو رابطاً صحيحاً."
+
+#: app/services/teaching.py:53
+msgid "Write something before saving."
+msgstr "اكتب شيئاً قبل الحفظ."
+
+#: app/services/teaching.py:114
+msgid "Feedback can only be written about a student."
+msgstr "التقييم يُكتب عن الطالب فقط."
+
+#: app/services/whatsapp.py:73
+#, python-format
+msgid ""
+"Daily update for %(name)s — %(date)s\n"
+"Not enrolled in any course."
+msgstr ""
+"التحديث اليومي لـ %(name)s — %(date)s\n"
+"غير مسجل في أي كورس."
+
+#: app/services/whatsapp.py:111
+#, python-format
+msgid "Daily update for %(name)s — %(date)s"
+msgstr "التحديث اليومي لـ %(name)s — %(date)s"
+
+#: app/services/whatsapp.py:118
+msgid "Attendance:"
+msgstr "الحضور:"
+
+#: app/services/whatsapp.py:125
+#, python-format
+msgid "• %(course)s — %(status)s at %(time)s"
+msgstr "• %(course)s — %(status)s الساعة %(time)s"
+
+#: app/services/whatsapp.py:134
+#, python-format
+msgid "• %(course)s — %(status)s"
+msgstr "• %(course)s — %(status)s"
+
+#: app/services/whatsapp.py:140
+msgid "• No session recorded today."
+msgstr "• لا توجد حصة مسجلة اليوم."
+
+#: app/services/whatsapp.py:143
+msgid "Homework:"
+msgstr "الواجبات:"
+
+#: app/services/whatsapp.py:147
+msgid "• None assigned today."
+msgstr "• لا توجد واجبات اليوم."
+
+#: app/services/whatsapp.py:150
+msgid "Feedback:"
+msgstr "التقييم:"
+
+#: app/services/whatsapp.py:154
+msgid "• None logged today."
+msgstr "• لا يوجد تقييم اليوم."
+
+#: app/services/whatsapp.py:214
+msgid "Daily updates are about students."
+msgstr "التحديثات اليومية تخص الطلاب."
+
+#: app/services/whatsapp.py:219 app/services/whatsapp.py:298
+#, python-format
+msgid "%(name)s already has today's update."
+msgstr "%(name)s لديه تحديث اليوم بالفعل."
+
+#: app/services/whatsapp.py:225
+#, python-format
+msgid "%(name)s has no contact number on file."
+msgstr "لا يوجد رقم تواصل مسجل لـ %(name)s."
+
+#: app/templates/admin/assistants.html:4 app/templates/admin/assistants.html:7
+#: app/templates/admin/overview.html:12 app/templates/partials/sidebar.html:6
+msgid "Assistants"
+msgstr "المساعدون"
+
+#: app/templates/admin/assistants.html:7
+msgid "Only the admin can create assistant accounts"
+msgstr "المدير وحده يمكنه إنشاء حسابات المساعدين"
+
+#: app/templates/admin/assistants.html:22
+msgid "Current assistants"
+msgstr "المساعدون الحاليون"
+
+#: app/templates/admin/assistants.html:25
+msgid "No assistants yet."
+msgstr "لا يوجد مساعدون بعد."
+
+#: app/templates/admin/assistants.html:31
+msgid "inactive"
+msgstr "موقوف"
+
+#: app/templates/admin/assistants.html:38
+#: app/templates/assistant/students.html:53
+#: app/templates/assistant/teachers.html:41
+msgid "Issue new password"
+msgstr "إصدار كلمة مرور جديدة"
+
+#: app/templates/admin/audit.html:3 app/templates/admin/audit.html:6
+#: app/templates/partials/sidebar.html:7
+msgid "Audit log"
+msgstr "سجل التدقيق"
+
+#: app/templates/admin/audit.html:7
+msgid "Who changed what, when — read only"
+msgstr "من غيّر ماذا ومتى — للقراءة فقط"
+
+#: app/templates/admin/audit.html:12
+msgid "Who"
+msgstr "من"
+
+#: app/templates/admin/audit.html:14
+msgid "Anyone"
+msgstr "أي شخص"
+
+#: app/templates/admin/audit.html:24
+msgid "Action"
+msgstr "الإجراء"
+
+#: app/templates/admin/audit.html:26
+msgid "Any action"
+msgstr "أي إجراء"
+
+#: app/templates/admin/audit.html:33
+msgid "Record type"
+msgstr "نوع السجل"
+
+#: app/templates/admin/audit.html:35
+msgid "Any record"
+msgstr "أي سجل"
+
+#: app/templates/admin/audit.html:42
+msgid "Record ID"
+msgstr "رقم السجل"
+
+#: app/templates/admin/audit.html:46
+#: app/templates/assistant/attendance_log.html:38
+msgid "From"
+msgstr "من"
+
+#: app/templates/admin/audit.html:50
+#: app/templates/assistant/attendance_log.html:42
+#: app/templates/assistant/whatsapp.html:69
+msgid "To"
+msgstr "إلى"
+
+#: app/templates/admin/audit.html:53
+#: app/templates/assistant/attendance_log.html:45
+#: app/templates/assistant/payments.html:35
+msgid "Apply"
+msgstr "تطبيق"
+
+#: app/templates/admin/audit.html:58
+msgid "No matching entries."
+msgstr "لا توجد سجلات مطابقة."
+
+#: app/templates/admin/audit.html:68
+msgid "Scheduled job"
+msgstr "مهمة مجدولة"
+
+#: app/templates/admin/credentials.html:11
+msgid "Done"
+msgstr "تم"
+
+#: app/templates/admin/overview.html:5 app/templates/admin/overview.html:9
+#: app/templates/assistant/home.html:5 app/templates/partials/sidebar.html:5
+#: app/templates/partials/sidebar.html:18
+msgid "Overview"
+msgstr "نظرة عامة"
+
+#: app/templates/admin/overview.html:9
+msgid "Full visibility across the whole centre"
+msgstr "رؤية كاملة لكل بيانات الأكاديمية"
+
+#: app/templates/admin/overview.html:14 app/templates/assistant/teachers.html:4
+#: app/templates/assistant/teachers.html:7
+#: app/templates/partials/sidebar.html:13
+#: app/templates/partials/sidebar.html:24
+msgid "Teachers"
+msgstr "المدرسون"
+
+#: app/templates/admin/overview.html:16
+#: app/templates/assistant/session_detail.html:38
+#: app/templates/assistant/students.html:4
+#: app/templates/assistant/students.html:7
+#: app/templates/partials/sidebar.html:14
+#: app/templates/partials/sidebar.html:25
+#: app/templates/teacher/session_detail.html:36
+msgid "Students"
+msgstr "الطلاب"
+
+#: app/templates/admin/overview.html:18
+msgid "Parents"
+msgstr "أولياء الأمور"
+
+#: app/templates/admin/overview.html:19 app/templates/assistant/courses.html:4
+#: app/templates/assistant/courses.html:7 app/templates/partials/sidebar.html:8
+#: app/templates/partials/sidebar.html:19
+msgid "Courses"
+msgstr "الكورسات"
+
+#: app/templates/admin/overview.html:24 app/templates/assistant/home.html:12
+#: app/templates/teacher/home.html:12
+msgid "Sessions today"
+msgstr "حصص اليوم"
+
+#: app/templates/admin/overview.html:26 app/templates/assistant/home.html:14
+msgid "Still to mark"
+msgstr "بانتظار التسجيل"
+
+#: app/templates/admin/overview.html:28
+#: app/templates/assistant/payments.html:12
+msgid "Unpaid enrolments"
+msgstr "تسجيلات غير مدفوعة"
+
+#: app/templates/admin/overview.html:31
+#: app/templates/assistant/payments.html:16
+msgid "Total outstanding"
+msgstr "إجمالي المستحق"
+
+#: app/templates/admin/overview.html:32 app/templates/admin/overview.html:78
+#: app/templates/assistant/course_detail.html:65
+#: app/templates/assistant/home.html:20
+#: app/templates/assistant/payments.html:17
+#: app/templates/assistant/payments.html:58
+#: app/templates/partials/course_card.html:69
+#: app/templates/portal/course_detail.html:37
+#: app/templates/portal/course_detail.html:52 app/templates/portal/home.html:48
+msgid "EGP"
+msgstr "جنيه"
+
+#: app/templates/admin/overview.html:36 app/templates/assistant/home.html:24
+msgid "Sessions still waiting for attendance"
+msgstr "حصص بانتظار تسجيل الحضور"
+
+#: app/templates/admin/overview.html:46 app/templates/assistant/home.html:37
+#: app/templates/assistant/sessions_today.html:39
+#: app/templates/teacher/home.html:38
+msgid "marked"
+msgstr "مسجّل"
+
+#: app/templates/admin/overview.html:52 app/templates/assistant/home.html:43
+msgid "Updates written but never sent"
+msgstr "تحديثات مكتوبة ولم تُرسل"
+
+#: app/templates/admin/overview.html:63
+msgid "Outstanding payments"
+msgstr "المدفوعات المستحقة"
+
+#: app/templates/admin/overview.html:65
+#: app/templates/partials/dashboard.html:10
+msgid "View"
+msgstr "عرض"
+
+#: app/templates/admin/overview.html:69
+#: app/templates/assistant/payments.html:41
+msgid "Nothing outstanding. Everyone is paid up."
+msgstr "لا توجد مستحقات. الجميع سدد."
+
+#: app/templates/assistant/attendance_log.html:5
+#: app/templates/assistant/attendance_log.html:9
+#: app/templates/assistant/sessions_today.html:14
+#: app/templates/partials/sidebar.html:10
+#: app/templates/partials/sidebar.html:21
+msgid "Attendance log"
+msgstr "سجل الحضور"
+
+#: app/templates/assistant/attendance_log.html:9
+msgid "Filter by course, teacher or date range"
+msgstr "تصفية حسب الكورس أو المدرس أو الفترة"
+
+#: app/templates/assistant/attendance_log.html:14
+#: app/templates/assistant/course_form.html:3
+#: app/templates/assistant/payments.html:24
+msgid "Course"
+msgstr "الكورس"
+
+#: app/templates/assistant/attendance_log.html:16
+#: app/templates/assistant/payments.html:26
+msgid "All courses"
+msgstr "كل الكورسات"
+
+#: app/templates/assistant/attendance_log.html:28
+msgid "All teachers"
+msgstr "كل المدرسين"
+
+#: app/templates/assistant/attendance_log.html:50
+msgid "No sessions match these filters."
+msgstr "لا توجد حصص مطابقة لهذه التصفية."
+
+#: app/templates/assistant/course_detail.html:12
+#: app/templates/assistant/course_form.html:6
+msgid "Edit course"
+msgstr "تعديل الكورس"
+
+#: app/templates/assistant/course_detail.html:15
+#: app/templates/assistant/course_detail.html:55
+#: app/templates/assistant/course_sessions.html:4
+#: app/templates/assistant/course_sessions.html:8
+#: app/templates/portal/course_detail.html:31
+#: app/templates/teacher/course_detail.html:26
+#: app/templates/teacher/course_detail.html:54
+msgid "Sessions"
+msgstr "الحصص"
+
+#: app/templates/assistant/course_detail.html:18
+#: app/templates/assistant/course_feedback.html:17
+#: app/templates/assistant/course_homework.html:4
+#: app/templates/assistant/course_homework.html:8
+#: app/templates/assistant/course_homework.html:31
+#: app/templates/portal/course_detail.html:76 app/templates/portal/home.html:99
+#: app/templates/teacher/course_detail.html:67
+msgid "Homework"
+msgstr "الواجبات"
+
+#: app/templates/assistant/course_detail.html:21
+#: app/templates/assistant/course_feedback.html:4
+#: app/templates/assistant/course_feedback.html:8
+#: app/templates/assistant/course_feedback.html:42
+#: app/templates/assistant/course_homework.html:17
+#: app/templates/portal/course_detail.html:80
+#: app/templates/portal/home.html:103
+#: app/templates/teacher/course_detail.html:71
+msgid "Feedback"
+msgstr "التقييم"
+
+#: app/templates/assistant/course_detail.html:24
+#: app/templates/assistant/course_materials.html:4
+#: app/templates/assistant/course_materials.html:8
+#: app/templates/portal/course_detail.html:86
+#: app/templates/teacher/course_detail.html:77
+#: app/templates/teacher/course_materials.html:4
+#: app/templates/teacher/course_materials.html:8
+msgid "Materials"
+msgstr "المواد التعليمية"
+
+#: app/templates/assistant/course_detail.html:30
+msgid "Archive"
+msgstr "أرشفة"
+
+#: app/templates/assistant/course_detail.html:39
+#: app/templates/teacher/course_detail.html:13
+msgid "Details"
+msgstr "التفاصيل"
+
+#: app/templates/assistant/course_detail.html:41
+#: app/templates/teacher/course_detail.html:15
+msgid "Type"
+msgstr "النوع"
+
+#: app/templates/assistant/course_detail.html:47
+#: app/templates/portal/course_detail.html:23
+#: app/templates/teacher/course_detail.html:18
+msgid "Schedule"
+msgstr "المواعيد"
+
+#: app/templates/assistant/course_detail.html:57
+#: app/templates/portal/course_detail.html:33
+#: app/templates/teacher/course_detail.html:28
+msgid "per month"
+msgstr "شهرياً"
+
+#: app/templates/assistant/course_detail.html:57
+#: app/templates/portal/course_detail.html:33
+#: app/templates/teacher/course_detail.html:28
+msgid "per round"
+msgstr "في الراوند"
+
+#: app/templates/assistant/course_detail.html:64
+#: app/templates/portal/course_detail.html:36
+msgid "Price"
+msgstr "السعر"
+
+#: app/templates/assistant/course_detail.html:73
+msgid "Enrolled students"
+msgstr "الطلاب المسجلون"
+
+#: app/templates/assistant/course_detail.html:75
+#: app/templates/assistant/course_feedback.html:25
+#: app/templates/assistant/session_detail.html:40
+#: app/templates/teacher/course_detail.html:38
+#: app/templates/teacher/session_detail.html:38
+msgid "Nobody enrolled yet."
+msgstr "لا يوجد طلاب مسجلون بعد."
+
+#: app/templates/assistant/course_detail.html:87
+#: app/templates/partials/teaching.html:17
+#: app/templates/partials/teaching.html:42
+#: app/templates/partials/teaching.html:65
+msgid "Remove"
+msgstr "إزالة"
+
+#: app/templates/assistant/course_detail.html:100
+msgid "Add a student"
+msgstr "إضافة طالب"
+
+#: app/templates/assistant/course_detail.html:107
+msgid "Enroll"
+msgstr "تسجيل"
+
+#: app/templates/assistant/course_detail.html:113
+msgid "All outstanding payments"
+msgstr "كل المدفوعات المستحقة"
+
+#: app/templates/assistant/course_feedback.html:13
+#: app/templates/assistant/course_homework.html:13
+#: app/templates/assistant/course_materials.html:13
+#: app/templates/assistant/course_sessions.html:13
+#: app/templates/teacher/course_materials.html:13
+#: app/templates/teacher/session_detail.html:15
+msgid "Back to course"
+msgstr "العودة إلى الكورس"
+
+#: app/templates/assistant/course_feedback.html:23
+msgid "Write feedback"
+msgstr "كتابة تقييم"
+
+#: app/templates/assistant/course_feedback.html:38
+#: app/templates/assistant/course_homework.html:27
+msgid "Date"
+msgstr "التاريخ"
+
+#: app/templates/assistant/course_feedback.html:43
+msgid "How did the student do today?"
+msgstr "كيف كان أداء الطالب اليوم؟"
+
+#: app/templates/assistant/course_feedback.html:45
+msgid "Save feedback"
+msgstr "حفظ التقييم"
+
+#: app/templates/assistant/course_feedback.html:49
+msgid "Only this student and their parents can read this. Classmates cannot."
+msgstr "هذا التقييم يظهر للطالب وولي أمره فقط، ولا يراه زملاؤه."
+
+#: app/templates/assistant/course_feedback.html:54
+msgid "Feedback so far"
+msgstr "التقييمات السابقة"
+
+#: app/templates/assistant/course_form.html:6
+#: app/templates/assistant/courses.html:10
+msgid "Create a course"
+msgstr "إنشاء كورس"
+
+#: app/templates/assistant/course_form.html:7
+msgid "Appears on enrolled students and parents dashboards straight away"
+msgstr "يظهر فوراً في لوحات الطلاب المسجلين وأولياء أمورهم"
+
+#: app/templates/assistant/course_form.html:20
+msgid ""
+"Students see the course type below. This name tells your staff which "
+"round or group it is."
+msgstr ""
+"الطلاب يرون نوع الكورس بالأسفل. هذا الاسم يوضح لفريق العمل أي راوند أو "
+"مجموعة."
+
+#: app/templates/assistant/course_form.html:37
+msgid "Weekly schedule"
+msgstr "الجدول الأسبوعي"
+
+#: app/templates/assistant/course_form.html:46
+msgid "All sessions for the round are generated from this date."
+msgstr "يتم إنشاء كل حصص الراوند بدءاً من هذا التاريخ."
+
+#: app/templates/assistant/course_form.html:62
+msgid "Cancel"
+msgstr "إلغاء"
+
+#: app/templates/assistant/course_homework.html:23
+msgid "Assign homework"
+msgstr "إسناد واجب"
+
+#: app/templates/assistant/course_homework.html:32
+msgid "e.g. Solve worksheet 3, questions 1-10."
+msgstr "مثال: حل ورقة العمل ٣، الأسئلة من ١ إلى ١٠."
+
+#: app/templates/assistant/course_homework.html:34
+msgid "Assign"
+msgstr "إسناد"
+
+#: app/templates/assistant/course_homework.html:37
+msgid "Every student enrolled in this course sees this."
+msgstr "كل طالب مسجل في هذا الكورس سيرى هذا."
+
+#: app/templates/assistant/course_homework.html:42
+msgid "Assigned so far"
+msgstr "الواجبات السابقة"
+
+#: app/templates/assistant/course_materials.html:19
+#: app/templates/teacher/course_materials.html:19
+msgid "Add a link"
+msgstr "إضافة رابط"
+
+#: app/templates/assistant/course_materials.html:23
+#: app/templates/teacher/course_materials.html:23
+msgid "Title"
+msgstr "العنوان"
+
+#: app/templates/assistant/course_materials.html:27
+#: app/templates/teacher/course_materials.html:27
+msgid "Link"
+msgstr "الرابط"
+
+#: app/templates/assistant/course_materials.html:30
+#: app/templates/teacher/course_materials.html:30
+msgid "Add material"
+msgstr "إضافة مادة"
+
+#: app/templates/assistant/course_materials.html:33
+#: app/templates/teacher/course_materials.html:33
+msgid "Enrolled students and their parents can open this."
+msgstr "الطلاب المسجلون وأولياء أمورهم يمكنهم فتح هذا."
+
+#: app/templates/assistant/course_materials.html:38
+#: app/templates/teacher/course_materials.html:38
+msgid "Course materials"
+msgstr "مواد الكورس"
+
+#: app/templates/assistant/course_sessions.html:15
+#: app/templates/teacher/course_detail.html:55
+#, python-format
+msgid "%(held)d of %(total)d held"
+msgstr "تم عقد %(held)d من %(total)d"
+
+#: app/templates/assistant/course_sessions.html:21
+msgid "No sessions yet. Generate them from the course start date."
+msgstr "لا توجد حصص بعد. أنشئها بدءاً من تاريخ بداية الكورس."
+
+#: app/templates/assistant/course_sessions.html:26
+msgid "Generate sessions"
+msgstr "إنشاء الحصص"
+
+#: app/templates/assistant/course_sessions.html:36
+msgid "Generate any missing sessions"
+msgstr "إنشاء الحصص الناقصة"
+
+#: app/templates/assistant/courses.html:7
+msgid ""
+"The six course types are fixed; each course attaches a teacher, schedule "
+"and price"
+msgstr "أنواع الكورسات الستة ثابتة؛ كل كورس يرتبط بمدرس وجدول وسعر"
+
+#: app/templates/assistant/courses.html:14
+msgid "No courses yet."
+msgstr "لا توجد كورسات بعد."
+
+#: app/templates/assistant/home.html:9
+msgid "Today"
+msgstr "اليوم"
+
+#: app/templates/assistant/home.html:16
+msgid "Updates not sent"
+msgstr "تحديثات لم تُرسل"
+
+#: app/templates/assistant/home.html:19
+msgid "Outstanding"
+msgstr "المستحق"
+
+#: app/templates/assistant/home.html:54
+#: app/templates/assistant/sessions_today.html:4
+#: app/templates/assistant/sessions_today.html:8
+#: app/templates/partials/sidebar.html:9 app/templates/partials/sidebar.html:20
+#: app/templates/teacher/home.html:22
+msgid "Today's sessions"
+msgstr "حصص اليوم"
+
+#: app/templates/assistant/home.html:56 app/templates/teacher/home.html:24
+msgid "No sessions today."
+msgstr "لا توجد حصص اليوم."
+
+#: app/templates/assistant/home.html:75
+msgid "Students without an update today"
+msgstr "طلاب بدون تحديث اليوم"
+
+#: app/templates/assistant/home.html:77
+msgid "Everyone has been sent an update."
+msgstr "تم إرسال تحديث للجميع."
+
+#: app/templates/assistant/home.html:85
+msgid "Go to WhatsApp centre"
+msgstr "الذهاب إلى مركز واتساب"
+
+#: app/templates/assistant/payments.html:4
+#: app/templates/assistant/payments.html:8
+#: app/templates/partials/sidebar.html:11
+#: app/templates/partials/sidebar.html:22
+msgid "Payments"
+msgstr "المدفوعات"
+
+#: app/templates/assistant/payments.html:8
+msgid "Everything still outstanding"
+msgstr "كل ما لم يتم سداده بعد"
+
+#: app/templates/assistant/session_detail.html:5
+#: app/templates/assistant/session_detail.html:9
+#: app/templates/portal/course_detail.html:61
+#: app/templates/teacher/session_detail.html:5
+#: app/templates/teacher/session_detail.html:9
+msgid "Attendance"
+msgstr "الحضور"
+
+#: app/templates/assistant/session_detail.html:15
+msgid "All sessions"
+msgstr "كل الحصص"
+
+#: app/templates/assistant/session_detail.html:27
+#: app/templates/teacher/session_detail.html:27
+msgid "This session was moved to another date. Mark the replacement instead."
+msgstr "تم نقل هذه الحصة إلى تاريخ آخر. سجّل الحضور في الحصة البديلة."
+
+#: app/templates/assistant/session_detail.html:80
+msgid "Change this session"
+msgstr "تعديل هذه الحصة"
+
+#: app/templates/assistant/session_detail.html:85
+msgid "Reason (optional)"
+msgstr "السبب (اختياري)"
+
+#: app/templates/assistant/session_detail.html:90
+msgid "Cancelled by teacher"
+msgstr "إلغاء من المدرس"
+
+#: app/templates/assistant/session_detail.html:93
+msgid "Cancelled by centre"
+msgstr "إلغاء من الأكاديمية"
+
+#: app/templates/assistant/session_detail.html:97
+msgid ""
+"Who cancelled matters: a teacher-cancelled session must be made up, a "
+"student absence is not refunded."
+msgstr ""
+"الجهة التي ألغت الحصة مهمة: الحصة الملغاة من المدرس يجب تعويضها، أما غياب"
+" الطالب فلا تُرد قيمته."
+
+#: app/templates/assistant/session_detail.html:108
+msgid "Move session"
+msgstr "نقل الحصة"
+
+#: app/templates/assistant/sessions_today.html:8
+msgid "Mark attendance as each class runs"
+msgstr "سجّل الحضور مع بداية كل حصة"
+
+#: app/templates/assistant/sessions_today.html:12
+#: app/templates/assistant/whatsapp.html:35
+msgid "Show"
+msgstr "عرض"
+
+#: app/templates/assistant/sessions_today.html:19
+msgid "No sessions on this date."
+msgstr "لا توجد حصص في هذا التاريخ."
+
+#: app/templates/assistant/students.html:7
+msgid "Creating a student creates or links the parent account in the same step"
+msgstr "إنشاء الطالب ينشئ حساب ولي الأمر أو يربطه في نفس الخطوة"
+
+#: app/templates/assistant/students.html:23
+msgid ""
+"If the family has only one phone number, enter it as the parent number. "
+"The parent account covers the child, and the student gets no separate "
+"login."
+msgstr ""
+"إذا كان للأسرة رقم هاتف واحد فقط، أدخله كرقم ولي الأمر. حساب ولي الأمر "
+"يغطي الطالب، ولن يكون للطالب حساب دخول منفصل."
+
+#: app/templates/assistant/students.html:31
+msgid "Current students"
+msgstr "الطلاب الحاليون"
+
+#: app/templates/assistant/students.html:34
+msgid "No students yet."
+msgstr "لا يوجد طلاب بعد."
+
+#: app/templates/assistant/students.html:41
+msgid "no login"
+msgstr "بدون حساب دخول"
+
+#: app/templates/assistant/students.html:44
+msgid "parent"
+msgstr "ولي الأمر"
+
+#: app/templates/assistant/teachers.html:7
+msgid "Usernames and passwords are generated automatically"
+msgstr "أسماء المستخدمين وكلمات المرور تُنشأ تلقائياً"
+
+#: app/templates/assistant/teachers.html:23
+msgid "Current teachers"
+msgstr "المدرسون الحاليون"
+
+#: app/templates/assistant/teachers.html:26
+msgid "No teachers yet."
+msgstr "لا يوجد مدرسون بعد."
+
+#: app/templates/assistant/whatsapp.html:4
+#: app/templates/partials/sidebar.html:12
+#: app/templates/partials/sidebar.html:23
+msgid "WhatsApp"
+msgstr "واتساب"
+
+#: app/templates/assistant/whatsapp.html:7
+msgid "WhatsApp message centre"
+msgstr "مركز رسائل واتساب"
+
+#: app/templates/assistant/whatsapp.html:8
+msgid "Updates are sent by hand from your own WhatsApp."
+msgstr "تُرسل التحديثات يدويًا من حساب واتساب الخاص بك."
+
+#: app/templates/assistant/whatsapp.html:16
+msgid "How this works"
+msgstr "كيف يعمل هذا"
+
+#: app/templates/assistant/whatsapp.html:18
+msgid ""
+"Each button opens WhatsApp with the message already typed. You still have"
+" to press send there, then come back to this page. The log below records "
+"who opened it and when — it cannot tell you whether the family read it."
+msgstr ""
+"كل زر يفتح واتساب والرسالة مكتوبة بالفعل. عليك الضغط على إرسال هناك، ثم "
+"العودة إلى هذه الصفحة. يسجّل السجل بالأسفل من فتحها ومتى — ولا يمكنه "
+"إخبارك إن كانت الأسرة قد قرأتها."
+
+#: app/templates/assistant/whatsapp.html:24
+#, python-format
+msgid "%(count)d update(s) prepared but never sent"
+msgstr "%(count)d تحديث جاهز ولم يُرسل"
+
+#: app/templates/assistant/whatsapp.html:42
+msgid "Prepare the daily update for everyone"
+msgstr "تجهيز التحديث اليومي للجميع"
+
+#: app/templates/assistant/whatsapp.html:44
+msgid ""
+"Writes each message and freezes its text. Skips anyone who already has "
+"one for this date, so running it twice is safe. Nothing is sent until you"
+" press the button on a card."
+msgstr ""
+"يكتب كل رسالة ويثبّت نصها. يتخطّى من لديه تحديث لهذا التاريخ، لذا فتكرار "
+"التشغيل آمن. لا يُرسل شيء حتى تضغط الزر الموجود على البطاقة."
+
+#: app/templates/assistant/whatsapp.html:72
+msgid "No contact number on file."
+msgstr "لا يوجد رقم تواصل مسجل."
+
+#: app/templates/assistant/whatsapp.html:98
+msgid "Send again on WhatsApp"
+msgstr "إرسال مرة أخرى عبر واتساب"
+
+#: app/templates/assistant/whatsapp.html:100
+msgid "Send on WhatsApp"
+msgstr "إرسال عبر واتساب"
+
+#: app/templates/assistant/whatsapp.html:109
+msgid "Message log"
+msgstr "سجل الرسائل"
+
+#: app/templates/assistant/whatsapp.html:111
+#: app/templates/portal/messages.html:11
+msgid "No messages yet."
+msgstr "لا توجد رسائل بعد."
+
+#: app/templates/auth/change_password.html:3
+#: app/templates/auth/change_password.html:10
+msgid "Change your password"
+msgstr "تغيير كلمة المرور"
+
+#: app/templates/auth/change_password.html:14
+msgid ""
+"Your account was created with a temporary password. Choose your own "
+"before continuing."
+msgstr "تم إنشاء حسابك بكلمة مرور مؤقتة. اختر كلمة مرور خاصة بك قبل المتابعة."
+
+#: app/templates/auth/change_password.html:16
+msgid "Choose a new password for your account."
+msgstr "اختر كلمة مرور جديدة لحسابك."
+
+#: app/templates/auth/change_password.html:32 app/templates/auth/terms.html:38
+#: app/templates/partials/sidebar.html:68
+msgid "Log out"
+msgstr "تسجيل الخروج"
+
+#: app/templates/auth/login.html:12
+msgid "Sign in with your phone number and password"
+msgstr "سجّل الدخول برقم هاتفك وكلمة المرور"
+
+#: app/templates/auth/terms.html:2
+msgid "Terms and conditions"
+msgstr "الشروط والأحكام"
+
+#: app/templates/auth/terms.html:15
+msgid "Terms and conditions for teachers"
+msgstr "الشروط والأحكام التنظيمية للمدرسين"
+
+#: app/templates/auth/terms.html:17
+msgid "General terms and conditions"
+msgstr "الشروط والأحكام العامة"
+
+#: app/templates/errors/403.html:7
+msgid "This area is not available for your account."
+msgstr "هذه الصفحة غير متاحة لحسابك."
+
+#: app/templates/errors/403.html:8 app/templates/errors/404.html:8
+#: app/templates/errors/500.html:8
+msgid "Back to my dashboard"
+msgstr "العودة إلى لوحة التحكم"
+
+#: app/templates/errors/404.html:7
+msgid "That page does not exist."
+msgstr "هذه الصفحة غير موجودة."
+
+#: app/templates/errors/500.html:7
+msgid "Something went wrong. The centre has been notified."
+msgstr "حدث خطأ ما. تم إبلاغ الإدارة."
+
+#: app/templates/partials/conflict_warning.html:6
+msgid "Scheduling conflict"
+msgstr "تعارض في المواعيد"
+
+#: app/templates/partials/course_card.html:31
+msgid "Trial available"
+msgstr "حصة تجريبية متاحة"
+
+#: app/templates/partials/course_card.html:43
+#, python-format
+msgid "%(per_week)d sessions per week · %(total)d per month"
+msgstr "%(per_week)d حصة أسبوعياً · %(total)d حصة شهرياً"
+
+#: app/templates/partials/course_card.html:47
+#, python-format
+msgid "%(per_week)d sessions per week · %(total)d per round"
+msgstr "%(per_week)d حصة أسبوعياً · %(total)d حصة في الراوند"
+
+#: app/templates/partials/course_card.html:68
+msgid "enrolled"
+msgstr "مسجل"
+
+#: app/templates/partials/credentials.html:12
+msgid ""
+"Shown once only. Write these down or share them now — they cannot be "
+"displayed again."
+msgstr "تظهر مرة واحدة فقط. سجّلها أو شاركها الآن — لن يمكن عرضها مرة أخرى."
+
+#: app/templates/partials/credentials.html:23
+msgid "No login"
+msgstr "بدون حساب دخول"
+
+#: app/templates/partials/dashboard.html:33
+msgid "Next session"
+msgstr "الحصة القادمة"
+
+#: app/templates/partials/dashboard.html:48
+msgid "Nothing scheduled."
+msgstr "لا يوجد شيء مجدول."
+
+#: app/templates/partials/enrollment_controls.html:43
+msgid "Save amount"
+msgstr "حفظ المبلغ"
+
+#: app/templates/partials/sidebar.html:28
+#: app/templates/partials/sidebar.html:31 app/templates/portal/home.html:7
+#: app/templates/portal/home.html:11 app/templates/teacher/home.html:5
+#: app/templates/teacher/home.html:9
+msgid "My dashboard"
+msgstr "لوحة التحكم"
+
+#: app/templates/partials/sidebar.html:32
+#: app/templates/portal/attendance.html:4
+#: app/templates/portal/attendance.html:8
+msgid "Attendance history"
+msgstr "سجل الحضور"
+
+#: app/templates/partials/sidebar.html:33 app/templates/portal/messages.html:4
+msgid "Messages"
+msgstr "الرسائل"
+
+#: app/templates/partials/slot_rows.html:20
+msgid "Each session lasts 90 minutes."
+msgstr "مدة كل حصة ٩٠ دقيقة."
+
+#: app/templates/partials/teaching.html:5
+msgid "No homework yet."
+msgstr "لا توجد واجبات بعد."
+
+#: app/templates/partials/teaching.html:27
+msgid "No feedback yet."
+msgstr "لا توجد تقييمات بعد."
+
+#: app/templates/partials/teaching.html:52
+msgid "No materials yet."
+msgstr "لا توجد مواد بعد."
+
+#: app/templates/partials/whatsapp.html:25
+#, python-format
+msgid "Sent by %(name)s"
+msgstr "أرسلها %(name)s"
+
+#: app/templates/portal/attendance.html:22
+#: app/templates/portal/course_detail.html:63 app/templates/portal/home.html:84
+msgid "No attendance recorded yet."
+msgstr "لم يتم تسجيل حضور بعد."
+
+#: app/templates/portal/course_detail.html:18
+msgid "Course details"
+msgstr "تفاصيل الكورس"
+
+#: app/templates/portal/course_detail.html:41
+msgid "Payment"
+msgstr "الدفع"
+
+#: app/templates/portal/course_detail.html:47
+msgid "Booking"
+msgstr "الحجز"
+
+#: app/templates/portal/course_detail.html:51 app/templates/portal/home.html:46
+msgid "Amount due"
+msgstr "المبلغ المستحق"
+
+#: app/templates/portal/home.html:15
+msgid "Child"
+msgstr "الابن / الابنة"
+
+#: app/templates/portal/home.html:33
+msgid "No student is linked to this account yet. Please contact the centre."
+msgstr "لا يوجد طالب مرتبط بهذا الحساب بعد. برجاء التواصل مع الإدارة."
+
+#: app/templates/portal/home.html:52 app/templates/teacher/home.html:13
+#: app/templates/teacher/home.html:71
+msgid "My courses"
+msgstr "كورساتي"
+
+#: app/templates/portal/home.html:54
+msgid "Not enrolled in any course yet."
+msgstr "غير مسجل في أي كورس بعد."
+
+#: app/templates/portal/home.html:78
+msgid "Recent attendance"
+msgstr "آخر سجلات الحضور"
+
+#: app/templates/portal/home.html:80
+msgid "Full history"
+msgstr "السجل الكامل"
+
+#: app/templates/portal/messages.html:7
+msgid "Messages from the centre"
+msgstr "رسائل من الأكاديمية"
+
+#: app/templates/teacher/course_detail.html:36
+msgid "Students in this course"
+msgstr "طلاب هذا الكورس"
+
+#: app/templates/teacher/course_detail.html:46
+msgid "Manage materials"
+msgstr "إدارة المواد"
+
+#: app/templates/teacher/course_detail.html:58
+msgid "No sessions scheduled yet."
+msgstr "لا توجد حصص مجدولة بعد."
+
+#: app/templates/teacher/home.html:14 app/templates/teacher/home.html:85
+msgid "My students"
+msgstr "طلابي"
+
+#: app/templates/teacher/home.html:44
+msgid "My weekly calendar"
+msgstr "جدولي الأسبوعي"
+
+#: app/templates/teacher/home.html:68
+msgid ""
+"To change a time, contact the assistant — schedule changes go through "
+"them."
+msgstr "لتغيير أي موعد، تواصل مع الـ Assistant — تعديل المواعيد يتم من خلاله."
+
+#: app/templates/teacher/home.html:73
+msgid "No courses assigned to you yet."
+msgstr "لم يتم إسناد أي كورس لك بعد."
+
+#: app/templates/teacher/home.html:87
+msgid ""
+"No students yet — students appear here once they are enrolled in your "
+"courses."
+msgstr "لا يوجد طلاب بعد — سيظهر الطلاب هنا بعد تسجيلهم في كورساتك."
+
+#: app/templates/teacher/session_detail.html:60
+msgid "Cancellations and schedule changes go through the assistant."
+msgstr "الإلغاء وتعديل المواعيد يتم من خلال الـ Assistant."
+
+#~ msgid ""
+#~ "Courses, schedule, attendance history, "
+#~ "homework and feedback appear here once"
+#~ " the next phases are delivered."
+#~ msgstr ""
+#~ "ستظهر الكورسات والجدول وسجل الحضور "
+#~ "والواجبات والتقييمات هنا بعد تسليم "
+#~ "المراحل القادمة."
+
+#~ msgid ""
+#~ "Your courses, weekly calendar, materials "
+#~ "and attendance appear here once phase"
+#~ " 2 is delivered."
+#~ msgstr ""
+#~ "ستظهر كورساتك وجدولك الأسبوعي والمواد "
+#~ "والحضور هنا بعد تسليم المرحلة الثانية."
+
+#~ msgid "No students yet — students appear here once you are assigned a course."
+#~ msgstr "لا يوجد طلاب بعد — سيظهر الطلاب هنا بعد إسنادك إلى كورس."
+
+#~ msgid "week"
+#~ msgstr "أسبوع"
+
+#~ msgid "sessions per month"
+#~ msgstr "حصة شهرياً"
+
+#~ msgid "sessions per round"
+#~ msgstr "حصة في الراوند"
+
+#~ msgid "Attendance, homework and feedback"
+#~ msgstr "الحضور والواجبات والتقييم"
+
+#~ msgid "These appear here once the next phases are delivered."
+#~ msgstr "ستظهر هنا بعد تسليم المراحل القادمة."
+
+#~ msgid ""
+#~ "Attendance history, homework and feedback "
+#~ "appear here once the next phases "
+#~ "are delivered."
+#~ msgstr "سجل الحضور والواجبات والتقييم سيظهر هنا بعد تسليم المراحل القادمة."
+
+#~ msgid "Attendance and materials arrive in the next phase."
+#~ msgstr "الحضور والمواد التعليمية في المرحلة القادمة."
+
+#~ msgid "not paid yet"
+#~ msgstr "لم يتم الدفع بعد"
+
+#~ msgid "Homework and feedback appear here once the next phases are delivered."
+#~ msgstr "الواجبات والتقييم ستظهر هنا بعد تسليم المراحل القادمة."
+
+#~ msgid "Materials arrive in the next phase."
+#~ msgstr "المواد التعليمية في المرحلة القادمة."
+
+#~ msgid "Courses, attendance and payments appear here once phase 2 is delivered."
+#~ msgstr "ستظهر الكورسات والحضور والمدفوعات هنا بعد تسليم المرحلة الثانية."
+
+#~ msgid "Booking and payment status become editable in phase 5."
+#~ msgstr "حالة الحجز والدفع ستصبح قابلة للتعديل في المرحلة الخامسة."
+
+#~ msgid "Accounts you manage"
+#~ msgstr "الحسابات التي تديرها"
+
+#~ msgid "Courses, attendance, homework and WhatsApp arrive in the next phases."
+#~ msgstr "الكورسات والحضور والواجبات ورسائل واتساب في المراحل القادمة."
+
+#~ msgid "queued"
+#~ msgstr "في الانتظار"
+
+#~ msgid "delivered"
+#~ msgstr "تم التسليم"
+
+#~ msgid "read"
+#~ msgstr "تمت القراءة"
+
+#~ msgid "failed"
+#~ msgstr "فشل"
+
+#~ msgid "Update sent to %(name)s."
+#~ msgstr "تم إرسال التحديث إلى %(name)s."
+
+#~ msgid "Sending failed: %(detail)s"
+#~ msgstr "فشل الإرسال: %(detail)s"
+
+#~ msgid ""
+#~ "Recorded for %(name)s, but not delivered"
+#~ " — WhatsApp sending is switched off"
+#~ " until the provider is approved."
+#~ msgstr ""
+#~ "تم تسجيل الرسالة لـ %(name)s ولكن "
+#~ "لم يتم إرسالها — إرسال واتساب "
+#~ "متوقف حتى اعتماد مزود الخدمة."
+
+#~ msgid ""
+#~ "Batch finished: %(sent)d sent, %(queued)d "
+#~ "recorded, %(failed)d failed, %(skipped)d "
+#~ "skipped."
+#~ msgstr ""
+#~ "انتهت الدفعة: %(sent)d مرسلة، %(queued)d "
+#~ "مسجلة، %(failed)d فشلت، %(skipped)d تم "
+#~ "تخطيها."
+
+#~ msgid "Sending number: %(number)s"
+#~ msgstr "رقم الإرسال: %(number)s"
+
+#~ msgid "Sending is switched off"
+#~ msgstr "الإرسال متوقف"
+
+#~ msgid ""
+#~ "Messages are composed and recorded, but"
+#~ " nothing is delivered until the "
+#~ "WhatsApp Business number is verified and"
+#~ " a template is approved by Meta. "
+#~ "Every message below is logged as "
+#~ "“queued”, not “sent”."
+#~ msgstr ""
+#~ "يتم تجهيز الرسائل وتسجيلها، ولكن لا "
+#~ "يتم إرسال أي شيء حتى يتم توثيق "
+#~ "رقم واتساب بيزنس واعتماد القالب من "
+#~ "Meta. كل رسالة بالأسفل مسجلة كـ«في "
+#~ "الانتظار» وليست «مرسلة»."
+
+#~ msgid "%(count)d message(s) failed to send"
+#~ msgstr "فشل إرسال %(count)d رسالة"
+
+#~ msgid "Send the daily update to everyone"
+#~ msgstr "إرسال التحديث اليومي للجميع"
+
+#~ msgid ""
+#~ "Skips anyone who already has an "
+#~ "update for this date, so running "
+#~ "it twice is safe."
+#~ msgstr "يتم تخطي من لديه تحديث بهذا التاريخ، لذا تشغيله مرتين آمن."
+
+#~ msgid "already sent"
+#~ msgstr "تم الإرسال"
+
+#~ msgid "already prepared"
+#~ msgstr "تم التجهيز"
+
+#~ msgid "Send again"
+#~ msgstr "إرسال مرة أخرى"
+
+#~ msgid "Send update"
+#~ msgstr "إرسال التحديث"
+
+#~ msgid "Sent log"
+#~ msgstr "سجل الإرسال"
+
+#~ msgid "Message sending failed"
+#~ msgstr "فشل إرسال الرسائل"
+
+#~ msgid ""
+#~ "Each button opens WhatsApp in a "
+#~ "new tab with the message already "
+#~ "typed. You still have to press "
+#~ "send there. The log below records "
+#~ "who opened it and when — it "
+#~ "cannot tell you whether the family "
+#~ "read it."
+#~ msgstr ""
+#~ "كل زر يفتح واتساب في تبويب جديد"
+#~ " والرسالة مكتوبة بالفعل. عليك الضغط "
+#~ "على إرسال هناك. يسجّل السجل بالأسفل "
+#~ "من فتحها ومتى — ولا يمكنه إخبارك"
+#~ " إن كانت الأسرة قد قرأتها."
+

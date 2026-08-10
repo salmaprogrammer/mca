@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% from "partials/field.html" import section_title %}
+{% from "partials/attendance_row.html" import status_pill %}
+{% from "partials/teaching.html" import homework_list, feedback_list, material_list %}
+{% block title %}{{ course.display_title(get_locale()|string) }} — {{ center_name }}{% endblock %}
+
+{% block content %}
+  {% set locale = get_locale()|string %}
+  {{ section_title('📘', course.display_title(locale)) }}
+
+  {% if course.cover_image_path %}
+    <img src="{{ url_for('portal.course_cover', course_id=course.id) }}" alt=""
+         style="max-inline-size:100%; border-radius:12px; margin-block-end:14px;">
+  {% endif %}
+
+  <div class="two-col">
+    <div class="card">
+      <div class="field__label">{{ _('Course details') }}</div>
+      <div class="row-list__item">
+        <span>{{ _('Teacher') }}</span><span>{{ course.teacher.full_name }}</span>
+      </div>
+      <div class="row-list__item">
+        <span>{{ _('Schedule') }}</span>
+        <span>
+          {% for slot in course.slots_ordered_for_display() %}
+            <span class="pill">{{ slot.label(locale) }}</span>
+          {% endfor %}
+        </span>
+      </div>
+      <div class="row-list__item">
+        <span>{{ _('Sessions') }}</span>
+        <span>{{ course.course_type.total_sessions }}
+          {{ _('per month') if course.course_type.cycle.value == 'month' else _('per round') }}</span>
+      </div>
+      <div class="row-list__item">
+        <span>{{ _('Price') }}</span>
+        <span>{{ course.price_egp|round(0, 'floor')|int }} {{ _('EGP') }}</span>
+      </div>
+      {% if enrollment %}
+        <div class="row-list__item">
+          <span>{{ _('Payment') }}</span>
+          <span class="pill {{ 'pill--good' if enrollment.payment_status.value == 'paid' else 'pill--bad' }}">
+            {{ label_for(enrollment.payment_status) }}
+          </span>
+        </div>
+        <div class="row-list__item">
+          <span>{{ _('Booking') }}</span>
+          <span class="pill">{{ label_for(enrollment.booking_status) }}</span>
+        </div>
+        <div class="row-list__item">
+          <span>{{ _('Amount due') }}</span>
+          <span>{{ enrollment.amount_due|round(0, 'floor')|int }} {{ _('EGP') }}</span>
+        </div>
+      {% endif %}
+      {% if course.description %}
+        <p class="muted" style="margin-block-start:10px;">{{ course.description }}</p>
+      {% endif %}
+    </div>
+
+    <div class="card">
+      <div class="field__label">{{ _('Attendance') }}</div>
+      {% if not attendance %}
+        <div class="muted">{{ _('No attendance recorded yet.') }}</div>
+      {% endif %}
+      {% for record in attendance %}
+        <div class="row-list__item">
+          <span class="muted ltr">{{ record.session.session_date }}</span>
+          {{ status_pill(record.status, record.checked_in_at) }}
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="two-col" style="margin-block-start:16px;">
+    <div class="card">
+      <div class="field__label">{{ _('Homework') }}</div>
+      {{ homework_list(homework) }}
+    </div>
+    <div class="card">
+      <div class="field__label">{{ _('Feedback') }}</div>
+      {{ feedback_list(feedback) }}
+    </div>
+  </div>
+
+  <div class="card" style="margin-block-start:16px;">
+    <div class="field__label">{{ _('Materials') }}</div>
+    {{ material_list(materials) }}
+  </div>
+{% endblock %}

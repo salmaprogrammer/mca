@@ -1,0 +1,27 @@
+{% macro session_status_pill(session) %}
+  {% set tone = {
+    'scheduled': '', 'held': 'pill--good',
+    'cancelled_by_teacher': 'pill--bad', 'cancelled_by_center': 'pill--bad',
+    'rescheduled': 'pill--warn'
+  } %}
+  <span class="pill {{ tone.get(session.status.value, '') }}">
+    {{ label_for(session.status) }}
+  </span>
+{% endmacro %}
+
+{% macro session_line(session, href) %}
+  <div class="row-list__item">
+    <span>
+      <a href="{{ href }}">#{{ session.sequence_no if session.sequence_no > 0 else '—' }}
+        · {{ session.session_date }}</a>
+      <span class="muted ltr">{{ '%02d:%02d'|format(session.start_time.hour, session.start_time.minute) }}–{{ '%02d:%02d'|format(session.end_time.hour, session.end_time.minute) }}</span>
+    </span>
+    <span class="btn-row">
+      {% set marked = session.attendance|length %}
+      {% if session.needs_attendance %}
+        <span class="muted">{{ marked }}/{{ session.course.enrollments|length }}</span>
+      {% endif %}
+      {{ session_status_pill(session) }}
+    </span>
+  </div>
+{% endmacro %}

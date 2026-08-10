@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% from "partials/field.html" import section_title %}
+{% from "partials/attendance_row.html" import status_pill %}
+{% block title %}{{ _('Attendance history') }} — {{ center_name }}{% endblock %}
+
+{% block content %}
+  {% set locale = get_locale()|string %}
+  {{ section_title('📋', _('Attendance history'), student.full_name) }}
+
+  <div class="stat-grid">
+    {% for key, label in [('present', _('present')), ('late', _('late')),
+                          ('absent', _('absent')), ('excused', _('excused'))] %}
+      <div class="card">
+        <div class="stat__label">{{ label }}</div>
+        <div class="stat__value">{{ summary.get(key, 0) }}</div>
+      </div>
+    {% endfor %}
+  </div>
+
+  <div class="card">
+    {% if not attendance %}
+      <div class="muted">{{ _('No attendance recorded yet.') }}</div>
+    {% endif %}
+    {% for record in attendance %}
+      <div class="row-list__item">
+        <span>
+          {{ record.session.course.display_title(locale) }}
+          <div class="muted ltr">
+            {{ record.session.session_date }}
+            {{ '%02d:%02d'|format(record.session.start_time.hour, record.session.start_time.minute) }}
+          </div>
+        </span>
+        {{ status_pill(record.status, record.checked_in_at) }}
+      </div>
+    {% endfor %}
+  </div>
+{% endblock %}

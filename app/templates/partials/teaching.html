@@ -1,0 +1,70 @@
+{# Shared renderers for homework, feedback and material lists. #}
+
+{% macro homework_list(items, empty_message=None, delete_endpoint=None) %}
+  {% if not items %}
+    <div class="muted">{{ empty_message or _('No homework yet.') }}</div>
+  {% endif %}
+  {% for item in items %}
+    <div class="row-list__item teaching-item">
+      <span>
+        <span class="muted ltr">{{ item.for_date }}</span>
+        <div>{{ item.text }}</div>
+      </span>
+      {% if delete_endpoint %}
+        <form class="inline-form" method="post"
+              action="{{ url_for(delete_endpoint, homework_id=item.id) }}">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <button type="submit" class="btn btn--small btn--danger">{{ _('Remove') }}</button>
+        </form>
+      {% endif %}
+    </div>
+  {% endfor %}
+{% endmacro %}
+
+
+{% macro feedback_list(items, show_student=False, empty_message=None, delete_endpoint=None) %}
+  {% if not items %}
+    <div class="muted">{{ empty_message or _('No feedback yet.') }}</div>
+  {% endif %}
+  {% for item in items %}
+    <div class="row-list__item teaching-item">
+      <span>
+        <span class="muted ltr">{{ item.for_date }}</span>
+        {% if show_student %}
+          <strong>· {{ item.student.full_name }}</strong>
+        {% endif %}
+        <div>{{ item.text }}</div>
+      </span>
+      {% if delete_endpoint %}
+        <form class="inline-form" method="post"
+              action="{{ url_for(delete_endpoint, feedback_id=item.id) }}">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <button type="submit" class="btn btn--small btn--danger">{{ _('Remove') }}</button>
+        </form>
+      {% endif %}
+    </div>
+  {% endfor %}
+{% endmacro %}
+
+
+{% macro material_list(items, empty_message=None, delete_endpoint=None) %}
+  {% if not items %}
+    <div class="muted">{{ empty_message or _('No materials yet.') }}</div>
+  {% endif %}
+  {% for item in items %}
+    <div class="row-list__item">
+      <span>
+        🔗
+        {# Teacher-supplied links leave the app: no referrer, no window.opener. #}
+        <a href="{{ item.url }}" target="_blank" rel="noopener noreferrer">{{ item.title }}</a>
+      </span>
+      {% if delete_endpoint %}
+        <form class="inline-form" method="post"
+              action="{{ url_for(delete_endpoint, material_id=item.id) }}">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <button type="submit" class="btn btn--small btn--danger">{{ _('Remove') }}</button>
+        </form>
+      {% endif %}
+    </div>
+  {% endfor %}
+{% endmacro %}

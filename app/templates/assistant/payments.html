@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% from "partials/field.html" import section_title %}
+{% from "partials/enrollment_controls.html" import enrollment_controls %}
+{% block title %}{{ _('Payments') }} — {{ center_name }}{% endblock %}
+
+{% block content %}
+  {% set locale = get_locale()|string %}
+  {{ section_title('💳', _('Payments'), _('Everything still outstanding')) }}
+
+  <div class="stat-grid">
+    <div class="card">
+      <div class="stat__label">{{ _('Unpaid enrolments') }}</div>
+      <div class="stat__value">{{ outstanding|length }}</div>
+    </div>
+    <div class="card">
+      <div class="stat__label">{{ _('Total outstanding') }}</div>
+      <div class="stat__value">{{ total|round(0, 'floor')|int }} <span style="font-size:15px;">{{ _('EGP') }}</span></div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-block-end:16px;">
+    <form method="get" class="filter-row">
+      <label class="field">
+        <span class="field__label">{{ _('Course') }}</span>
+        <select name="course_id">
+          <option value="">{{ _('All courses') }}</option>
+          {% for course in courses %}
+            <option value="{{ course.id }}"
+              {% if selected_course_id == course.id %}selected{% endif %}>
+              {{ course.display_title(locale) }} — {{ course.name }}
+            </option>
+          {% endfor %}
+        </select>
+      </label>
+      <button type="submit" class="btn btn--small">{{ _('Apply') }}</button>
+    </form>
+  </div>
+
+  {% if not outstanding %}
+    <div class="card">
+      <div class="muted">{{ _('Nothing outstanding. Everyone is paid up.') }}</div>
+    </div>
+  {% endif %}
+
+  {% for enrollment in outstanding %}
+    <div class="card" style="margin-block-end:10px;">
+      <div class="row-list__item">
+        <span>
+          <strong>{{ enrollment.student.full_name }}</strong>
+          <div class="muted">
+            <a href="{{ url_for('assistant.course_detail', course_id=enrollment.course_id) }}">
+              {{ enrollment.course.display_title(locale) }}
+            </a>
+            · {{ enrollment.course.name }}
+          </div>
+        </span>
+        <span class="amount-due">
+          {{ enrollment.amount_due|round(0, 'floor')|int }} {{ _('EGP') }}
+        </span>
+      </div>
+      {{ enrollment_controls(enrollment, booking_statuses, payment_statuses, next='payments') }}
+    </div>
+  {% endfor %}
+{% endblock %}

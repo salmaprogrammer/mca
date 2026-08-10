@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% from "partials/field.html" import section_title %}
+{% from "partials/course_card.html" import course_card %}
+{% block title %}{{ _('Courses') }} — {{ center_name }}{% endblock %}
+
+{% block content %}
+  {{ section_title('📚', _('Courses'), _('The six course types are fixed; each course attaches a teacher, schedule and price')) }}
+
+  <div class="btn-row" style="margin-block-end:16px;">
+    <a class="btn" href="{{ url_for('assistant.course_new') }}">{{ _('Create a course') }}</a>
+  </div>
+
+  {% if not courses %}
+    <div class="card"><div class="muted">{{ _('No courses yet.') }}</div></div>
+  {% endif %}
+
+  <div class="card-grid">
+    {% for course in courses %}
+      {{ course_card(
+           course,
+           href=url_for('assistant.course_detail', course_id=course.id),
+           cover_endpoint='assistant.course_cover') }}
+    {% endfor %}
+  </div>
+{% endblock %}

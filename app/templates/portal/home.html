@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% from "partials/field.html" import section_title %}
+{% from "partials/course_card.html" import course_card %}
+{% from "partials/attendance_row.html" import status_pill %}
+{% from "partials/teaching.html" import homework_list, feedback_list %}
+{% from "partials/dashboard.html" import next_session_card, stat %}
+{% block title %}{{ _('My dashboard') }} — {{ center_name }}{% endblock %}
+
+{% block content %}
+  {% set locale = get_locale()|string %}
+  {{ section_title('🏠', _('My dashboard'), student.full_name if student else '') }}
+
+  {% if children|length > 1 %}
+    <div class="card child-switcher">
+      <div class="field__label">{{ _('Child') }}</div>
+      <div class="btn-row">
+        {% for child in children %}
+          <form class="inline-form" method="post"
+                action="{{ url_for('portal.select_child', student_id=child.id) }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button type="submit"
+                    class="btn btn--small {{ '' if student and child.id == student.id else 'btn--ghost' }}">
+              {{ child.full_name }}
+            </button>
+          </form>
+        {% endfor %}
+      </div>
+    </div>
+  {% endif %}
+
+  {% if not student %}
+    <div class="card">
+      <div class="muted">{{ _('No student is linked to this account yet. Please contact the centre.') }}</div>
+    </div>
+  {% else %}
+
+    <div class="stat-grid">
+      {{ next_session_card(
+           dash.next_session,
+           href=url_for('portal.course_detail', course_id=dash.next_session.course_id)
+                if dash.next_session else None) }}
+      {{ stat(_('present'), dash.summary.get('present', 0), tone='is-good') }}
+      {{ stat(_('absent'), dash.summary.get('absent', 0),
+              tone='is-bad' if dash.summary.get('absent') else '') }}
+      {% if dash.unpaid %}
+        {{ stat(_('Amount due'),
+                (dash.unpaid | sum(attribute='amount_due')) | round(0, 'floor') | int,
+                suffix=_('EGP'), tone='is-bad') }}
+      {% endif %}
+    </div>
+
+    <div class="field__label">{{ _('My courses') }}</div>
+    {% if not dash.courses %}
+      <div class="card"><div class="muted">{{ _('Not enrolled in any course yet.') }}</div></div>
+    {% endif %}
+
+    <div class="card-grid">
+      {% for course in dash.courses %}
+        {% set enrollment = enrollment_for(course, student) %}
+        {% call course_card(
+             course,
+             href=url_for('portal.course_detail', course_id=course.id),
+             cover_endpoint='portal.course_cover') %}
+          {% if enrollment %}
+            <div class="btn-row" style="margin-block-start:10px;">
+              <span class="pill {{ 'pill--good' if enrollment.payment_status.value == 'paid' else 'pill--bad' }}">
+                {{ label_for(enrollment.payment_status) }}
+              </span>
+              <span class="pill">{{ label_for(enrollment.booking_status) }}</span>
+            </div>
+          {% endif %}
+        {% endcall %}
+      {% endfor %}
+    </div>
+
+    <div class="card" style="margin-block-start:18px;">
+      <div class="row-list__item">
+        <span class="field__label" style="margin:0;">{{ _('Recent attendance') }}</span>
+        <a class="btn btn--small btn--ghost" href="{{ url_for('portal.attendance') }}">
+          {{ _('Full history') }}
+        </a>
+      </div>
+      {% if not dash.attendance %}
+        <div class="muted">{{ _('No attendance recorded yet.') }}</div>
+      {% endif %}
+      {% for record in dash.attendance %}
+        <div class="row-list__item">
+          <span>
+            {{ record.session.course.display_title(locale) }}
+            <span class="muted ltr">· {{ record.session.session_date }}</span>
+          </span>
+          {{ status_pill(record.status, record.checked_in_at) }}
+        </div>
+      {% endfor %}
+    </div>
+
+    <div class="two-col" style="margin-block-start:14px;">
+      <div class="card">
+        <div class="field__label">{{ _('Homework') }}</div>
+        {{ homework_list(dash.homework) }}
+      </div>
+      <div class="card">
+        <div class="field__label">{{ _('Feedback') }}</div>
+        {{ feedback_list(dash.feedback) }}
+      </div>
+    </div>
+  {% endif %}
+{% endblock %}

@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% from "partials/field.html" import section_title %}
+{% from "partials/dashboard.html" import stat, action_panel %}
+{% from "partials/session_row.html" import session_status_pill %}
+{% block title %}{{ _('Overview') }} — {{ center_name }}{% endblock %}
+
+{% block content %}
+  {% set locale = get_locale()|string %}
+  {{ section_title('📋', _('Today'), dash.on|string) }}
+
+  <div class="stat-grid">
+    {{ stat(_('Sessions today'), dash.sessions_today|length,
+            href=url_for('assistant.sessions_today')) }}
+    {{ stat(_('Still to mark'), dash.unmarked_sessions|length,
+            tone='is-warn' if dash.unmarked_sessions else '') }}
+    {{ stat(_('Updates not sent'), dash.students_without_update|length,
+            tone='is-warn' if dash.students_without_update else '',
+            href=url_for('assistant.whatsapp_centre')) }}
+    {{ stat(_('Outstanding'), dash.outstanding_total|round(0, 'floor')|int,
+            suffix=_('EGP'), tone='is-bad' if dash.unpaid else '',
+            href=url_for('assistant.payments')) }}
+  </div>
+
+  {% call action_panel(_('Sessions still waiting for attendance'), dash.unmarked_sessions) %}
+    {% for session in dash.unmarked_sessions %}
+      <div class="row-list__item">
+        <span>
+          <a href="{{ url_for('assistant.session_detail', session_id=session.id) }}">
+            {{ session.course.display_title(locale) }}
+          </a>
+          <span class="muted ltr">
+            · {{ '%02d:%02d'|format(session.start_time.hour, session.start_time.minute) }}
+          </span>
+        </span>
+        <span class="muted">
+          {{ session.attendance|length }}/{{ session.course.enrollments|length }}
+          {{ _('marked') }}
+        </span>
+      </div>
+    {% endfor %}
+  {% endcall %}
+
+  {% call action_panel(_('Updates written but never sent'), dash.unsent_messages, tone='bad') %}
+    {% for message in dash.unsent_messages %}
+      <div class="row-list__item">
+        <span>{{ message.student.full_name }}</span>
+        <span class="muted ltr">{{ message.created_at|localdate }}</span>
+      </div>
+    {% endfor %}
+  {% endcall %}
+
+  <div class="two-col">
+    <div class="card">
+      <div class="field__label">{{ _("Today's sessions") }}</div>
+      {% if not dash.sessions_today %}
+        <div class="muted">{{ _('No sessions today.') }}</div>
+      {% endif %}
+      {% for session in dash.sessions_today %}
+        <div class="row-list__item">
+          <span>
+            <a href="{{ url_for('assistant.session_detail', session_id=session.id) }}">
+              {{ session.course.display_title(locale) }}
+            </a>
+            <div class="muted ltr" style="font-size:12px;">
+              {{ '%02d:%02d'|format(session.start_time.hour, session.start_time.minute) }}
+              · {{ session.teacher.full_name if session.teacher else '—' }}
+            </div>
+          </span>
+          {{ session_status_pill(session) }}
+        </div>
+      {% endfor %}
+    </div>
+
+    <div class="card">
+      <div class="field__label">{{ _('Students without an update today') }}</div>
+      {% if not dash.students_without_update %}
+        <div class="muted">{{ _('Everyone has been sent an update.') }}</div>
+      {% endif %}
+      {% for student in dash.students_without_update[:10] %}
+        <div class="row-list__item"><span>{{ student.full_name }}</span></div>
+      {% endfor %}
+      {% if dash.students_without_update %}
+        <div class="btn-row" style="margin-block-start:10px;">
+          <a class="btn btn--small" href="{{ url_for('assistant.whatsapp_centre') }}">
+            {{ _('Go to WhatsApp centre') }}
+          </a>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}

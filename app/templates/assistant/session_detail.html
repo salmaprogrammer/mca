@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+{% from "partials/field.html" import section_title %}
+{% from "partials/attendance_row.html" import status_pill, mark_buttons %}
+{% from "partials/session_row.html" import session_status_pill %}
+{% block title %}{{ _('Attendance') }} — {{ center_name }}{% endblock %}
+
+{% block content %}
+  {% set locale = get_locale()|string %}
+  {{ section_title('📋', _('Attendance'),
+                   course.display_title(locale) ~ ' · ' ~ session.session_date|string) }}
+
+  <div class="btn-row" style="margin-block-end:16px;">
+    <a class="btn btn--ghost btn--small"
+       href="{{ url_for('assistant.course_sessions', course_id=course.id) }}">
+      {{ _('All sessions') }}
+    </a>
+    {{ session_status_pill(session) }}
+    <span class="muted ltr">
+      {{ '%02d:%02d'|format(session.start_time.hour, session.start_time.minute) }}–{{ '%02d:%02d'|format(session.end_time.hour, session.end_time.minute) }}
+    </span>
+  </div>
+
+  {% if not session.needs_attendance %}
+    <div class="card" style="margin-block-end:14px;">
+      <div class="muted">
+        {% if session.status.value == 'rescheduled' %}
+          {{ _('This session was moved to another date. Mark the replacement instead.') }}
+        {% else %}
+          {{ _('This session was cancelled, so there is nothing to mark.') }}
+          {% if session.cancellation_reason %} — {{ session.cancellation_reason }}{% endif %}
+        {% endif %}
+      </div>
+    </div>
+  {% endif %}
+
+  <div class="two-col">
+    <div class="card">
+      <div class="field__label">{{ _('Students') }}</div>
+      {% if not course.enrollments %}
+        <div class="muted">{{ _('Nobody enrolled yet.') }}</div>
+      {% endif %}
+      {% for enrollment in course.enrollments %}
+        {% set record = session.attendance_for(enrollment.student_id) %}
+        <div class="row-list__item attendance-line">
+          <span>{{ enrollment.student.full_name }}</span>
+          <span class="btn-row">
+            {% if record %}
+              {{ status_pill(record.status, record.checked_in_at) }}
+            {% endif %}
+            {% if session.needs_attendance %}
+              {{ mark_buttons(
+                   url_for('assistant.mark_student',
+                           session_id=session.id, student_id=enrollment.student_id),
+                   statuses,
+                   record.status if record else None) }}
+            {% endif %}
+          </span>
+        </div>
+      {% endfor %}
+    </div>
+
+    <div class="card">
+      <div class="field__label">{{ _('Teacher') }}</div>
+      <div class="row-list__item attendance-line">
+        <span>{{ session.teacher.full_name if session.teacher else '—' }}</span>
+        <span class="btn-row">
+          {% if session.teacher_status %}
+            {{ status_pill(session.teacher_status, session.teacher_checked_in_at) }}
+          {% endif %}
+          {% if session.needs_attendance %}
+            {{ mark_buttons(
+                 url_for('assistant.mark_teacher', session_id=session.id),
+                 statuses,
+                 session.teacher_status) }}
+          {% endif %}
+        </span>
+      </div>
+
+      {% if session.needs_attendance %}
+        <div class="field__label" style="margin-block-start:18px;">{{ _('Change this session') }}</div>
+
+        <form method="post" action="{{ url_for('assistant.cancel_session', session_id=session.id) }}">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <label class="field">
+            <span class="field__label">{{ _('Reason (optional)') }}</span>
+            <input type="text" name="reason">
+          </label>
+          <div class="btn-row">
+            <button type="submit" name="by" value="teacher" class="btn btn--small btn--danger">
+              {{ _('Cancelled by teacher') }}
+            </button>
+            <button type="submit" name="by" value="center" class="btn btn--small btn--danger">
+              {{ _('Cancelled by centre') }}
+            </button>
+          </div>
+          <div class="muted" style="font-size:12px; margin-block-start:6px;">
+            {{ _('Who cancelled matters: a teacher-cancelled session must be made up, a student absence is not refunded.') }}
+          </div>
+        </form>
+
+        <form method="post" style="margin-block-start:14px;"
+              action="{{ url_for('assistant.reschedule_session', session_id=session.id) }}">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <div class="slot-row">
+            <input type="date" name="new_date" class="slot-row__day">
+            <input type="time" name="new_time" class="slot-row__time" value="16:00">
+          </div>
+          <button type="submit" class="btn btn--small btn--ghost">{{ _('Move session') }}</button>
+        </form>
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}

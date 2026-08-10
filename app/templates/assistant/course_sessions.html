@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% from "partials/field.html" import section_title %}
+{% from "partials/session_row.html" import session_line %}
+{% block title %}{{ _('Sessions') }} — {{ center_name }}{% endblock %}
+
+{% block content %}
+  {% set locale = get_locale()|string %}
+  {{ section_title('🗓️', _('Sessions'), course.display_title(locale) ~ ' · ' ~ course.name) }}
+
+  <div class="btn-row" style="margin-block-end:16px;">
+    <a class="btn btn--ghost btn--small"
+       href="{{ url_for('assistant.course_detail', course_id=course.id) }}">
+      {{ _('Back to course') }}
+    </a>
+    <span class="pill">{{ _('%(held)d of %(total)d held', held=held, total=total) }}</span>
+  </div>
+
+  <div class="card">
+    {% if not sessions %}
+      <div class="muted" style="margin-block-end:12px;">
+        {{ _('No sessions yet. Generate them from the course start date.') }}
+      </div>
+      <form method="post"
+            action="{{ url_for('assistant.generate_sessions', course_id=course.id) }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button type="submit" class="btn">{{ _('Generate sessions') }}</button>
+      </form>
+    {% else %}
+      {% for session in sessions %}
+        {{ session_line(session, url_for('assistant.session_detail', session_id=session.id)) }}
+      {% endfor %}
+      <form method="post" style="margin-block-start:14px;"
+            action="{{ url_for('assistant.generate_sessions', course_id=course.id) }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button type="submit" class="btn btn--small btn--ghost">
+          {{ _('Generate any missing sessions') }}
+        </button>
+      </form>
+    {% endif %}
+  </div>
+{% endblock %}

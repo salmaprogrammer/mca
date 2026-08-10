@@ -1,0 +1,72 @@
+{%- set nav = [] -%}
+{%- if current_user.is_authenticated -%}
+  {%- if current_user.role == Role.ADMIN -%}
+    {%- set nav = [
+      ('admin.overview', _('Overview')),
+      ('admin.assistants', _('Assistants')),
+      ('admin.audit_log', _('Audit log')),
+      ('assistant.courses', _('Courses')),
+      ('assistant.sessions_today', _("Today's sessions")),
+      ('assistant.attendance_log', _('Attendance log')),
+      ('assistant.payments', _('Payments')),
+      ('assistant.whatsapp_centre', _('WhatsApp')),
+      ('assistant.teachers', _('Teachers')),
+      ('assistant.students', _('Students')),
+    ] -%}
+  {%- elif current_user.role == Role.ASSISTANT -%}
+    {%- set nav = [
+      ('assistant.home', _('Overview')),
+      ('assistant.courses', _('Courses')),
+      ('assistant.sessions_today', _("Today's sessions")),
+      ('assistant.attendance_log', _('Attendance log')),
+      ('assistant.payments', _('Payments')),
+      ('assistant.whatsapp_centre', _('WhatsApp')),
+      ('assistant.teachers', _('Teachers')),
+      ('assistant.students', _('Students')),
+    ] -%}
+  {%- elif current_user.role == Role.TEACHER -%}
+    {%- set nav = [('teacher.home', _('My dashboard'))] -%}
+  {%- else -%}
+    {%- set nav = [
+      ('portal.home', _('My dashboard')),
+      ('portal.attendance', _('Attendance history')),
+      ('portal.messages', _('Messages')),
+    ] -%}
+  {%- endif -%}
+{%- endif -%}
+
+<aside class="sidebar">
+  <div class="sidebar__brand">
+    <span>🎓</span>
+    <span>{{ center_name }}</span>
+  </div>
+
+  <nav class="sidebar__nav">
+    {% for endpoint, label in nav %}
+      <a class="nav-link {{ 'is-active' if request.endpoint == endpoint else '' }}"
+         href="{{ url_for(endpoint) }}">{{ label }}</a>
+    {% endfor %}
+  </nav>
+
+  <div class="sidebar__footer">
+    <form class="lang-switch" method="post" action="{{ url_for('main.set_language') }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <input type="hidden" name="next" value="{{ request.full_path }}">
+      {% for code in supported_locales %}
+        <button type="submit" name="locale" value="{{ code }}"
+                class="{{ 'is-active' if get_locale()|string == code else '' }}">
+          {{ 'العربية' if code == 'ar' else 'English' }}
+        </button>
+      {% endfor %}
+    </form>
+
+    {% if current_user.is_authenticated %}
+      <div class="sidebar__user">{{ current_user.full_name }}</div>
+      <div class="sidebar__role">{{ label_for(current_user.role) }}</div>
+      <form method="post" action="{{ url_for('auth.logout') }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button type="submit" class="nav-link">{{ _('Log out') }}</button>
+      </form>
+    {% endif %}
+  </div>
+</aside>

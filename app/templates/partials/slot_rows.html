@@ -1,0 +1,22 @@
+{# Weekly slot inputs, count driven by the selected course type (sprint S2.3).
+   Swapped over HTMX when the type changes. #}
+<div id="slot-rows">
+  {% for index in range(slot_count) %}
+    {% set existing = submitted_slots[index] if submitted_slots|length > index else None %}
+    <div class="slot-row">
+      <select name="slot_weekday_{{ index }}" class="slot-row__day">
+        {% for value, label in weekdays %}
+          <option value="{{ value }}"
+            {% if existing and existing.weekday|int == value %}selected{% endif %}>
+            {{ label }}
+          </option>
+        {% endfor %}
+      </select>
+      <input type="time" name="slot_time_{{ index }}" class="slot-row__time"
+             value="{{ existing.start_time if existing else '16:00' }}">
+    </div>
+  {% endfor %}
+  <div class="muted" style="font-size:12px;">
+    {{ _('Each session lasts 90 minutes.') }}
+  </div>
+</div>

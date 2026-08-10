@@ -1,0 +1,14 @@
+{# Live conflict preview target (sprint S2.5). Convenience only — the server
+   re-validates on submit, which is the actual enforcement point. #}
+<div id="conflict-warning">
+  {% if conflicts %}
+    <div class="flash flash--error" style="margin-block-end:12px;">
+      <strong>⚠️ {{ _('Scheduling conflict') }}</strong>
+      <ul style="margin:6px 0 0; padding-inline-start:18px;">
+        {% for conflict in conflicts %}
+          <li>{{ conflict.message }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+  {% endif %}
+</div>

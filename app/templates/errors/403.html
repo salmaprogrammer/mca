@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}403 — {{ center_name }}{% endblock %}
+{% block body %}
+<div class="error-page">
+  <div>
+    <div class="error-page__code">403</div>
+    <p class="muted">{{ _('This area is not available for your account.') }}</p>
+    <a class="btn btn--ghost" href="{{ url_for('main.index') }}">{{ _('Back to my dashboard') }}</a>
+  </div>
+</div>
+{% endblock %}

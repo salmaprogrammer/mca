@@ -1,0 +1,19 @@
+{% macro render_field(field) %}
+  <label class="field">
+    <span class="field__label">{{ field.label.text }}</span>
+    {{ field(**kwargs) }}
+    {% for error in field.errors %}
+      <span class="field__error">{{ error }}</span>
+    {% endfor %}
+  </label>
+{% endmacro %}
+
+{% macro section_title(mark, title, sub=None) %}
+  <div class="section-title">
+    <div class="section-title__mark">{{ mark }}</div>
+    <div class="section-title__text">
+      <h1>{{ title }}</h1>
+      {% if sub %}<div class="section-title__sub">{{ sub }}</div>{% endif %}
+    </div>
+  </div>
+{% endmacro %}

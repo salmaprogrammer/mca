@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+{% from "partials/field.html" import section_title %}
+{% from "partials/whatsapp.html" import message_row %}
+{% block title %}{{ _('WhatsApp') }} — {{ center_name }}{% endblock %}
+
+{% block content %}
+  {{ section_title('💬', _('WhatsApp message centre'),
+                   _('Updates are sent by hand from your own WhatsApp.')) }}
+
+  {#
+    The brief is explicit that delivery failures must not be silent. With no
+    API the app never knows whether a message arrived, so it says exactly what
+    it does know — a person clicked send — and never more than that.
+  #}
+  <div class="flash flash--info" style="margin-block-end:16px;">
+    <strong>{{ _('How this works') }}</strong>
+    <div style="margin-block-start:4px;">
+      {{ _('Each button opens WhatsApp with the message already typed. You still have to press send there, then come back to this page. The log below records who opened it and when — it cannot tell you whether the family read it.') }}
+    </div>
+  </div>
+
+  {% if waiting %}
+    <div class="flash flash--error" style="margin-block-end:16px;">
+      <strong>{{ _('%(count)d update(s) prepared but never sent', count=waiting|length) }}</strong>
+      <ul style="margin:6px 0 0; padding-inline-start:18px;">
+        {% for message in waiting[:5] %}
+          <li>{{ message.student.full_name }} — {{ message.created_at|localdate }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+  {% endif %}
+
+  <form method="get" class="btn-row" style="margin-block-end:16px;">
+    <input type="date" name="date" value="{{ on }}" class="slot-row__time">
+    <button type="submit" class="btn btn--small btn--ghost">{{ _('Show') }}</button>
+  </form>
+
+  <form method="post" action="{{ url_for('assistant.whatsapp_prepare_all') }}"
+        style="margin-block-end:16px;">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <input type="hidden" name="date" value="{{ on }}">
+    <button type="submit" class="btn btn--ghost">{{ _('Prepare the daily update for everyone') }}</button>
+    <div class="muted" style="font-size:12px; margin-block-start:6px;">
+      {{ _('Writes each message and freezes its text. Skips anyone who already has one for this date, so running it twice is safe. Nothing is sent until you press the button on a card.') }}
+    </div>
+  </form>
+
+  <div class="card-grid">
+    {% for preview in previews %}
+      <div class="card">
+        <div class="row-list__item">
+          <span><strong>{{ preview.student.full_name }}</strong></span>
+          {% if preview.already %}
+            {#
+              "prepared" and "sent" mean different things here and the pill
+              must not blur them: prepared is text nobody has opened yet.
+            #}
+            <span class="pill {{ 'pill--good' if preview.already.actually_left_the_building else 'pill--warn' }}">
+              {% if preview.already.actually_left_the_building %}
+                {{ _('sent') }}
+              {% else %}
+                {{ _('prepared') }}
+              {% endif %}
+            </span>
+          {% endif %}
+        </div>
+        <div class="muted" style="font-size:12px;">
+          {% if preview.recipient %}
+            {{ _('To') }}: {{ preview.recipient.full_name }}
+            <span class="ltr">{{ preview.recipient.phone }}</span>
+          {% else %}
+            ⚠️ {{ _('No contact number on file.') }}
+          {% endif %}
+        </div>
+
+        {#
+          Shows the frozen text once one exists, not a fresh recomposition —
+          otherwise the assistant reads one message and sends another the
+          moment somebody edits today's homework.
+        #}
+        <pre class="whatsapp-preview">{{ preview.already.body if preview.already else preview.body }}</pre>
+
+        {#
+          Deliberately not target="_blank": a popup-blocked or embedded browser
+          silently downgrades a new-tab POST to a GET, which 405s with nothing
+          recorded and nothing opened. Same-tab is the boring, deterministic
+          path — on a phone the WhatsApp app takes over and this page is still
+          here underneath; on a desktop it is one Back away, and reloading is
+          what refreshes the pill anyway.
+        #}
+        {% if preview.recipient %}
+          <form method="post"
+                action="{{ url_for('assistant.whatsapp_open', student_id=preview.student.id) }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <input type="hidden" name="date" value="{{ on }}">
+            {% if preview.already and preview.already.actually_left_the_building %}
+              <input type="hidden" name="force" value="1">
+              <button type="submit" class="btn btn--small btn--ghost">{{ _('Send again on WhatsApp') }}</button>
+            {% else %}
+              <button type="submit" class="btn btn--small">{{ _('Send on WhatsApp') }}</button>
+            {% endif %}
+          </form>
+        {% endif %}
+      </div>
+    {% endfor %}
+  </div>
+
+  <div class="card" style="margin-block-start:20px;">
+    <div class="field__label">{{ _('Message log') }}</div>
+    {% if not messages %}
+      <div class="muted">{{ _('No messages yet.') }}</div>
+    {% endif %}
+    {% for message in messages %}
+      {{ message_row(message, show_student=True) }}
+    {% endfor %}
+  </div>
+{% endblock %}

@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% from "partials/field.html" import section_title %}
+{% from "partials/session_row.html" import session_line %}
+{% from "partials/teaching.html" import homework_list, feedback_list, material_list %}
+{% block title %}{{ course.display_title(get_locale()|string) }} — {{ center_name }}{% endblock %}
+
+{% block content %}
+  {% set locale = get_locale()|string %}
+  {{ section_title('📘', course.display_title(locale), course.name) }}
+
+  <div class="two-col">
+    <div class="card">
+      <div class="field__label">{{ _('Details') }}</div>
+      <div class="row-list__item">
+        <span>{{ _('Type') }}</span><span>{{ course.course_type.label(locale) }}</span>
+      </div>
+      <div class="row-list__item">
+        <span>{{ _('Schedule') }}</span>
+        <span>
+          {% for slot in course.slots_ordered_for_display() %}
+            <span class="pill">{{ slot.label(locale) }}</span>
+          {% endfor %}
+        </span>
+      </div>
+      <div class="row-list__item">
+        <span>{{ _('Sessions') }}</span>
+        <span>{{ course.course_type.total_sessions }}
+          {{ _('per month') if course.course_type.cycle.value == 'month' else _('per round') }}</span>
+      </div>
+      {% if course.description %}
+        <p class="muted" style="margin-block-start:10px;">{{ course.description }}</p>
+      {% endif %}
+    </div>
+
+    <div class="card">
+      <div class="field__label">{{ _('Students in this course') }}</div>
+      {% if not course.enrollments %}
+        <div class="muted">{{ _('Nobody enrolled yet.') }}</div>
+      {% endif %}
+      {% for enrollment in course.enrollments %}
+        <div class="row-list__item"><span>{{ enrollment.student.full_name }}</span></div>
+      {% endfor %}
+      <div class="btn-row" style="margin-block-start:12px;">
+        <a class="btn btn--small btn--ghost"
+           href="{{ url_for('teacher.course_materials', course_id=course.id) }}">
+          {{ _('Manage materials') }}
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-block-start:16px;">
+    <div class="row-list__item">
+      <span class="field__label" style="margin:0;">{{ _('Sessions') }}</span>
+      <span class="pill">{{ _('%(held)d of %(total)d held', held=held, total=total) }}</span>
+    </div>
+    {% if not sessions %}
+      <div class="muted">{{ _('No sessions scheduled yet.') }}</div>
+    {% endif %}
+    {% for session in sessions %}
+      {{ session_line(session, url_for('teacher.session_detail', session_id=session.id)) }}
+    {% endfor %}
+  </div>
+
+  <div class="two-col" style="margin-block-start:16px;">
+    <div class="card">
+      <div class="field__label">{{ _('Homework') }}</div>
+      {{ homework_list(homework) }}
+    </div>
+    <div class="card">
+      <div class="field__label">{{ _('Feedback') }}</div>
+      {{ feedback_list(feedback, show_student=True) }}
+    </div>
+  </div>
+
+  <div class="card" style="margin-block-start:16px;">
+    <div class="field__label">{{ _('Materials') }}</div>
+    {{ material_list(materials) }}
+  </div>
+{% endblock %}

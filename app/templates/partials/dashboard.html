@@ -1,0 +1,51 @@
+{# Shared dashboard pieces (sprint S7.1). #}
+
+{% macro stat(label, value, tone='', href=None, suffix=None) %}
+  <div class="card stat-card">
+    <div class="stat__label">{{ label }}</div>
+    <div class="stat__value {{ tone }}">
+      {{ value }}{% if suffix %} <span class="stat__suffix">{{ suffix }}</span>{% endif %}
+    </div>
+    {% if href %}
+      <a class="stat__link" href="{{ href }}">{{ _('View') }}</a>
+    {% endif %}
+  </div>
+{% endmacro %}
+
+
+{#
+  An action list is only shown when it has something in it. A dashboard full of
+  empty "nothing to do" panels trains people to stop reading it.
+#}
+{% macro action_panel(title, items, tone='warn') %}
+  {% if items %}
+    <div class="card action-panel action-panel--{{ tone }}">
+      <div class="field__label">{{ title }}</div>
+      {{ caller() }}
+    </div>
+  {% endif %}
+{% endmacro %}
+
+
+{% macro next_session_card(session, href=None) %}
+  {% set locale = get_locale()|string %}
+  <div class="card next-session">
+    <div class="stat__label">{{ _('Next session') }}</div>
+    {% if session %}
+      <div class="next-session__course">
+        {% if href %}
+          <a href="{{ href }}">{{ session.course.display_title(locale) }}</a>
+        {% else %}
+          {{ session.course.display_title(locale) }}
+        {% endif %}
+      </div>
+      <div class="next-session__when ltr">
+        {{ weekday_label(session.session_date.weekday(), locale) }}
+        {{ session.session_date }}
+        · {{ '%02d:%02d'|format(session.start_time.hour, session.start_time.minute) }}–{{ '%02d:%02d'|format(session.end_time.hour, session.end_time.minute) }}
+      </div>
+    {% else %}
+      <div class="muted">{{ _('Nothing scheduled.') }}</div>
+    {% endif %}
+  </div>
+{% endmacro %}

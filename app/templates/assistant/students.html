@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% from "partials/field.html" import render_field, section_title %}
+{% from "partials/credentials.html" import credential_block %}
+{% block title %}{{ _('Students') }} — {{ center_name }}{% endblock %}
+
+{% block content %}
+  {{ section_title('🎒', _('Students'), _('Creating a student creates or links the parent account in the same step')) }}
+
+  <div class="two-col">
+    <div class="card">
+      <form method="post" novalidate>
+        {{ form.hidden_tag() }}
+        {{ render_field(form.student_name) }}
+        {{ render_field(form.student_phone, class="ltr", inputmode="tel") }}
+        {{ render_field(form.parent_name) }}
+        {{ render_field(form.parent_phone, class="ltr", inputmode="tel") }}
+        {{ render_field(form.school) }}
+        {{ render_field(form.grade) }}
+        <button type="submit" class="btn">{{ _('Create student and parent accounts') }}</button>
+      </form>
+
+      <div class="muted" style="margin-block-start:12px;">
+        {{ _('If the family has only one phone number, enter it as the parent number. The parent account covers the child, and the student gets no separate login.') }}
+      </div>
+
+      {{ credential_block(created) }}
+    </div>
+
+    <div class="card">
+      <div style="font-weight:700;color:var(--navy);margin-block-end:8px;">
+        {{ _('Current students') }}
+      </div>
+      {% if not students %}
+        <div class="muted">{{ _('No students yet.') }}</div>
+      {% endif %}
+      {% for student in students %}
+        <div class="row-list__item">
+          <span>
+            {{ student.full_name }}
+            {% if not student.username %}
+              <span class="pill">{{ _('no login') }}</span>
+            {% endif %}
+            {% for parent in student.parents %}
+              <span class="muted">· {{ _('parent') }}: {{ parent.full_name }}</span>
+            {% endfor %}
+          </span>
+          <span class="btn-row">
+            <span class="muted ltr">{{ student.phone or '—' }}</span>
+            {% if student.username %}
+              <form class="inline-form" method="post"
+                    action="{{ url_for('assistant.regenerate_password', user_id=student.id) }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit" class="btn btn--small btn--ghost">{{ _('Issue new password') }}</button>
+              </form>
+            {% endif %}
+          </span>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+{% endblock %}

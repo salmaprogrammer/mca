@@ -1,0 +1,25 @@
+{%- set direction = text_direction() -%}
+<!doctype html>
+<html lang="{{ get_locale() }}" dir="{{ direction }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{{ center_name }}{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
+  {# Vendored, not a CDN: the centre may have flaky connectivity, and a CSP
+     that allows remote scripts is a needless hole (ground rule 6). #}
+  <script src="{{ url_for('static', filename='js/htmx.min.js') }}" defer></script>
+  {% block head %}{% endblock %}
+</head>
+<body>
+{% block body %}
+  <div class="app-shell">
+    {% include "partials/sidebar.html" %}
+    <main class="content">
+      {% include "partials/flashes.html" %}
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+{% endblock %}
+</body>
+</html>

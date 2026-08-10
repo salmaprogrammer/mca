@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% from "partials/field.html" import render_field, section_title %}
+{% from "partials/credentials.html" import credential_block %}
+{% block title %}{{ _('Teachers') }} — {{ center_name }}{% endblock %}
+
+{% block content %}
+  {{ section_title('👩‍🏫', _('Teachers'), _('Usernames and passwords are generated automatically')) }}
+
+  <div class="two-col">
+    <div class="card">
+      <form method="post" novalidate>
+        {{ form.hidden_tag() }}
+        {{ render_field(form.full_name) }}
+        {{ render_field(form.phone, class="ltr", inputmode="tel") }}
+        {{ render_field(form.subject) }}
+        <button type="submit" class="btn">{{ _('Create teacher account') }}</button>
+      </form>
+      {{ credential_block(created) }}
+    </div>
+
+    <div class="card">
+      <div style="font-weight:700;color:var(--navy);margin-block-end:8px;">
+        {{ _('Current teachers') }}
+      </div>
+      {% if not teachers %}
+        <div class="muted">{{ _('No teachers yet.') }}</div>
+      {% endif %}
+      {% for teacher in teachers %}
+        <div class="row-list__item">
+          <span>
+            {{ teacher.full_name }}
+            {% if teacher.teacher_profile and teacher.teacher_profile.subject %}
+              <span class="muted">· {{ teacher.teacher_profile.subject }}</span>
+            {% endif %}
+          </span>
+          <span class="btn-row">
+            <span class="muted ltr">{{ teacher.phone }}</span>
+            <form class="inline-form" method="post"
+                  action="{{ url_for('assistant.regenerate_password', user_id=teacher.id) }}">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+              <button type="submit" class="btn btn--small btn--ghost">{{ _('Issue new password') }}</button>
+            </form>
+          </span>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+{% endblock %}

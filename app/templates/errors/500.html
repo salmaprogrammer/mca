@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}500 — {{ center_name }}{% endblock %}
+{% block body %}
+<div class="error-page">
+  <div>
+    <div class="error-page__code">500</div>
+    <p class="muted">{{ _('Something went wrong. The centre has been notified.') }}</p>
+    <a class="btn btn--ghost" href="{{ url_for('main.index') }}">{{ _('Back to my dashboard') }}</a>
+  </div>
+</div>
+{% endblock %}

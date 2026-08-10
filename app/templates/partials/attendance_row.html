@@ -1,0 +1,25 @@
+{#
+  Attendance controls for one person in one session.
+
+  `post_url` differs between the staff and teacher blueprints, so the caller
+  passes it — the markup and the status set stay in one place.
+#}
+{% macro status_pill(status, checked_in_at=None) %}
+  {% set tone = {'present': 'pill--good', 'late': 'pill--warn',
+                 'absent': 'pill--bad', 'excused': 'pill--gold'} %}
+  <span class="pill {{ tone.get(status.value, '') }}">
+    {{ label_for(status) }}{% if checked_in_at %} · {{ checked_in_at|localtime }}{% endif %}
+  </span>
+{% endmacro %}
+
+{% macro mark_buttons(post_url, statuses, current=None) %}
+  <form class="btn-row attendance-actions" method="post" action="{{ post_url }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    {% for status in statuses %}
+      <button type="submit" name="status" value="{{ status.value }}"
+              class="btn btn--small {{ 'btn--ghost' if not current or current != status else '' }}">
+        {{ label_for(status) }}
+      </button>
+    {% endfor %}
+  </form>
+{% endmacro %}

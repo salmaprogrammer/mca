@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% from "partials/field.html" import section_title %}
+{% from "partials/course_card.html" import course_card %}
+{% from "partials/dashboard.html" import next_session_card, stat %}
+{% block title %}{{ _('My dashboard') }} — {{ center_name }}{% endblock %}
+
+{% block content %}
+  {% set locale = get_locale()|string %}
+  {{ section_title('📘', _('My dashboard'), current_user.full_name) }}
+
+  <div class="stat-grid">
+    {{ stat(_('Sessions today'), dash.sessions_today|length) }}
+    {{ stat(_('My courses'), dash.courses|length) }}
+    {{ stat(_('My students'), dash.students|length) }}
+    {{ next_session_card(
+         dash.next_session,
+         href=url_for('teacher.session_detail', session_id=dash.next_session.id)
+              if dash.next_session else None) }}
+  </div>
+
+  <div class="card" style="margin-block-end:20px;">
+    <div class="field__label">{{ _("Today's sessions") }}</div>
+    {% if not dash.sessions_today %}
+      <div class="muted">{{ _('No sessions today.') }}</div>
+    {% endif %}
+    {% for session in dash.sessions_today %}
+      <div class="row-list__item">
+        <span>
+          <a href="{{ url_for('teacher.session_detail', session_id=session.id) }}">
+            {{ session.course.display_title(locale) }}
+          </a>
+          <span class="muted ltr">
+            · {{ '%02d:%02d'|format(session.start_time.hour, session.start_time.minute) }}
+          </span>
+        </span>
+        <span class="muted">
+          {{ session.attendance|length }}/{{ session.course.enrollments|length }}
+          {{ _('marked') }}
+        </span>
+      </div>
+    {% endfor %}
+  </div>
+
+  <div class="field__label">{{ _('My weekly calendar') }}</div>
+  <div class="week-grid">
+    {% for weekday, entries in dash.week %}
+      <div class="card week-grid__day">
+        <div class="week-grid__name">{{ weekday_label(weekday, locale) }}</div>
+        {% if not entries %}
+          <div class="muted" style="font-size:11.5px;">—</div>
+        {% endif %}
+        {% for slot, course in entries %}
+          <a class="week-grid__slot"
+             href="{{ url_for('teacher.course_detail', course_id=course.id) }}">
+            <span class="ltr">{{ '%02d:%02d'|format(slot.start_time.hour, slot.start_time.minute) }}</span>
+            {{ course.display_title(locale) }}
+          </a>
+        {% endfor %}
+      </div>
+    {% endfor %}
+  </div>
+  {#
+    Read-only on purpose. The teacher terms route every schedule change through
+    the assistant with 24 hours' notice, so a teacher silently rewriting their
+    own week here would contradict the agreement they signed.
+  #}
+  <div class="muted" style="font-size:12px; margin-block-start:8px;">
+    {{ _('To change a time, contact the assistant — schedule changes go through them.') }}
+  </div>
+
+  <div class="field__label" style="margin-block-start:22px;">{{ _('My courses') }}</div>
+  {% if not dash.courses %}
+    <div class="card"><div class="muted">{{ _('No courses assigned to you yet.') }}</div></div>
+  {% endif %}
+  <div class="card-grid">
+    {% for course in dash.courses %}
+      {{ course_card(
+           course,
+           href=url_for('teacher.course_detail', course_id=course.id),
+           cover_endpoint='teacher.course_cover') }}
+    {% endfor %}
+  </div>
+
+  <div class="card" style="margin-block-start:22px;">
+    <div class="field__label">{{ _('My students') }}</div>
+    {% if not dash.students %}
+      <div class="muted">{{ _('No students yet — students appear here once they are enrolled in your courses.') }}</div>
+    {% endif %}
+    {% for student in dash.students %}
+      <div class="row-list__item"><span>{{ student.full_name }}</span></div>
+    {% endfor %}
+  </div>
+{% endblock %}

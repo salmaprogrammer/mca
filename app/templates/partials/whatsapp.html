@@ -1,0 +1,31 @@
+{#
+  One row of the message log.
+
+  "prepared" and "sent" are not shades of the same thing: prepared is text
+  nobody has opened yet, and a family has heard nothing. Even "sent" only
+  means an assistant opened it in WhatsApp — see models/messaging.py.
+#}
+{% macro message_status_pill(message) %}
+  {% set tone = {'prepared': 'pill--warn', 'sent': 'pill--good'} %}
+  <span class="pill {{ tone.get(message.status.value, '') }}">
+    {{ label_for(message.status) }}
+  </span>
+{% endmacro %}
+
+{% macro message_row(message, show_student=False) %}
+  <div class="row-list__item teaching-item">
+    <span>
+      {% if show_student %}<strong>{{ message.student.full_name }}</strong>{% endif %}
+      <div class="muted ltr" style="font-size:12px;">
+        {{ message.created_at|localdate }} {{ message.created_at|localtime }}
+        · {{ message.to_phone }}
+      </div>
+      {% if message.sent_by %}
+        <div class="muted" style="font-size:12px;">
+          {{ _('Sent by %(name)s', name=message.sent_by.full_name) }}
+        </div>
+      {% endif %}
+    </span>
+    {{ message_status_pill(message) }}
+  </div>
+{% endmacro %}

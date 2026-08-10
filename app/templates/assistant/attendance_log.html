@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% from "partials/field.html" import section_title %}
+{% from "partials/attendance_row.html" import status_pill %}
+{% from "partials/session_row.html" import session_status_pill %}
+{% block title %}{{ _('Attendance log') }} — {{ center_name }}{% endblock %}
+
+{% block content %}
+  {% set locale = get_locale()|string %}
+  {{ section_title('📊', _('Attendance log'), _('Filter by course, teacher or date range')) }}
+
+  <div class="card" style="margin-block-end:16px;">
+    <form method="get" class="filter-row">
+      <label class="field">
+        <span class="field__label">{{ _('Course') }}</span>
+        <select name="course_id">
+          <option value="">{{ _('All courses') }}</option>
+          {% for course in courses %}
+            <option value="{{ course.id }}"
+              {% if selected_course_id == course.id %}selected{% endif %}>
+              {{ course.display_title(locale) }} — {{ course.name }}
+            </option>
+          {% endfor %}
+        </select>
+      </label>
+      <label class="field">
+        <span class="field__label">{{ _('Teacher') }}</span>
+        <select name="teacher_id">
+          <option value="">{{ _('All teachers') }}</option>
+          {% for teacher in teachers %}
+            <option value="{{ teacher.id }}"
+              {% if selected_teacher_id == teacher.id %}selected{% endif %}>
+              {{ teacher.full_name }}
+            </option>
+          {% endfor %}
+        </select>
+      </label>
+      <label class="field">
+        <span class="field__label">{{ _('From') }}</span>
+        <input type="date" name="since" value="{{ since or '' }}">
+      </label>
+      <label class="field">
+        <span class="field__label">{{ _('To') }}</span>
+        <input type="date" name="until" value="{{ until or '' }}">
+      </label>
+      <button type="submit" class="btn btn--small">{{ _('Apply') }}</button>
+    </form>
+  </div>
+
+  {% if not sessions %}
+    <div class="card"><div class="muted">{{ _('No sessions match these filters.') }}</div></div>
+  {% endif %}
+
+  {% for session in sessions %}
+    <div class="card" style="margin-block-end:10px;">
+      <div class="row-list__item">
+        <span>
+          <a href="{{ url_for('assistant.session_detail', session_id=session.id) }}">
+            <strong>{{ session.course.display_title(locale) }}</strong>
+          </a>
+          <div class="muted ltr">
+            {{ session.session_date }}
+            {{ '%02d:%02d'|format(session.start_time.hour, session.start_time.minute) }}
+            · {{ session.teacher.full_name if session.teacher else '—' }}
+          </div>
+        </span>
+        <span class="btn-row">
+          {% if session.teacher_status %}
+            <span class="muted">{{ _('Teacher') }}:</span>
+            {{ status_pill(session.teacher_status, session.teacher_checked_in_at) }}
+          {% endif %}
+          {{ session_status_pill(session) }}
+        </span>
+      </div>
+
+      {% for record in session.attendance %}
+        <div class="row-list__item">
+          <span class="muted">{{ record.student.full_name }}</span>
+          {{ status_pill(record.status, record.checked_in_at) }}
+        </div>
+      {% endfor %}
+    </div>
+  {% endfor %}
+{% endblock %}

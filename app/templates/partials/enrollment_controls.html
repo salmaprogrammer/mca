@@ -1,0 +1,54 @@
+{#
+  Staff controls for one enrolment: booking status, payment status, amount.
+
+  Three small forms rather than one: each posts to a service function that
+  audits exactly what changed, so the audit trail reads "payment_changed"
+  rather than a blanket "updated" hiding which field moved.
+#}
+{% macro enrollment_controls(enrollment, booking_statuses, payment_statuses, next=None) %}
+  <div class="enrollment-controls">
+    <form class="btn-row" method="post"
+          action="{{ url_for('assistant.enrollment_booking', enrollment_id=enrollment.id) }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      {% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
+      {% for status in booking_statuses %}
+        {# Trial is only offerable when the course allows it (sprint S5.3). #}
+        {% if status.value != 'trial' or enrollment.course.trial_enabled %}
+          <button type="submit" name="status" value="{{ status.value }}"
+                  class="btn btn--small {{ '' if enrollment.booking_status == status else 'btn--ghost' }}">
+            {{ label_for(status) }}
+          </button>
+        {% endif %}
+      {% endfor %}
+    </form>
+
+    <form class="btn-row" method="post"
+          action="{{ url_for('assistant.enrollment_payment', enrollment_id=enrollment.id) }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      {% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
+      {% for status in payment_statuses %}
+        <button type="submit" name="status" value="{{ status.value }}"
+                class="btn btn--small {{ '' if enrollment.payment_status == status else 'btn--ghost' }}">
+          {{ label_for(status) }}
+        </button>
+      {% endfor %}
+    </form>
+
+    <form class="btn-row" method="post"
+          action="{{ url_for('assistant.enrollment_amount', enrollment_id=enrollment.id) }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      {% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
+      <input type="number" step="0.01" min="0" name="amount_due" class="amount-input"
+             value="{{ enrollment.amount_due|round(2) }}">
+      <button type="submit" class="btn btn--small btn--ghost">{{ _('Save amount') }}</button>
+    </form>
+  </div>
+{% endmacro %}
+
+
+{% macro payment_pill(enrollment) %}
+  <span class="pill {{ 'pill--good' if enrollment.payment_status.value == 'paid' else 'pill--bad' }}">
+    {{ label_for(enrollment.payment_status) }}
+    {%- if enrollment.paid_at %} · {{ enrollment.paid_at|localdate }}{% endif %}
+  </span>
+{% endmacro %}

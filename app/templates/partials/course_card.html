@@ -1,0 +1,76 @@
+{#
+  Shared course card.
+
+  Open question 3: the course *type* is the product, so it leads. `display_title`
+  falls back to the course's own name for the one type whose label is a pricing
+  package with no subject in it.
+#}
+{% macro course_card(course, href=None, cover_endpoint=None) %}
+  {% set locale = get_locale()|string %}
+  <div class="card course-card">
+    {% if course.cover_image_path and cover_endpoint %}
+      <img class="course-card__cover"
+           src="{{ url_for(cover_endpoint, course_id=course.id) }}"
+           alt="">
+    {% endif %}
+
+    <div class="course-card__head">
+      <div>
+        <div class="course-card__title">
+          {% if href %}
+            <a href="{{ href }}">{{ course.display_title(locale) }}</a>
+          {% else %}
+            {{ course.display_title(locale) }}
+          {% endif %}
+        </div>
+        {% if course.course_type.has_own_subject %}
+          <div class="muted">{{ course.name }}</div>
+        {% endif %}
+      </div>
+      {% if course.trial_enabled %}
+        <span class="pill pill--gold">{{ _('Trial available') }}</span>
+      {% endif %}
+    </div>
+
+    <div class="course-card__meta">
+      {#
+        One parameterised string per case, not concatenated fragments: joining
+        pieces leaves bare numerals in the text run, which the bidi algorithm
+        reorders (2×/week renders as ×2/week in Arabic), and it gives the
+        translator no way to reorder the sentence.
+      #}
+      {% if course.course_type.cycle.value == 'month' %}
+        {{ _('%(per_week)d sessions per week · %(total)d per month',
+              per_week=course.course_type.sessions_per_week,
+              total=course.course_type.total_sessions) }}
+      {% else %}
+        {{ _('%(per_week)d sessions per week · %(total)d per round',
+              per_week=course.course_type.sessions_per_week,
+              total=course.course_type.total_sessions) }}
+      {% endif %}
+    </div>
+
+    {% if course.teacher %}
+      <div class="course-card__meta">{{ _('Teacher') }}: {{ course.teacher.full_name }}</div>
+    {% endif %}
+
+    <div class="course-card__slots">
+      {% for slot in course.slots_ordered_for_display() %}
+        <span class="pill">{{ slot.label(locale) }}</span>
+      {% endfor %}
+    </div>
+
+    {% if course.description %}
+      <p class="muted course-card__desc">{{ course.description }}</p>
+    {% endif %}
+
+    <div class="course-card__foot">
+      <span>{{ course.enrollments|length }} {{ _('enrolled') }}</span>
+      <span>{{ course.price_egp|round(0, 'floor')|int }} {{ _('EGP') }}</span>
+    </div>
+
+    {# Extra content comes from a {% call %} block, never an HTML string —
+       building markup in Python/Jinja strings is how autoescaping gets lost. #}
+    {% if caller is defined %}{{ caller() }}{% endif %}
+  </div>
+{% endmacro %}
