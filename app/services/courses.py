@@ -242,7 +242,7 @@ def archive_course(actor: User, course: Course) -> None:
         after=audit.snapshot(course, ["status"]),
     )
     db.session.commit()
-    def _course_delete_blockers(course: Course) -> list[str]:
+def _course_delete_blockers(course: Course) -> list[str]:
     """Reasons a hard delete would destroy real history."""
     blockers: list[str] = []
     if course.enrollments:

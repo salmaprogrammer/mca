@@ -178,7 +178,7 @@ def course_archive(course_id: int):
     course_service.archive_course(current_user, course)
     flash(_("Course archived."), "success")
     return redirect(url_for("assistant.courses"))
-    @bp.route("/courses/<int:course_id>/delete", methods=["POST"])
+@bp.route("/courses/<int:course_id>/delete", methods=["POST"])
 @require_staff
 def course_delete(course_id: int):
     course = get_course_or_404(current_user, course_id, include_archived=True)
