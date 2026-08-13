@@ -10,7 +10,7 @@ from app.models.enums import Role
 from app.models.user import ParentLink, User
 from app.services import accounts as accounts_service
 from app.services.auth import PhoneNumberError, authenticate
-from tests.conftest import make_user
+from tests.conftest import login, make_user
 
 
 class TestAssistantCreation:
@@ -153,6 +153,41 @@ class TestFamilyCreation:
         with pytest.raises(accounts_service.AccountError):
             accounts_service.create_student_with_parent(assistant, student_name="Ghost")
 
+    def test_same_name_under_same_parent_is_refused(self, app, db, assistant):
+        """Guards the "created twice" bug: rapid double-submit or a browser
+        refresh would otherwise silently duplicate a family student, since a
+        shared-phone student has no phone to collide on.
+        """
+        accounts_service.create_student_with_parent(
+            assistant,
+            student_name="Omar Wael",
+            parent_name="Wael",
+            parent_phone="01055550001",
+        )
+        with pytest.raises(accounts_service.AccountError) as exc:
+            accounts_service.create_student_with_parent(
+                assistant,
+                student_name="  omar   wael  ",  # whitespace + case must still match
+                parent_phone="01055550001",
+            )
+        assert "Omar" in str(exc.value) or "omar" in str(exc.value)
+
+    def test_a_second_child_with_a_distinct_name_still_works(self, app, db, assistant):
+        """The duplicate guard must not block real siblings."""
+        accounts_service.create_student_with_parent(
+            assistant,
+            student_name="Omar Wael",
+            parent_name="Wael",
+            parent_phone="01055550002",
+        )
+        result = accounts_service.create_student_with_parent(
+            assistant,
+            student_name="Youssef Wael",
+            parent_phone="01055550002",
+        )
+        by_label = {a.label: a for a in result.accounts}
+        assert by_label["Student"].user.full_name == "Youssef Wael"
+
 
 class TestCredentialLifecycle:
     def test_regenerating_replaces_the_old_password(self, app, db, admin):
@@ -184,6 +219,199 @@ class TestCredentialLifecycle:
         accounts_service.set_active(admin, user, False)
 
         assert authenticate(user.username, password) is None
+
+
+class TestCreationRouteIsPRG:
+    """Post-Redirect-Get is the real fix for the double-submit duplicate bug:
+    a refresh on the success page must not replay the POST.
+    """
+
+    def test_student_post_redirects_and_credentials_show_after_redirect(
+        self, app, db, admin
+    ):
+        client = app.test_client()
+        login(client, admin)
+
+        response = client.post(
+            "/assistant/people/students",
+            data={
+                "student_name": "Omar Wael",
+                "student_phone": "",
+                "parent_name": "Wael",
+                "parent_phone": "01055550100",
+                "school": "",
+                "grade": "",
+            },
+            follow_redirects=False,
+        )
+        assert response.status_code == 302
+        assert "/assistant/people/students" in response.headers["Location"]
+
+        follow = client.get(response.headers["Location"])
+        assert follow.status_code == 200
+        body = follow.get_data(as_text=True)
+        assert "Omar Wael" in body
+
+    def test_refreshing_the_success_page_does_not_create_a_duplicate(
+        self, app, db, admin
+    ):
+        client = app.test_client()
+        login(client, admin)
+
+        client.post(
+            "/assistant/people/students",
+            data={
+                "student_name": "Omar Wael",
+                "student_phone": "",
+                "parent_name": "Wael",
+                "parent_phone": "01055550101",
+                "school": "",
+                "grade": "",
+            },
+            follow_redirects=True,
+        )
+        client.get("/assistant/people/students")  # simulate F5
+
+        omars = db.session.scalars(
+            _select_users_named("Omar Wael")
+        ).all()
+        assert len(omars) == 1
+
+    def test_teacher_post_redirects_too(self, app, db, admin):
+        client = app.test_client()
+        login(client, admin)
+
+        response = client.post(
+            "/assistant/people/teachers",
+            data={
+                "full_name": "Ahmed Fathy",
+                "phone": "01055550102",
+                "subject": "Physics",
+            },
+            follow_redirects=False,
+        )
+        assert response.status_code == 302
+        assert "/assistant/people/teachers" in response.headers["Location"]
+
+
+def _select_users_named(name: str):
+    """Small helper for the PRG tests above."""
+    from sqlalchemy import select as _select
+
+    return _select(User).where(User.full_name == name)
+
+
+class TestProfileEditing:
+    def test_updating_a_students_name_and_school(self, app, db, admin):
+        result = accounts_service.create_student_with_parent(
+            admin,
+            student_name="Omar Wael",
+            parent_name="Wael",
+            parent_phone="01055551201",
+            school="Nasr City School",
+        )
+        student = {a.label: a for a in result.accounts}["Student"].user
+
+        accounts_service.update_user_profile(
+            admin,
+            student,
+            full_name="Omar Ahmed Wael",
+            school="Nozha School",
+        )
+        db.session.refresh(student)
+        assert student.full_name == "Omar Ahmed Wael"
+        assert student.student_profile.school == "Nozha School"
+
+    def test_taking_a_username_that_belongs_to_another_account_is_refused(
+        self, app, db, admin
+    ):
+        first = accounts_service.create_assistant(admin, "Mona", "01055551301")
+        accounts_service.update_user_profile(
+            admin, first.accounts[0].user, username="mona.a"
+        )
+        second = accounts_service.create_assistant(admin, "Mariam", "01055551302")
+        with pytest.raises(accounts_service.AccountError) as exc:
+            accounts_service.update_user_profile(
+                admin, second.accounts[0].user, username="mona.a"
+            )
+        assert "already taken" in str(exc.value).lower() or "taken" in str(exc.value).lower()
+
+    def test_a_username_lets_the_person_sign_in_with_it(self, app, db, admin):
+        result = accounts_service.create_assistant(admin, "Mona", "01055551401")
+        user = result.accounts[0].user
+        password = result.accounts[0].plaintext_password
+
+        accounts_service.update_user_profile(admin, user, username="mona.a")
+        assert authenticate("mona.a", password) is not None
+        assert authenticate("MONA.A", password) is not None  # case-insensitive
+        assert authenticate("01055551401", password) is not None  # phone still works
+
+
+class TestSafeDelete:
+    def test_a_fresh_duplicate_student_is_hard_deleted(self, app, db, admin):
+        result = accounts_service.create_student_with_parent(
+            admin,
+            student_name="Ghost Twin",
+            parent_name="Family",
+            parent_phone="01055551501",
+        )
+        student = {a.label: a for a in result.accounts}["Student"].user
+        student_id = student.id
+
+        outcome = accounts_service.delete_user_safely(admin, student)
+        assert outcome == "deleted"
+        assert db.session.get(User, student_id) is None
+
+    def test_a_student_with_history_is_deactivated_not_deleted(
+        self, app, db, admin, seeded_terms, seeded_course_types
+    ):
+        from tests.conftest import make_course, make_user
+        from app.services import enrollments as enrollment_service
+
+        teacher = make_user(Role.TEACHER, phone="+201055551601")
+        course = make_course(admin, teacher=teacher, name="Nov")
+        student = make_user(Role.STUDENT, phone="+201055551602")
+        enrollment_service.enroll(admin, course, student)
+
+        outcome = accounts_service.delete_user_safely(admin, student)
+        assert outcome == "deactivated"
+        db.session.refresh(student)
+        assert student.id is not None
+        assert student.is_active is False
+
+    def test_deleting_your_own_account_is_refused(self, app, db, admin):
+        with pytest.raises(accounts_service.AccountError):
+            accounts_service.delete_user_safely(admin, admin)
+
+    def test_delete_records_who_deleted_and_survives_the_user_row(
+        self, app, db, admin
+    ):
+        result = accounts_service.create_student_with_parent(
+            admin,
+            student_name="To Delete",
+            parent_name="Parent",
+            parent_phone="01055551701",
+        )
+        student = {a.label: a for a in result.accounts}["Student"].user
+        accounts_service.delete_user_safely(admin, student)
+
+        entry = db.session.scalar(
+            _select_audit_by_action_entity("account.deleted", student.id)
+        )
+        assert entry is not None
+        assert entry.actor_id == admin.id
+        assert entry.before_json["full_name"] == "To Delete"
+
+
+def _select_audit_by_action_entity(action: str, entity_id: int):
+    from sqlalchemy import select as _select
+    from app.models.audit import AuditLog
+
+    return (
+        _select(AuditLog)
+        .where(AuditLog.action == action)
+        .where(AuditLog.entity_id == str(entity_id))
+    )
 
 
 class TestAuditing:

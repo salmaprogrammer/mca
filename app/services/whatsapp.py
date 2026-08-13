@@ -159,8 +159,10 @@ def build_daily_summary(student: User, on: date | None = None, locale: str | Non
 def _local_time(value) -> str:
     from zoneinfo import ZoneInfo
 
+    from app.formatting import format_time_12h
+
     tz = ZoneInfo(current_app.config["TIMEZONE"])
-    return f"{value.astimezone(tz):%H:%M}"
+    return format_time_12h(value.astimezone(tz))
 
 
 # ----------------------------------------------------------------- sending

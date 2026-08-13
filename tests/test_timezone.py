@@ -122,12 +122,16 @@ class TestInstantsAreAwareUtc:
 
 class TestCairoDisplay:
     def test_utc_renders_as_cairo_local_time(self, app):
-        """16:00 UTC in summer is 18:00 in Cairo (UTC+3 under DST)."""
+        """16:00 UTC in summer is 18:00 in Cairo (UTC+3 under DST).
+
+        Rendered 12-hour with the active locale's AM/PM marker.
+        """
         from app.blueprints.assistant.session_routes import localtime_filter
+        from app.formatting import format_time_12h
 
         summer = datetime(2026, 7, 1, 16, 0, tzinfo=UTC)
         with app.test_request_context():
-            assert localtime_filter(summer) == f"{summer.astimezone(CAIRO):%H:%M}"
+            assert localtime_filter(summer) == format_time_12h(summer.astimezone(CAIRO))
 
     def test_winter_and_summer_differ_by_an_hour(self, app):
         """Proves the offset is looked up, not hardcoded to +2."""

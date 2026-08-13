@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-08-09 10:14+0300\n"
+"POT-Creation-Date: 2026-08-13 14:58+0300\n"
 "PO-Revision-Date: 2026-08-06 01:19+0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -104,7 +104,7 @@ msgstr ""
 #: app/templates/assistant/attendance_log.html:26
 #: app/templates/assistant/attendance_log.html:68
 #: app/templates/assistant/course_detail.html:44
-#: app/templates/assistant/session_detail.html:63
+#: app/templates/assistant/session_detail.html:77
 #: app/templates/partials/course_card.html:54
 #: app/templates/portal/course_detail.html:20
 msgid "Teacher"
@@ -131,7 +131,6 @@ msgid "Full name"
 msgstr ""
 
 #: app/blueprints/admin/forms.py:10 app/blueprints/assistant/forms.py:22
-#: app/blueprints/auth/forms.py:11
 msgid "Phone number"
 msgstr ""
 
@@ -143,12 +142,13 @@ msgstr ""
 msgid "Assistant account created."
 msgstr ""
 
-#: app/blueprints/admin/routes.py:47 app/blueprints/assistant/routes.py:50
-#: app/blueprints/assistant/routes.py:82
+#: app/blueprints/admin/routes.py:47 app/blueprints/assistant/routes.py:93
+#: app/blueprints/assistant/routes.py:129
+#: app/blueprints/assistant/routes.py:200
 msgid "That phone number is not valid. Use the format 01xxxxxxxxx."
 msgstr ""
 
-#: app/blueprints/admin/routes.py:76 app/blueprints/assistant/routes.py:109
+#: app/blueprints/admin/routes.py:76 app/blueprints/assistant/routes.py:261
 msgid "New password issued"
 msgstr ""
 
@@ -252,11 +252,11 @@ msgstr ""
 msgid "Amount updated."
 msgstr ""
 
-#: app/blueprints/assistant/forms.py:21
+#: app/blueprints/assistant/forms.py:21 app/blueprints/assistant/forms.py:67
 msgid "Teacher name"
 msgstr ""
 
-#: app/blueprints/assistant/forms.py:24
+#: app/blueprints/assistant/forms.py:24 app/blueprints/assistant/forms.py:73
 msgid "Subject"
 msgstr ""
 
@@ -265,7 +265,7 @@ msgstr ""
 msgid "Create teacher account"
 msgstr ""
 
-#: app/blueprints/assistant/forms.py:38
+#: app/blueprints/assistant/forms.py:38 app/blueprints/assistant/forms.py:55
 msgid "Student name"
 msgstr ""
 
@@ -273,7 +273,7 @@ msgstr ""
 msgid "Student phone (optional)"
 msgstr ""
 
-#: app/blueprints/assistant/forms.py:42
+#: app/blueprints/assistant/forms.py:42 app/blueprints/assistant/forms.py:83
 msgid "Parent name"
 msgstr ""
 
@@ -294,12 +294,59 @@ msgstr ""
 msgid "Create student and parent accounts"
 msgstr ""
 
-#: app/blueprints/assistant/routes.py:47
+#: app/blueprints/assistant/forms.py:56
+msgid "Phone (leave blank to remove login)"
+msgstr ""
+
+#: app/blueprints/assistant/forms.py:58 app/blueprints/assistant/forms.py:69
+#: app/blueprints/assistant/forms.py:85
+msgid "Username (optional)"
+msgstr ""
+
+#: app/blueprints/assistant/forms.py:61
+msgid "School"
+msgstr ""
+
+#: app/blueprints/assistant/forms.py:62
+msgid "Grade"
+msgstr ""
+
+#: app/blueprints/assistant/forms.py:63 app/blueprints/assistant/forms.py:77
+#: app/blueprints/assistant/forms.py:88
+#: app/templates/assistant/person_edit.html:25
+msgid "Save changes"
+msgstr ""
+
+#: app/blueprints/assistant/forms.py:68 app/blueprints/assistant/forms.py:84
+msgid "Phone"
+msgstr ""
+
+#: app/blueprints/assistant/routes.py:98
 msgid "Teacher account created."
 msgstr ""
 
-#: app/blueprints/assistant/routes.py:79
+#: app/blueprints/assistant/routes.py:134
 msgid "Student created."
+msgstr ""
+
+#: app/blueprints/assistant/routes.py:185
+msgid "This account type is edited elsewhere."
+msgstr ""
+
+#: app/blueprints/assistant/routes.py:206
+msgid "Changes saved."
+msgstr ""
+
+#: app/blueprints/assistant/routes.py:225
+msgid "This account type cannot be deleted here."
+msgstr ""
+
+#: app/blueprints/assistant/routes.py:235
+msgid "Account deleted."
+msgstr ""
+
+#: app/blueprints/assistant/routes.py:238
+msgid "This account has history and was deactivated instead of deleted."
 msgstr ""
 
 #: app/blueprints/assistant/session_routes.py:53
@@ -331,11 +378,28 @@ msgstr ""
 msgid "Session cancelled."
 msgstr ""
 
-#: app/blueprints/assistant/session_routes.py:167
+#: app/blueprints/assistant/session_routes.py:161
+msgid "Session cancellation reversed."
+msgstr ""
+
+#: app/blueprints/assistant/session_routes.py:178
+msgid "Choose a new date."
+msgstr ""
+
+#: app/blueprints/assistant/session_routes.py:190
+#, python-format
+msgid "This session and %(count)d after it were shifted."
+msgstr ""
+
+#: app/blueprints/assistant/session_routes.py:196
+msgid "The date was already what you selected."
+msgstr ""
+
+#: app/blueprints/assistant/session_routes.py:213
 msgid "Enter a new date and time."
 msgstr ""
 
-#: app/blueprints/assistant/session_routes.py:174
+#: app/blueprints/assistant/session_routes.py:220
 msgid "Session moved."
 msgstr ""
 
@@ -376,48 +440,52 @@ msgid ""
 "sending from WhatsApp."
 msgstr ""
 
-#: app/blueprints/auth/forms.py:13
+#: app/blueprints/auth/forms.py:11
+msgid "Phone or username"
+msgstr ""
+
+#: app/blueprints/auth/forms.py:16
 msgid "Password"
 msgstr ""
 
-#: app/blueprints/auth/forms.py:14 app/templates/auth/login.html:3
+#: app/blueprints/auth/forms.py:17 app/templates/auth/login.html:3
 #: app/templates/auth/login.html:20
 msgid "Sign in"
 msgstr ""
 
-#: app/blueprints/auth/forms.py:18
+#: app/blueprints/auth/forms.py:21
 msgid "Current password"
 msgstr ""
 
-#: app/blueprints/auth/forms.py:20
+#: app/blueprints/auth/forms.py:23
 msgid "New password"
 msgstr ""
 
-#: app/blueprints/auth/forms.py:23
+#: app/blueprints/auth/forms.py:26
 msgid "Use at least 8 characters."
 msgstr ""
 
-#: app/blueprints/auth/forms.py:27
+#: app/blueprints/auth/forms.py:30
 msgid "Confirm new password"
 msgstr ""
 
-#: app/blueprints/auth/forms.py:28
+#: app/blueprints/auth/forms.py:31
 msgid "Passwords do not match."
 msgstr ""
 
-#: app/blueprints/auth/forms.py:30 app/templates/auth/change_password.html:27
+#: app/blueprints/auth/forms.py:33 app/templates/auth/change_password.html:27
 msgid "Save password"
 msgstr ""
 
-#: app/blueprints/auth/forms.py:35 app/templates/auth/terms.html:30
+#: app/blueprints/auth/forms.py:38 app/templates/auth/terms.html:30
 msgid "I agree to the terms and conditions"
 msgstr ""
 
-#: app/blueprints/auth/forms.py:36 app/blueprints/auth/routes.py:133
+#: app/blueprints/auth/forms.py:39 app/blueprints/auth/routes.py:133
 msgid "You must agree before continuing."
 msgstr ""
 
-#: app/blueprints/auth/forms.py:38 app/templates/auth/terms.html:33
+#: app/blueprints/auth/forms.py:41 app/templates/auth/terms.html:33
 msgid "Continue to dashboard"
 msgstr ""
 
@@ -503,11 +571,11 @@ msgstr ""
 msgid "The amount cannot be negative."
 msgstr ""
 
-#: app/services/scheduling.py:123
+#: app/services/scheduling.py:125
 msgid "This teacher"
 msgstr ""
 
-#: app/services/scheduling.py:125
+#: app/services/scheduling.py:127
 #, python-format
 msgid ""
 "%(teacher)s already teaches «%(course)s» on %(day)s "
@@ -515,7 +583,7 @@ msgid ""
 "%(new_start)s–%(new_end)s."
 msgstr ""
 
-#: app/services/scheduling.py:166
+#: app/services/scheduling.py:170
 #, python-format
 msgid ""
 "This course has two sessions that overlap on %(day)s: "
@@ -538,11 +606,27 @@ msgstr ""
 msgid "This session is already cancelled."
 msgstr ""
 
-#: app/services/sessions.py:151
+#: app/services/sessions.py:144
+msgid "This session is not cancelled, so there is nothing to reverse."
+msgstr ""
+
+#: app/services/sessions.py:175
+msgid "A cancelled session cannot be shifted. Restore it first, then shift."
+msgstr ""
+
+#: app/services/sessions.py:179
+msgid "This session was moved; shift its replacement instead."
+msgstr ""
+
+#: app/services/sessions.py:183
+msgid "Only scheduled sessions can be shifted; this one has already been held."
+msgstr ""
+
+#: app/services/sessions.py:235
 msgid "A cancelled session cannot be rescheduled."
 msgstr ""
 
-#: app/services/sessions.py:153
+#: app/services/sessions.py:237
 msgid "This session has already been moved."
 msgstr ""
 
@@ -616,16 +700,16 @@ msgstr ""
 msgid "• None logged today."
 msgstr ""
 
-#: app/services/whatsapp.py:214
+#: app/services/whatsapp.py:216
 msgid "Daily updates are about students."
 msgstr ""
 
-#: app/services/whatsapp.py:219 app/services/whatsapp.py:298
+#: app/services/whatsapp.py:221 app/services/whatsapp.py:300
 #, python-format
 msgid "%(name)s already has today's update."
 msgstr ""
 
-#: app/services/whatsapp.py:225
+#: app/services/whatsapp.py:227
 #, python-format
 msgid "%(name)s has no contact number on file."
 msgstr ""
@@ -652,8 +736,8 @@ msgid "inactive"
 msgstr ""
 
 #: app/templates/admin/assistants.html:38
-#: app/templates/assistant/students.html:53
-#: app/templates/assistant/teachers.html:41
+#: app/templates/assistant/students.html:57
+#: app/templates/assistant/teachers.html:45
 msgid "Issue new password"
 msgstr ""
 
@@ -741,7 +825,7 @@ msgid "Teachers"
 msgstr ""
 
 #: app/templates/admin/overview.html:16
-#: app/templates/assistant/session_detail.html:38
+#: app/templates/assistant/session_detail.html:52
 #: app/templates/assistant/students.html:4
 #: app/templates/assistant/students.html:7
 #: app/templates/partials/sidebar.html:14
@@ -938,7 +1022,7 @@ msgstr ""
 
 #: app/templates/assistant/course_detail.html:75
 #: app/templates/assistant/course_feedback.html:25
-#: app/templates/assistant/session_detail.html:40
+#: app/templates/assistant/session_detail.html:54
 #: app/templates/teacher/course_detail.html:38
 #: app/templates/teacher/session_detail.html:38
 msgid "Nobody enrolled yet."
@@ -1149,6 +1233,47 @@ msgstr ""
 msgid "Everything still outstanding"
 msgstr ""
 
+#: app/templates/assistant/person_edit.html:3
+#: app/templates/assistant/students.html:51
+#: app/templates/assistant/teachers.html:40
+msgid "Edit"
+msgstr ""
+
+#: app/templates/assistant/person_edit.html:6
+#, python-format
+msgid "Edit %(name)s"
+msgstr ""
+
+#: app/templates/assistant/person_edit.html:7
+msgid "Fix typos here instead of creating a duplicate account."
+msgstr ""
+
+#: app/templates/assistant/person_edit.html:29
+msgid ""
+"Username is optional. If set, the family can sign in with it instead of "
+"their phone number."
+msgstr ""
+
+#: app/templates/assistant/person_edit.html:35
+msgid "Delete this account"
+msgstr ""
+
+#: app/templates/assistant/person_edit.html:38
+msgid ""
+"If this person has no attendance, enrollments or other history they will "
+"be removed entirely. Otherwise the account is deactivated so the trail "
+"stays intact."
+msgstr ""
+
+#: app/templates/assistant/person_edit.html:42
+#, python-format
+msgid "Delete %(name)s? This cannot be undone."
+msgstr ""
+
+#: app/templates/assistant/person_edit.html:45
+msgid "Delete account"
+msgstr ""
+
 #: app/templates/assistant/session_detail.html:5
 #: app/templates/assistant/session_detail.html:9
 #: app/templates/portal/course_detail.html:61
@@ -1166,30 +1291,58 @@ msgstr ""
 msgid "This session was moved to another date. Mark the replacement instead."
 msgstr ""
 
-#: app/templates/assistant/session_detail.html:80
+#: app/templates/assistant/session_detail.html:36
+msgid "Reverse the cancellation and reopen this session?"
+msgstr ""
+
+#: app/templates/assistant/session_detail.html:40
+msgid "Undo cancellation"
+msgstr ""
+
+#: app/templates/assistant/session_detail.html:43
+msgid ""
+"Puts the session back on the schedule. The cancel and the undo both stay "
+"in the audit trail."
+msgstr ""
+
+#: app/templates/assistant/session_detail.html:94
 msgid "Change this session"
 msgstr ""
 
-#: app/templates/assistant/session_detail.html:85
+#: app/templates/assistant/session_detail.html:99
 msgid "Reason (optional)"
 msgstr ""
 
-#: app/templates/assistant/session_detail.html:90
+#: app/templates/assistant/session_detail.html:104
 msgid "Cancelled by teacher"
 msgstr ""
 
-#: app/templates/assistant/session_detail.html:93
+#: app/templates/assistant/session_detail.html:107
 msgid "Cancelled by centre"
 msgstr ""
 
-#: app/templates/assistant/session_detail.html:97
+#: app/templates/assistant/session_detail.html:111
 msgid ""
 "Who cancelled matters: a teacher-cancelled session must be made up, a "
 "student absence is not refunded."
 msgstr ""
 
-#: app/templates/assistant/session_detail.html:108
-msgid "Move session"
+#: app/templates/assistant/session_detail.html:122
+msgid "Move this session only"
+msgstr ""
+
+#: app/templates/assistant/session_detail.html:126
+msgid "Shift this session and every later scheduled session by the same amount?"
+msgstr ""
+
+#: app/templates/assistant/session_detail.html:133
+msgid "Shift this and all later sessions"
+msgstr ""
+
+#: app/templates/assistant/session_detail.html:136
+msgid ""
+"Use this to correct the starting date of the round after generation. Held"
+" or cancelled sessions are left alone."
 msgstr ""
 
 #: app/templates/assistant/sessions_today.html:8
@@ -1327,7 +1480,7 @@ msgid "Log out"
 msgstr ""
 
 #: app/templates/auth/login.html:12
-msgid "Sign in with your phone number and password"
+msgid "Sign in with your phone or username and password"
 msgstr ""
 
 #: app/templates/auth/terms.html:2
@@ -1674,5 +1827,11 @@ msgstr ""
 #~ "who opened it and when — it "
 #~ "cannot tell you whether the family "
 #~ "read it."
+#~ msgstr ""
+
+#~ msgid "Sign in with your phone number and password"
+#~ msgstr ""
+
+#~ msgid "Move session"
 #~ msgstr ""
 

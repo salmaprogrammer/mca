@@ -27,7 +27,7 @@
           {{ record.session.course.display_title(locale) }}
           <div class="muted ltr">
             {{ record.session.session_date }}
-            {{ '%02d:%02d'|format(record.session.start_time.hour, record.session.start_time.minute) }}
+            {{ record.session.start_time|time12 }}
           </div>
         </span>
         {{ status_pill(record.status, record.checked_in_at) }}

@@ -298,7 +298,7 @@ class TestRendering:
     def test_staff_course_list_renders_the_card(self, app, world):
         body = self._get(app, world["admin"], "/assistant/courses")
         assert "Nov round" in body
-        assert "16:00" in body  # the slot label
+        assert "4:00" in body  # the slot label, 12-hour format
 
     def test_staff_course_detail_renders(self, app, world):
         body = self._get(app, world["admin"], f"/assistant/courses/{world['course'].id}")
@@ -323,11 +323,11 @@ class TestRendering:
 
     def test_student_portal_renders_their_course(self, app, world):
         body = self._get(app, world["student"], "/portal/")
-        assert "16:00" in body
+        assert "4:00" in body  # 12-hour rendering
 
     def test_parent_portal_renders_their_childs_course(self, app, world):
         body = self._get(app, world["parent"], "/portal/")
-        assert "16:00" in body
+        assert "4:00" in body  # 12-hour rendering
 
     def test_portal_course_detail_renders(self, app, world):
         body = self._get(app, world["student"], f"/portal/courses/{world['course'].id}")

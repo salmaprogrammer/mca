@@ -42,7 +42,7 @@
       <div class="next-session__when ltr">
         {{ weekday_label(session.session_date.weekday(), locale) }}
         {{ session.session_date }}
-        · {{ '%02d:%02d'|format(session.start_time.hour, session.start_time.minute) }}–{{ '%02d:%02d'|format(session.end_time.hour, session.end_time.minute) }}
+        · {{ session.start_time|time12 }}–{{ session.end_time|time12 }}
       </div>
     {% else %}
       <div class="muted">{{ _('Nothing scheduled.') }}</div>

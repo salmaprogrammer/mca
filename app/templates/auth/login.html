@@ -9,13 +9,13 @@
       <span>🎓</span>
       <span>{{ center_name }}</span>
     </div>
-    <div class="auth-card__sub">{{ _('Sign in with your phone number and password') }}</div>
+    <div class="auth-card__sub">{{ _('Sign in with your phone or username and password') }}</div>
 
     {% include "partials/flashes.html" %}
 
-    <form method="post" novalidate>
+    <form method="post" novalidate data-single-submit>
       {{ form.hidden_tag() }}
-      {{ render_field(form.identifier, class="ltr", autocomplete="username", inputmode="tel") }}
+      {{ render_field(form.identifier, class="ltr", autocomplete="username") }}
       {{ render_field(form.password, autocomplete="current-password") }}
       <button type="submit" class="btn">{{ _('Sign in') }}</button>
     </form>

@@ -16,7 +16,13 @@ from app.extensions import db
 from app.models.enums import Role
 from app.models.user import ParentLink, StudentProfile, TeacherProfile, User
 from app.services import audit
-from app.services.auth import generate_password, hash_password, normalise_phone
+from app.services.auth import (
+    UsernameError,
+    generate_password,
+    hash_password,
+    normalise_phone,
+    normalise_username,
+)
 
 
 class AccountError(ValueError):
@@ -44,6 +50,10 @@ class CreationResult:
 
 def _phone_owner(phone: str) -> User | None:
     return db.session.scalar(select(User).where(User.phone == phone))
+
+
+def _username_owner(username: str) -> User | None:
+    return db.session.scalar(select(User).where(User.username == username))
 
 
 def _create_user(
@@ -180,6 +190,21 @@ def create_student_with_parent(
     if student_e164 and _phone_owner(student_e164):
         raise AccountError(f"The number {student_phone} already belongs to another account.")
 
+    # Refuse a second student with the same trimmed name already linked to this
+    # parent. Real siblings do exist, but they never share a name; what this
+    # actually catches is a double-submit or a browser refresh replaying the
+    # POST, which would otherwise create two identical rows because a
+    # parent-only family student has no phone to collide on.
+    name_key = " ".join(student_name.split()).casefold()
+    for existing_child in (link.student for link in parent.children_links):
+        if " ".join(existing_child.full_name.split()).casefold() == name_key:
+            raise AccountError(
+                f"{parent.full_name} already has a student named "
+                f"{student_name.strip()}. If this is a second child with the "
+                "same name, distinguish them (for example 'Omar A' / 'Omar B'). "
+                "Otherwise the first submission created the student already."
+            )
+
     student, student_plaintext = _create_user(
         actor=actor,
         role=Role.STUDENT,
@@ -249,3 +274,197 @@ def set_active(actor: User, user: User, active: bool) -> None:
         after=audit.snapshot(user, ["is_active"]),
     )
     db.session.commit()
+
+
+# ---------------------------------------------------------- profile updates
+
+
+_UNSET = object()
+
+
+def update_user_profile(
+    actor: User,
+    user: User,
+    *,
+    full_name: str | None = None,
+    phone: object = _UNSET,
+    username: object = _UNSET,
+    subject: object = _UNSET,
+    school: object = _UNSET,
+    grade: object = _UNSET,
+) -> None:
+    """Edit an existing account's identity + role-profile fields.
+
+    `phone`, `username`, `subject`, `school`, `grade` use the `_UNSET` sentinel:
+    - omitted (`_UNSET`) means "leave alone",
+    - passed as an empty string or None means "clear it".
+
+    The distinction matters for phone: clearing it removes the login (per the
+    users table check constraint), which is a legitimate operation but not one
+    that should happen accidentally because a form field was left blank.
+    """
+    before = audit.snapshot(user)
+
+    if full_name is not None:
+        cleaned = " ".join(full_name.split())
+        if not cleaned:
+            raise AccountError("Name cannot be blank.")
+        user.full_name = cleaned
+
+    if phone is not _UNSET:
+        raw = (phone or "").strip() if phone else ""
+        if raw:
+            new_e164 = normalise_phone(raw)
+            if new_e164 != user.phone:
+                owner = _phone_owner(new_e164)
+                if owner and owner.id != user.id:
+                    raise AccountError(
+                        f"The number {raw} already belongs to another account."
+                    )
+                # If the current username was the phone (the default) keep them
+                # in sync; a custom username set later stays untouched.
+                if user.username == user.phone:
+                    user.username = new_e164
+                user.phone = new_e164
+        else:
+            # Clearing the phone removes the login entirely to satisfy the
+            # ck_users_login_needs_password check constraint.
+            user.phone = None
+            if user.username == before.get("phone"):
+                user.username = None
+                user.password_hash = None
+                user.must_change_password = False
+
+    if username is not _UNSET:
+        cleaned = normalise_username(username) if username else None
+        if cleaned is None:
+            # Reverting to phone-as-username, if there is still a phone.
+            user.username = user.phone
+            if not user.username:
+                user.password_hash = None
+                user.must_change_password = False
+        else:
+            owner = _username_owner(cleaned)
+            if owner and owner.id != user.id:
+                raise AccountError(
+                    f"The username '{cleaned}' is already taken."
+                )
+            if not user.password_hash:
+                raise AccountError(
+                    "This account has no password yet. Add a phone number "
+                    "and issue a password before assigning a username."
+                )
+            user.username = cleaned
+
+    if subject is not _UNSET and user.role is Role.TEACHER:
+        value = subject.strip() if subject else None
+        if user.teacher_profile:
+            user.teacher_profile.subject = value or None
+        else:
+            db.session.add(TeacherProfile(user_id=user.id, subject=value or None))
+
+    if school is not _UNSET and user.role is Role.STUDENT:
+        value = school.strip() if school else None
+        if user.student_profile:
+            user.student_profile.school = value or None
+        else:
+            db.session.add(StudentProfile(user_id=user.id, school=value or None))
+
+    if grade is not _UNSET and user.role is Role.STUDENT:
+        value = grade.strip() if grade else None
+        if user.student_profile:
+            user.student_profile.grade = value or None
+        else:
+            db.session.add(StudentProfile(user_id=user.id, grade=value or None))
+
+    audit.record(
+        "account.updated",
+        "user",
+        entity_id=user.id,
+        actor=actor,
+        before=before,
+        after=audit.snapshot(user),
+    )
+    db.session.commit()
+
+
+# ------------------------------------------------------------- safe delete
+
+
+def _delete_blockers(user: User) -> list[str]:
+    """Reasons a hard delete would destroy real history.
+
+    Called by delete_user_safely to decide between hard delete (freshly-created
+    duplicate with no activity) and soft deactivate (a real person who has been
+    used in enrollments, sessions, etc.).
+    """
+    from app.models.course import Course, Enrollment
+    from app.models.session import AttendanceRecord, CourseSession
+    from app.models.teaching import Feedback, Homework, Material
+
+    def any_row(model, field, value):
+        return db.session.scalar(
+            select(model.id).where(field == value).limit(1)
+        ) is not None
+
+    blockers: list[str] = []
+    if user.role is Role.STUDENT:
+        if any_row(Enrollment, Enrollment.student_id, user.id):
+            blockers.append("enrollments")
+        if any_row(AttendanceRecord, AttendanceRecord.student_id, user.id):
+            blockers.append("attendance")
+        if any_row(Feedback, Feedback.student_id, user.id):
+            blockers.append("feedback")
+    if user.role is Role.TEACHER:
+        if any_row(Course, Course.teacher_id, user.id):
+            blockers.append("courses")
+        if any_row(CourseSession, CourseSession.teacher_id, user.id):
+            blockers.append("sessions")
+        if any_row(Homework, Homework.created_by_id, user.id):
+            blockers.append("homework authored")
+        if any_row(Material, Material.created_by_id, user.id):
+            blockers.append("materials authored")
+        if any_row(Feedback, Feedback.created_by_id, user.id):
+            blockers.append("feedback authored")
+    return blockers
+
+
+def delete_user_safely(actor: User, user: User) -> str:
+    """Hard-delete a user only when they have no history; otherwise deactivate.
+
+    Returns "deleted" or "deactivated" so the caller can flash the right
+    message. The audit trail records the outcome either way. The row itself
+    disappears on hard delete, so a snapshot goes into the audit `before`.
+    """
+    if user.id == actor.id:
+        raise AccountError("You cannot delete your own account.")
+
+    blockers = _delete_blockers(user)
+    if blockers:
+        set_active(actor, user, False)
+        return "deactivated"
+
+    from app.models.audit import AuditLog
+
+    snapshot = audit.snapshot(user)
+    audit.record(
+        "account.deleted",
+        "user",
+        entity_id=user.id,
+        actor=actor,
+        before=snapshot,
+    )
+    # The nullable back-references have no ON DELETE SET NULL on the schema,
+    # so null them by hand before removing the row. Audit rows must survive:
+    # the actor becomes "system" (NULL) rather than being deleted with them.
+    for audit_row in db.session.scalars(
+        select(AuditLog).where(AuditLog.actor_id == user.id)
+    ):
+        audit_row.actor_id = None
+    for other in db.session.scalars(
+        select(User).where(User.created_by_id == user.id)
+    ):
+        other.created_by_id = None
+    db.session.delete(user)  # cascades profile + parent_links
+    db.session.commit()
+    return "deleted"

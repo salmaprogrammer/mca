@@ -51,6 +51,8 @@ ROUTE_AUDIT_REGISTRY: dict[str, tuple[str, str]] = {
     "admin.deactivate": ("account.deactivated", ""),
     "assistant.teachers": ("account.create", ""),
     "assistant.students": ("account.create", ""),
+    "assistant.person_edit": ("account.updated", "fixing typos avoids the duplicate-account workaround"),
+    "assistant.person_delete": ("account.deleted", "removes fresh duplicates; falls back to deactivated"),
     "assistant.regenerate_password": ("account.password_regenerated", ""),
     # --- courses ------------------------------------------------------
     "assistant.course_new": ("course.create", ""),
@@ -63,7 +65,9 @@ ROUTE_AUDIT_REGISTRY: dict[str, tuple[str, str]] = {
     "assistant.mark_student": ("attendance.mark", "the brief's core requirement"),
     "assistant.mark_teacher": ("attendance.teacher_mark", ""),
     "assistant.cancel_session": ("session.cancel", "who cancelled drives makeup rules"),
+    "assistant.restore_session": ("session.restore", "undoes a mis-click; both events stay in the trail"),
     "assistant.reschedule_session": ("session.reschedule", ""),
+    "assistant.shift_session": ("session.shift", "shifts a session and every later one to fix a start-date typo"),
     "teacher.mark_student": ("attendance.mark", ""),
     # --- teaching content ---------------------------------------------
     "assistant.course_homework": ("homework.create", ""),

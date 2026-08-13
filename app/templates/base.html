@@ -9,6 +9,7 @@
   {# Vendored, not a CDN: the centre may have flaky connectivity, and a CSP
      that allows remote scripts is a needless hole (ground rule 6). #}
   <script src="{{ url_for('static', filename='js/htmx.min.js') }}" defer></script>
+  <script src="{{ url_for('static', filename='js/app.js') }}" defer></script>
   {% block head %}{% endblock %}
 </head>
 <body>

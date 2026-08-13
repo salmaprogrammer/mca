@@ -8,7 +8,7 @@
 
   <div class="two-col">
     <div class="card">
-      <form method="post" novalidate>
+      <form method="post" novalidate data-single-submit>
         {{ form.hidden_tag() }}
         {{ render_field(form.student_name) }}
         {{ render_field(form.student_phone, class="ltr", inputmode="tel") }}
@@ -46,8 +46,12 @@
           </span>
           <span class="btn-row">
             <span class="muted ltr">{{ student.phone or '—' }}</span>
+            <a class="btn btn--small btn--ghost"
+               href="{{ url_for('assistant.person_edit', user_id=student.id) }}">
+              {{ _('Edit') }}
+            </a>
             {% if student.username %}
-              <form class="inline-form" method="post"
+              <form class="inline-form" method="post" data-single-submit
                     action="{{ url_for('assistant.regenerate_password', user_id=student.id) }}">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                 <button type="submit" class="btn btn--small btn--ghost">{{ _('Issue new password') }}</button>

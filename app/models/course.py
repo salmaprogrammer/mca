@@ -195,9 +195,11 @@ class CourseSlot(db.Model):
         return time(hour=total // 60, minute=total % 60)
 
     def label(self, locale: str = "en") -> str:
+        from app.formatting import format_time_12h
+
         return (
             f"{weekday_label(self.weekday, locale)} "
-            f"{self.start_time:%H:%M}–{self.end_time:%H:%M}"
+            f"{format_time_12h(self.start_time)}–{format_time_12h(self.end_time)}"
         )
 
     def __repr__(self) -> str:

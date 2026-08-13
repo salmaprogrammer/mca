@@ -86,6 +86,7 @@ def _register_gates(app: Flask) -> None:
 def _register_template_globals(app: Flask) -> None:
     from flask_babel import get_locale
 
+    from app.formatting import format_time_12h
     from app.labels import label_for
     from app.models.course import weekday_label
     from app.models.enums import Role
@@ -103,6 +104,7 @@ def _register_template_globals(app: Flask) -> None:
         center_name=app.config["CENTER_NAME"],
         supported_locales=app.config["BABEL_SUPPORTED_LOCALES"],
     )
+    app.jinja_env.filters["time12"] = format_time_12h
 
 
 def _register_security(app: Flask) -> None:

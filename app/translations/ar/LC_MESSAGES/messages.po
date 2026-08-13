@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-08-09 10:14+0300\n"
+"POT-Creation-Date: 2026-08-13 14:58+0300\n"
 "PO-Revision-Date: 2026-08-06 01:19+0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ar\n"
@@ -105,7 +105,7 @@ msgstr "مساعد"
 #: app/templates/assistant/attendance_log.html:26
 #: app/templates/assistant/attendance_log.html:68
 #: app/templates/assistant/course_detail.html:44
-#: app/templates/assistant/session_detail.html:63
+#: app/templates/assistant/session_detail.html:77
 #: app/templates/partials/course_card.html:54
 #: app/templates/portal/course_detail.html:20
 msgid "Teacher"
@@ -132,7 +132,6 @@ msgid "Full name"
 msgstr "الاسم الكامل"
 
 #: app/blueprints/admin/forms.py:10 app/blueprints/assistant/forms.py:22
-#: app/blueprints/auth/forms.py:11
 msgid "Phone number"
 msgstr "رقم الهاتف"
 
@@ -144,12 +143,13 @@ msgstr "إنشاء حساب مساعد"
 msgid "Assistant account created."
 msgstr "تم إنشاء حساب المساعد."
 
-#: app/blueprints/admin/routes.py:47 app/blueprints/assistant/routes.py:50
-#: app/blueprints/assistant/routes.py:82
+#: app/blueprints/admin/routes.py:47 app/blueprints/assistant/routes.py:93
+#: app/blueprints/assistant/routes.py:129
+#: app/blueprints/assistant/routes.py:200
 msgid "That phone number is not valid. Use the format 01xxxxxxxxx."
 msgstr "رقم الهاتف غير صحيح. استخدم الصيغة 01xxxxxxxxx."
 
-#: app/blueprints/admin/routes.py:76 app/blueprints/assistant/routes.py:109
+#: app/blueprints/admin/routes.py:76 app/blueprints/assistant/routes.py:261
 msgid "New password issued"
 msgstr "تم إصدار كلمة مرور جديدة"
 
@@ -255,11 +255,11 @@ msgstr "تم تحديث حالة الدفع."
 msgid "Amount updated."
 msgstr "تم تحديث المبلغ."
 
-#: app/blueprints/assistant/forms.py:21
+#: app/blueprints/assistant/forms.py:21 app/blueprints/assistant/forms.py:67
 msgid "Teacher name"
 msgstr "اسم المدرس"
 
-#: app/blueprints/assistant/forms.py:24
+#: app/blueprints/assistant/forms.py:24 app/blueprints/assistant/forms.py:73
 msgid "Subject"
 msgstr "المادة"
 
@@ -268,7 +268,7 @@ msgstr "المادة"
 msgid "Create teacher account"
 msgstr "إنشاء حساب مدرس"
 
-#: app/blueprints/assistant/forms.py:38
+#: app/blueprints/assistant/forms.py:38 app/blueprints/assistant/forms.py:55
 msgid "Student name"
 msgstr "اسم الطالب"
 
@@ -276,7 +276,7 @@ msgstr "اسم الطالب"
 msgid "Student phone (optional)"
 msgstr "رقم هاتف الطالب (اختياري)"
 
-#: app/blueprints/assistant/forms.py:42
+#: app/blueprints/assistant/forms.py:42 app/blueprints/assistant/forms.py:83
 msgid "Parent name"
 msgstr "اسم ولي الأمر"
 
@@ -297,13 +297,60 @@ msgstr "الصف الدراسي (اختياري)"
 msgid "Create student and parent accounts"
 msgstr "إنشاء حساب الطالب وولي الأمر"
 
-#: app/blueprints/assistant/routes.py:47
+#: app/blueprints/assistant/forms.py:56
+msgid "Phone (leave blank to remove login)"
+msgstr "رقم الهاتف (اتركه فارغاً لإلغاء حساب الدخول)"
+
+#: app/blueprints/assistant/forms.py:58 app/blueprints/assistant/forms.py:69
+#: app/blueprints/assistant/forms.py:85
+msgid "Username (optional)"
+msgstr "اسم المستخدم (اختياري)"
+
+#: app/blueprints/assistant/forms.py:61
+msgid "School"
+msgstr "المدرسة"
+
+#: app/blueprints/assistant/forms.py:62
+msgid "Grade"
+msgstr "الصف الدراسي"
+
+#: app/blueprints/assistant/forms.py:63 app/blueprints/assistant/forms.py:77
+#: app/blueprints/assistant/forms.py:88
+#: app/templates/assistant/person_edit.html:25
+msgid "Save changes"
+msgstr "حفظ التغييرات"
+
+#: app/blueprints/assistant/forms.py:68 app/blueprints/assistant/forms.py:84
+msgid "Phone"
+msgstr "رقم الهاتف"
+
+#: app/blueprints/assistant/routes.py:98
 msgid "Teacher account created."
 msgstr "تم إنشاء حساب المدرس."
 
-#: app/blueprints/assistant/routes.py:79
+#: app/blueprints/assistant/routes.py:134
 msgid "Student created."
 msgstr "تم إنشاء حساب الطالب."
+
+#: app/blueprints/assistant/routes.py:185
+msgid "This account type is edited elsewhere."
+msgstr "هذا النوع من الحسابات يُعدَّل من مكان آخر."
+
+#: app/blueprints/assistant/routes.py:206
+msgid "Changes saved."
+msgstr "تم حفظ التغييرات."
+
+#: app/blueprints/assistant/routes.py:225
+msgid "This account type cannot be deleted here."
+msgstr "لا يمكن حذف هذا النوع من الحسابات من هنا."
+
+#: app/blueprints/assistant/routes.py:235
+msgid "Account deleted."
+msgstr "تم حذف الحساب."
+
+#: app/blueprints/assistant/routes.py:238
+msgid "This account has history and was deactivated instead of deleted."
+msgstr "هذا الحساب مرتبط بسجلات، لذا تم تعطيله بدلاً من حذفه."
 
 #: app/blueprints/assistant/session_routes.py:53
 #, python-format
@@ -334,11 +381,28 @@ msgstr "تم تسجيل حضور المدرس."
 msgid "Session cancelled."
 msgstr "تم إلغاء الحصة."
 
-#: app/blueprints/assistant/session_routes.py:167
+#: app/blueprints/assistant/session_routes.py:161
+msgid "Session cancellation reversed."
+msgstr "تم التراجع عن إلغاء الحصة."
+
+#: app/blueprints/assistant/session_routes.py:178
+msgid "Choose a new date."
+msgstr "اختر تاريخاً جديداً."
+
+#: app/blueprints/assistant/session_routes.py:190
+#, python-format
+msgid "This session and %(count)d after it were shifted."
+msgstr "تم نقل هذه الحصة و%(count)d حصة بعدها."
+
+#: app/blueprints/assistant/session_routes.py:196
+msgid "The date was already what you selected."
+msgstr "التاريخ هو نفسه الذي اخترته بالفعل."
+
+#: app/blueprints/assistant/session_routes.py:213
 msgid "Enter a new date and time."
 msgstr "أدخل التاريخ والوقت الجديد."
 
-#: app/blueprints/assistant/session_routes.py:174
+#: app/blueprints/assistant/session_routes.py:220
 msgid "Session moved."
 msgstr "تم نقل الحصة."
 
@@ -381,48 +445,52 @@ msgstr ""
 "تم تجهيز %(prepared)d تحديث، وتخطّي %(skipped)d. كل تحديث ما زال يحتاج "
 "إلى إرساله من واتساب."
 
-#: app/blueprints/auth/forms.py:13
+#: app/blueprints/auth/forms.py:11
+msgid "Phone or username"
+msgstr "رقم الهاتف أو اسم المستخدم"
+
+#: app/blueprints/auth/forms.py:16
 msgid "Password"
 msgstr "كلمة المرور"
 
-#: app/blueprints/auth/forms.py:14 app/templates/auth/login.html:3
+#: app/blueprints/auth/forms.py:17 app/templates/auth/login.html:3
 #: app/templates/auth/login.html:20
 msgid "Sign in"
 msgstr "تسجيل الدخول"
 
-#: app/blueprints/auth/forms.py:18
+#: app/blueprints/auth/forms.py:21
 msgid "Current password"
 msgstr "كلمة المرور الحالية"
 
-#: app/blueprints/auth/forms.py:20
+#: app/blueprints/auth/forms.py:23
 msgid "New password"
 msgstr "كلمة المرور الجديدة"
 
-#: app/blueprints/auth/forms.py:23
+#: app/blueprints/auth/forms.py:26
 msgid "Use at least 8 characters."
 msgstr "استخدم ٨ أحرف على الأقل."
 
-#: app/blueprints/auth/forms.py:27
+#: app/blueprints/auth/forms.py:30
 msgid "Confirm new password"
 msgstr "تأكيد كلمة المرور الجديدة"
 
-#: app/blueprints/auth/forms.py:28
+#: app/blueprints/auth/forms.py:31
 msgid "Passwords do not match."
 msgstr "كلمتا المرور غير متطابقتين."
 
-#: app/blueprints/auth/forms.py:30 app/templates/auth/change_password.html:27
+#: app/blueprints/auth/forms.py:33 app/templates/auth/change_password.html:27
 msgid "Save password"
 msgstr "حفظ كلمة المرور"
 
-#: app/blueprints/auth/forms.py:35 app/templates/auth/terms.html:30
+#: app/blueprints/auth/forms.py:38 app/templates/auth/terms.html:30
 msgid "I agree to the terms and conditions"
 msgstr "أوافق على الشروط والأحكام"
 
-#: app/blueprints/auth/forms.py:36 app/blueprints/auth/routes.py:133
+#: app/blueprints/auth/forms.py:39 app/blueprints/auth/routes.py:133
 msgid "You must agree before continuing."
 msgstr "يجب الموافقة قبل المتابعة."
 
-#: app/blueprints/auth/forms.py:38 app/templates/auth/terms.html:33
+#: app/blueprints/auth/forms.py:41 app/templates/auth/terms.html:33
 msgid "Continue to dashboard"
 msgstr "متابعة إلى لوحة التحكم"
 
@@ -508,11 +576,11 @@ msgstr "أدخل مبلغاً صحيحاً."
 msgid "The amount cannot be negative."
 msgstr "لا يمكن أن يكون المبلغ بالسالب."
 
-#: app/services/scheduling.py:123
+#: app/services/scheduling.py:125
 msgid "This teacher"
 msgstr "هذا المدرس"
 
-#: app/services/scheduling.py:125
+#: app/services/scheduling.py:127
 #, python-format
 msgid ""
 "%(teacher)s already teaches «%(course)s» on %(day)s "
@@ -522,7 +590,7 @@ msgstr ""
 "%(teacher)s يدرّس بالفعل «%(course)s» يوم %(day)s من %(existing_start)s "
 "إلى %(existing_end)s، وهو ما يتعارض مع %(new_start)s–%(new_end)s."
 
-#: app/services/scheduling.py:166
+#: app/services/scheduling.py:170
 #, python-format
 msgid ""
 "This course has two sessions that overlap on %(day)s: "
@@ -547,11 +615,27 @@ msgstr "تعذّر ترتيب جدول هذا الكورس."
 msgid "This session is already cancelled."
 msgstr "هذه الحصة ملغاة بالفعل."
 
-#: app/services/sessions.py:151
+#: app/services/sessions.py:144
+msgid "This session is not cancelled, so there is nothing to reverse."
+msgstr "هذه الحصة غير ملغاة، لا يوجد ما يمكن التراجع عنه."
+
+#: app/services/sessions.py:175
+msgid "A cancelled session cannot be shifted. Restore it first, then shift."
+msgstr "لا يمكن نقل حصة ملغاة. تراجع عن الإلغاء أولاً ثم انقلها."
+
+#: app/services/sessions.py:179
+msgid "This session was moved; shift its replacement instead."
+msgstr "تم نقل هذه الحصة؛ انقل بديلها بدلاً منها."
+
+#: app/services/sessions.py:183
+msgid "Only scheduled sessions can be shifted; this one has already been held."
+msgstr "يمكن نقل الحصص المجدولة فقط؛ هذه الحصة قد تمت بالفعل."
+
+#: app/services/sessions.py:235
 msgid "A cancelled session cannot be rescheduled."
 msgstr "لا يمكن نقل حصة ملغاة."
 
-#: app/services/sessions.py:153
+#: app/services/sessions.py:237
 msgid "This session has already been moved."
 msgstr "تم نقل هذه الحصة من قبل."
 
@@ -627,16 +711,16 @@ msgstr "التقييم:"
 msgid "• None logged today."
 msgstr "• لا يوجد تقييم اليوم."
 
-#: app/services/whatsapp.py:214
+#: app/services/whatsapp.py:216
 msgid "Daily updates are about students."
 msgstr "التحديثات اليومية تخص الطلاب."
 
-#: app/services/whatsapp.py:219 app/services/whatsapp.py:298
+#: app/services/whatsapp.py:221 app/services/whatsapp.py:300
 #, python-format
 msgid "%(name)s already has today's update."
 msgstr "%(name)s لديه تحديث اليوم بالفعل."
 
-#: app/services/whatsapp.py:225
+#: app/services/whatsapp.py:227
 #, python-format
 msgid "%(name)s has no contact number on file."
 msgstr "لا يوجد رقم تواصل مسجل لـ %(name)s."
@@ -663,8 +747,8 @@ msgid "inactive"
 msgstr "موقوف"
 
 #: app/templates/admin/assistants.html:38
-#: app/templates/assistant/students.html:53
-#: app/templates/assistant/teachers.html:41
+#: app/templates/assistant/students.html:57
+#: app/templates/assistant/teachers.html:45
 msgid "Issue new password"
 msgstr "إصدار كلمة مرور جديدة"
 
@@ -752,7 +836,7 @@ msgid "Teachers"
 msgstr "المدرسون"
 
 #: app/templates/admin/overview.html:16
-#: app/templates/assistant/session_detail.html:38
+#: app/templates/assistant/session_detail.html:52
 #: app/templates/assistant/students.html:4
 #: app/templates/assistant/students.html:7
 #: app/templates/partials/sidebar.html:14
@@ -949,7 +1033,7 @@ msgstr "الطلاب المسجلون"
 
 #: app/templates/assistant/course_detail.html:75
 #: app/templates/assistant/course_feedback.html:25
-#: app/templates/assistant/session_detail.html:40
+#: app/templates/assistant/session_detail.html:54
 #: app/templates/teacher/course_detail.html:38
 #: app/templates/teacher/session_detail.html:38
 msgid "Nobody enrolled yet."
@@ -1162,6 +1246,51 @@ msgstr "المدفوعات"
 msgid "Everything still outstanding"
 msgstr "كل ما لم يتم سداده بعد"
 
+#: app/templates/assistant/person_edit.html:3
+#: app/templates/assistant/students.html:51
+#: app/templates/assistant/teachers.html:40
+msgid "Edit"
+msgstr "تعديل"
+
+#: app/templates/assistant/person_edit.html:6
+#, python-format
+msgid "Edit %(name)s"
+msgstr "تعديل بيانات %(name)s"
+
+#: app/templates/assistant/person_edit.html:7
+msgid "Fix typos here instead of creating a duplicate account."
+msgstr "صحّح الأخطاء من هنا بدلاً من إنشاء حساب مكرر."
+
+#: app/templates/assistant/person_edit.html:29
+msgid ""
+"Username is optional. If set, the family can sign in with it instead of "
+"their phone number."
+msgstr ""
+"اسم المستخدم اختياري. إذا تم ضبطه، يمكن للأسرة تسجيل الدخول به بدلاً من "
+"رقم الهاتف."
+
+#: app/templates/assistant/person_edit.html:35
+msgid "Delete this account"
+msgstr "حذف هذا الحساب"
+
+#: app/templates/assistant/person_edit.html:38
+msgid ""
+"If this person has no attendance, enrollments or other history they will "
+"be removed entirely. Otherwise the account is deactivated so the trail "
+"stays intact."
+msgstr ""
+"إذا لم يكن للشخص أي سجلات حضور أو اشتراكات أو تاريخ آخر، فسيتم حذفه "
+"نهائياً. وإلا فسيتم تعطيل الحساب فقط للحفاظ على السجل."
+
+#: app/templates/assistant/person_edit.html:42
+#, python-format
+msgid "Delete %(name)s? This cannot be undone."
+msgstr "حذف %(name)s؟ لا يمكن التراجع عن هذه العملية."
+
+#: app/templates/assistant/person_edit.html:45
+msgid "Delete account"
+msgstr "حذف الحساب"
+
 #: app/templates/assistant/session_detail.html:5
 #: app/templates/assistant/session_detail.html:9
 #: app/templates/portal/course_detail.html:61
@@ -1179,23 +1308,39 @@ msgstr "كل الحصص"
 msgid "This session was moved to another date. Mark the replacement instead."
 msgstr "تم نقل هذه الحصة إلى تاريخ آخر. سجّل الحضور في الحصة البديلة."
 
-#: app/templates/assistant/session_detail.html:80
+#: app/templates/assistant/session_detail.html:36
+msgid "Reverse the cancellation and reopen this session?"
+msgstr "التراجع عن الإلغاء وإعادة فتح هذه الحصة؟"
+
+#: app/templates/assistant/session_detail.html:40
+msgid "Undo cancellation"
+msgstr "تراجع عن الإلغاء"
+
+#: app/templates/assistant/session_detail.html:43
+msgid ""
+"Puts the session back on the schedule. The cancel and the undo both stay "
+"in the audit trail."
+msgstr ""
+"يعيد الحصة إلى الجدول. يبقى كل من الإلغاء والتراجع مسجلين في سجل "
+"المراجعة."
+
+#: app/templates/assistant/session_detail.html:94
 msgid "Change this session"
 msgstr "تعديل هذه الحصة"
 
-#: app/templates/assistant/session_detail.html:85
+#: app/templates/assistant/session_detail.html:99
 msgid "Reason (optional)"
 msgstr "السبب (اختياري)"
 
-#: app/templates/assistant/session_detail.html:90
+#: app/templates/assistant/session_detail.html:104
 msgid "Cancelled by teacher"
 msgstr "إلغاء من المدرس"
 
-#: app/templates/assistant/session_detail.html:93
+#: app/templates/assistant/session_detail.html:107
 msgid "Cancelled by centre"
 msgstr "إلغاء من الأكاديمية"
 
-#: app/templates/assistant/session_detail.html:97
+#: app/templates/assistant/session_detail.html:111
 msgid ""
 "Who cancelled matters: a teacher-cancelled session must be made up, a "
 "student absence is not refunded."
@@ -1203,9 +1348,25 @@ msgstr ""
 "الجهة التي ألغت الحصة مهمة: الحصة الملغاة من المدرس يجب تعويضها، أما غياب"
 " الطالب فلا تُرد قيمته."
 
-#: app/templates/assistant/session_detail.html:108
-msgid "Move session"
-msgstr "نقل الحصة"
+#: app/templates/assistant/session_detail.html:122
+msgid "Move this session only"
+msgstr "نقل هذه الحصة فقط"
+
+#: app/templates/assistant/session_detail.html:126
+msgid "Shift this session and every later scheduled session by the same amount?"
+msgstr "نقل هذه الحصة وجميع الحصص المجدولة بعدها بنفس المقدار؟"
+
+#: app/templates/assistant/session_detail.html:133
+msgid "Shift this and all later sessions"
+msgstr "نقل هذه الحصة وكل الحصص التالية"
+
+#: app/templates/assistant/session_detail.html:136
+msgid ""
+"Use this to correct the starting date of the round after generation. Held"
+" or cancelled sessions are left alone."
+msgstr ""
+"استخدم هذا الخيار لتصحيح تاريخ بداية الراوند بعد إنشائه. الحصص التي تمت "
+"أو أُلغيت لا يتم تحريكها."
 
 #: app/templates/assistant/sessions_today.html:8
 msgid "Mark attendance as each class runs"
@@ -1349,8 +1510,8 @@ msgid "Log out"
 msgstr "تسجيل الخروج"
 
 #: app/templates/auth/login.html:12
-msgid "Sign in with your phone number and password"
-msgstr "سجّل الدخول برقم هاتفك وكلمة المرور"
+msgid "Sign in with your phone or username and password"
+msgstr "سجّل الدخول برقم هاتفك أو اسم المستخدم وكلمة المرور"
 
 #: app/templates/auth/terms.html:2
 msgid "Terms and conditions"
@@ -1718,4 +1879,10 @@ msgstr "الإلغاء وتعديل المواعيد يتم من خلال الـ
 #~ "على إرسال هناك. يسجّل السجل بالأسفل "
 #~ "من فتحها ومتى — ولا يمكنه إخبارك"
 #~ " إن كانت الأسرة قد قرأتها."
+
+#~ msgid "Sign in with your phone number and password"
+#~ msgstr "سجّل الدخول برقم هاتفك وكلمة المرور"
+
+#~ msgid "Move session"
+#~ msgstr "نقل الحصة"
 

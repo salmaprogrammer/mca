@@ -104,8 +104,9 @@ class TestTeacherConflicts:
         assert "GPA — Nov round" in message
         assert "Ahmed Fathy" in message
         assert "Sunday" in message
-        assert "16:00" in message and "17:30" in message  # the existing slot
-        assert "16:30" in message and "18:00" in message  # the proposed one
+        # Times render 12-hour with AM/PM (locale-aware AM/PM).
+        assert "4:00 PM" in message and "5:30 PM" in message  # the existing slot
+        assert "4:30 PM" in message and "6:00 PM" in message  # the proposed one
 
     def test_the_error_is_localised(self, app, busy_teacher):
         """Staff working in Arabic must get an Arabic day name, not "Sunday"."""

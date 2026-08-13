@@ -14,7 +14,7 @@
     <span>
       <a href="{{ href }}">#{{ session.sequence_no if session.sequence_no > 0 else '—' }}
         · {{ session.session_date }}</a>
-      <span class="muted ltr">{{ '%02d:%02d'|format(session.start_time.hour, session.start_time.minute) }}–{{ '%02d:%02d'|format(session.end_time.hour, session.end_time.minute) }}</span>
+      <span class="muted ltr">{{ session.start_time|time12 }}–{{ session.end_time|time12 }}</span>
     </span>
     <span class="btn-row">
       {% set marked = session.attendance|length %}

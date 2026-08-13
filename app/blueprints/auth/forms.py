@@ -8,7 +8,10 @@ MIN_PASSWORD_LENGTH = 8
 
 class LoginForm(FlaskForm):
     identifier = StringField(
-        _l("Phone number"), validators=[DataRequired()], render_kw={"placeholder": "01xxxxxxxxx"}
+        _l("Phone or username"),
+        validators=[DataRequired()],
+        render_kw={"placeholder": "01xxxxxxxxx", "autocapitalize": "off",
+                   "spellcheck": "false"},
     )
     password = PasswordField(_l("Password"), validators=[DataRequired()])
     submit = SubmitField(_l("Sign in"))

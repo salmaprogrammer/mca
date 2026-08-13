@@ -170,6 +170,131 @@ class TestCancellation:
             session_service.cancel_session(admin, session, by_teacher=False)
 
 
+class TestRestore:
+    """Reversing a cancellation when it was a mistake."""
+
+    def test_restoring_puts_the_session_back_on_the_schedule(
+        self, app, db, admin, gpa_course
+    ):
+        session_service.generate_sessions(None, gpa_course)
+        session = gpa_course.sessions[0]
+        session_service.cancel_session(admin, session, by_teacher=True, reason="oops")
+
+        session_service.restore_session(admin, session)
+        assert session.status is SessionStatus.SCHEDULED
+        assert session.cancellation_reason is None
+        assert session.needs_attendance is True
+
+    def test_restoring_a_scheduled_session_is_refused(self, app, admin, gpa_course):
+        session_service.generate_sessions(None, gpa_course)
+        with pytest.raises(session_service.SessionError):
+            session_service.restore_session(admin, gpa_course.sessions[0])
+
+    def test_both_cancel_and_restore_land_in_the_audit_trail(
+        self, app, db, admin, gpa_course
+    ):
+        from app.models.audit import AuditLog
+        from sqlalchemy import select as _select
+
+        session_service.generate_sessions(None, gpa_course)
+        session = gpa_course.sessions[0]
+        session_service.cancel_session(admin, session, by_teacher=True)
+        session_service.restore_session(admin, session)
+
+        actions = [
+            row.action
+            for row in db.session.scalars(
+                _select(AuditLog).where(AuditLog.entity_type == "session")
+            )
+        ]
+        assert "session.cancel" in actions
+        assert "session.restore" in actions
+
+
+class TestShift:
+    """Fixing the start-date of a round after generation."""
+
+    def test_shifting_the_first_session_moves_every_later_session_by_the_same_delta(
+        self, app, db, admin, gpa_course
+    ):
+        session_service.generate_sessions(None, gpa_course)
+        original_dates = [s.session_date for s in
+                          sorted(gpa_course.sessions, key=lambda x: x.sequence_no)]
+        first = gpa_course.sessions[0]
+
+        new_first = first.session_date + timedelta(days=7)
+        session_service.shift_sessions_from(admin, first, new_first)
+
+        db.session.refresh(gpa_course)
+        shifted = [s.session_date for s in
+                   sorted(gpa_course.sessions, key=lambda x: x.sequence_no)]
+        assert shifted == [d + timedelta(days=7) for d in original_dates]
+
+    def test_shifting_a_middle_session_leaves_earlier_ones_alone(
+        self, app, db, admin, gpa_course
+    ):
+        session_service.generate_sessions(None, gpa_course)
+        ordered = sorted(gpa_course.sessions, key=lambda x: x.sequence_no)
+        first_original = ordered[0].session_date
+        middle = ordered[3]
+        original_middle_date = middle.session_date
+
+        session_service.shift_sessions_from(
+            admin, middle, original_middle_date + timedelta(days=2)
+        )
+        db.session.refresh(gpa_course)
+        ordered = sorted(gpa_course.sessions, key=lambda x: x.sequence_no)
+        assert ordered[0].session_date == first_original  # unchanged
+        assert ordered[3].session_date == original_middle_date + timedelta(days=2)
+        assert ordered[4].session_date > original_middle_date  # shifted too
+
+    def test_a_cancelled_session_cannot_be_shifted(self, app, admin, gpa_course):
+        session_service.generate_sessions(None, gpa_course)
+        session = gpa_course.sessions[0]
+        session_service.cancel_session(admin, session, by_teacher=True)
+        with pytest.raises(session_service.SessionError):
+            session_service.shift_sessions_from(
+                admin, session, session.session_date + timedelta(days=7)
+            )
+
+    def test_shifting_leaves_held_or_cancelled_sessions_alone(
+        self, app, db, admin, gpa_course
+    ):
+        """Only SCHEDULED rows move — a held session must not be back-dated."""
+        session_service.generate_sessions(None, gpa_course)
+        ordered = sorted(gpa_course.sessions, key=lambda x: x.sequence_no)
+
+        # Cancel a middle session so it stays put during the shift.
+        parked = ordered[5]
+        parked_date = parked.session_date
+        session_service.cancel_session(admin, parked, by_teacher=False)
+
+        first = ordered[0]
+        session_service.shift_sessions_from(
+            admin, first, first.session_date + timedelta(days=1)
+        )
+
+        db.session.refresh(parked)
+        assert parked.session_date == parked_date  # unmoved
+
+    def test_shifting_records_the_offset_in_the_audit_trail(
+        self, app, db, admin, gpa_course
+    ):
+        from app.models.audit import AuditLog
+        from sqlalchemy import select as _select
+
+        session_service.generate_sessions(None, gpa_course)
+        first = gpa_course.sessions[0]
+        session_service.shift_sessions_from(
+            admin, first, first.session_date + timedelta(days=3)
+        )
+        entry = db.session.scalar(
+            _select(AuditLog).where(AuditLog.action == "session.shift")
+        )
+        assert entry is not None
+        assert entry.after_json["delta_days"] == 3
+
+
 class TestRescheduling:
     def test_the_original_is_kept_and_points_at_the_replacement(
         self, app, db, admin, gpa_course

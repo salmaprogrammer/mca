@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% from "partials/field.html" import render_field, section_title %}
+{% block title %}{{ _('Edit') }} — {{ user.full_name }} — {{ center_name }}{% endblock %}
+
+{% block content %}
+  {{ section_title('✏️', _('Edit %(name)s', name=user.full_name),
+                   _('Fix typos here instead of creating a duplicate account.')) }}
+
+  <div class="two-col">
+    <div class="card">
+      <form method="post" novalidate data-single-submit>
+        {{ form.hidden_tag() }}
+        {{ render_field(form.full_name) }}
+        {{ render_field(form.phone, class="ltr", inputmode="tel") }}
+        {{ render_field(form.username, class="ltr") }}
+        {% if form.subject is defined %}
+          {{ render_field(form.subject) }}
+        {% endif %}
+        {% if form.school is defined %}
+          {{ render_field(form.school) }}
+        {% endif %}
+        {% if form.grade is defined %}
+          {{ render_field(form.grade) }}
+        {% endif %}
+        <button type="submit" class="btn">{{ _('Save changes') }}</button>
+      </form>
+
+      <div class="muted" style="margin-block-start:12px;">
+        {{ _('Username is optional. If set, the family can sign in with it instead of their phone number.') }}
+      </div>
+    </div>
+
+    <div class="card">
+      <div style="font-weight:700;color:var(--navy);margin-block-end:8px;">
+        {{ _('Delete this account') }}
+      </div>
+      <p class="muted">
+        {{ _('If this person has no attendance, enrollments or other history they will be removed entirely. Otherwise the account is deactivated so the trail stays intact.') }}
+      </p>
+      <form method="post" novalidate
+            data-single-submit
+            data-confirm="{{ _('Delete %(name)s? This cannot be undone.', name=user.full_name) }}"
+            action="{{ url_for('assistant.person_delete', user_id=user.id) }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button type="submit" class="btn btn--danger">{{ _('Delete account') }}</button>
+      </form>
+    </div>
+  </div>
+{% endblock %}

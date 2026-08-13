@@ -16,7 +16,7 @@
     </a>
     {{ session_status_pill(session) }}
     <span class="muted ltr">
-      {{ '%02d:%02d'|format(session.start_time.hour, session.start_time.minute) }}–{{ '%02d:%02d'|format(session.end_time.hour, session.end_time.minute) }}
+      {{ session.start_time|time12 }}–{{ session.end_time|time12 }}
     </span>
   </div>
 
@@ -30,6 +30,20 @@
           {% if session.cancellation_reason %} — {{ session.cancellation_reason }}{% endif %}
         {% endif %}
       </div>
+      {% if session.is_cancelled %}
+        <form method="post" novalidate data-single-submit
+              style="margin-block-start:10px;"
+              data-confirm="{{ _('Reverse the cancellation and reopen this session?') }}"
+              action="{{ url_for('assistant.restore_session', session_id=session.id) }}">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <button type="submit" class="btn btn--small btn--ghost">
+            {{ _('Undo cancellation') }}
+          </button>
+          <span class="muted" style="font-size:12px; margin-inline-start:8px;">
+            {{ _('Puts the session back on the schedule. The cancel and the undo both stay in the audit trail.') }}
+          </span>
+        </form>
+      {% endif %}
     </div>
   {% endif %}
 
@@ -98,14 +112,29 @@
           </div>
         </form>
 
-        <form method="post" style="margin-block-start:14px;"
+        <form method="post" style="margin-block-start:14px;" data-single-submit
               action="{{ url_for('assistant.reschedule_session', session_id=session.id) }}">
           <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
           <div class="slot-row">
             <input type="date" name="new_date" class="slot-row__day">
             <input type="time" name="new_time" class="slot-row__time" value="16:00">
           </div>
-          <button type="submit" class="btn btn--small btn--ghost">{{ _('Move session') }}</button>
+          <button type="submit" class="btn btn--small btn--ghost">{{ _('Move this session only') }}</button>
+        </form>
+
+        <form method="post" style="margin-block-start:14px;" data-single-submit
+              data-confirm="{{ _('Shift this session and every later scheduled session by the same amount?') }}"
+              action="{{ url_for('assistant.shift_session', session_id=session.id) }}">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <div class="slot-row">
+            <input type="date" name="new_date" class="slot-row__day">
+          </div>
+          <button type="submit" class="btn btn--small btn--ghost">
+            {{ _('Shift this and all later sessions') }}
+          </button>
+          <div class="muted" style="font-size:12px; margin-block-start:6px;">
+            {{ _('Use this to correct the starting date of the round after generation. Held or cancelled sessions are left alone.') }}
+          </div>
         </form>
       {% endif %}
     </div>

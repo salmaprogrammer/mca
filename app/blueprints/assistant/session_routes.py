@@ -151,6 +151,52 @@ def cancel_session(session_id: int):
     return redirect(url_for("assistant.course_sessions", course_id=session.course_id))
 
 
+@bp.route("/sessions/<int:session_id>/restore", methods=["POST"])
+@require_staff
+def restore_session(session_id: int):
+    """Reverse a cancellation. Same audit lineage as cancel; nothing is erased."""
+    session = get_session_or_404(current_user, session_id)
+    try:
+        session_service.restore_session(current_user, session)
+        flash(_("Session cancellation reversed."), "success")
+    except session_service.SessionError as exc:
+        flash(str(exc), "error")
+    return _back(session)
+
+
+@bp.route("/sessions/<int:session_id>/shift-from-here", methods=["POST"])
+@require_staff
+def shift_session(session_id: int):
+    """Shift this session and every later scheduled session by the same offset.
+
+    Used to fix the first-session date after generation without having to
+    reschedule each row one at a time.
+    """
+    session = get_session_or_404(current_user, session_id)
+    new_date = _parse_date(request.form.get("new_date"))
+    if not new_date:
+        flash(_("Choose a new date."), "error")
+        return _back(session)
+
+    try:
+        shifted = session_service.shift_sessions_from(current_user, session, new_date)
+    except session_service.SessionError as exc:
+        flash(str(exc), "error")
+        return _back(session)
+
+    if shifted:
+        flash(
+            _(
+                "This session and %(count)d after it were shifted.",
+                count=max(len(shifted) - 1, 0),
+            ),
+            "success",
+        )
+    else:
+        flash(_("The date was already what you selected."), "info")
+    return redirect(url_for("assistant.course_sessions", course_id=session.course_id))
+
+
 @bp.route("/sessions/<int:session_id>/reschedule", methods=["POST"])
 @require_staff
 def reschedule_session(session_id: int):
@@ -221,10 +267,15 @@ def _in_centre_tz(value: datetime):
 
 @bp.app_template_filter("localtime")
 def localtime_filter(value: datetime | None) -> str:
-    """Render an aware UTC timestamp in the centre's timezone (PLAN.md §2.3)."""
+    """Render an aware UTC timestamp in the centre's timezone (PLAN.md §2.3).
+
+    12-hour with a locale-appropriate AM/PM marker via `format_time_12h`.
+    """
     if value is None:
         return "—"
-    return f"{_in_centre_tz(value):%H:%M}"
+    from app.formatting import format_time_12h
+
+    return format_time_12h(_in_centre_tz(value))
 
 
 @bp.app_template_filter("localdate")

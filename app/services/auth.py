@@ -7,16 +7,41 @@ never stored, logged, flashed, or put in a session.
 
 from __future__ import annotations
 
+import re
 import secrets
 
 import phonenumbers
 from argon2 import PasswordHasher
 from argon2.exceptions import InvalidHashError, VerifyMismatchError
 from flask import current_app
-from sqlalchemy import select
+from sqlalchemy import or_, select
 
 from app.extensions import db
 from app.models.user import User
+
+# A username is a text handle an admin may set on any account so the family
+# can sign in with something they'll remember (e.g. "sara.h") instead of
+# their phone number. Kept strict on purpose: no whitespace, no @, no
+# leading dot; digits-only is rejected so it can never collide with a
+# phone-shaped identifier and confuse the login lookup below.
+USERNAME_PATTERN = re.compile(r"^[A-Za-z][A-Za-z0-9._-]{2,23}$")
+
+
+class UsernameError(ValueError):
+    """A rejected admin-supplied username with a reason the operator can act on."""
+
+
+def normalise_username(raw: str | None) -> str | None:
+    """Return the canonical form (lower-cased) or None if the input is empty."""
+    if not raw or not raw.strip():
+        return None
+    candidate = raw.strip()
+    if not USERNAME_PATTERN.fullmatch(candidate):
+        raise UsernameError(
+            "A username must start with a letter and be 3–24 characters of "
+            "letters, digits, dot, underscore or hyphen."
+        )
+    return candidate.lower()
 
 # Ambiguous glyphs removed (no 0, O, 1, I, l) — these get read aloud over the
 # phone to families, so 31 unmistakable characters beats 62 confusing ones.
@@ -65,15 +90,30 @@ def verify_password(password_hash: str | None, plaintext: str) -> bool:
 
 
 def find_by_login(identifier: str) -> User | None:
-    """Look a user up by phone in either accepted format."""
-    if not identifier:
+    """Match a login attempt against username OR phone.
+
+    A user may type any of these and land on their own account:
+      - their phone in either accepted format (01xxxxxxxxx / +201xxxxxxxxx),
+      - the E.164 form stored on the row,
+      - an admin-set text username (case-insensitive).
+
+    Historically `username` mirrored the E.164 phone; new accounts still do
+    that unless an admin sets a distinct username. Both columns are unique,
+    so the OR-match cannot return more than one row.
+    """
+    if not identifier or not identifier.strip():
         return None
-    candidates = [identifier.strip()]
+    raw = identifier.strip()
+    candidates = {raw, raw.lower()}
     try:
-        candidates.append(normalise_phone(identifier))
+        candidates.add(normalise_phone(raw))
     except PhoneNumberError:
         pass
-    return db.session.scalar(select(User).where(User.username.in_(candidates)))
+    return db.session.scalar(
+        select(User).where(
+            or_(User.username.in_(candidates), User.phone.in_(candidates))
+        )
+    )
 
 
 def authenticate(identifier: str, plaintext: str) -> User | None:

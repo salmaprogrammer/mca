@@ -133,6 +133,90 @@ def cancel_session(
     db.session.commit()
 
 
+def restore_session(actor: User, session: CourseSession) -> None:
+    """Reverse a cancellation, putting a cancelled session back to SCHEDULED.
+
+    Undoes a mis-click without erasing the fact it happened: the audit trail
+    keeps both the cancel and the restore rows, so the timeline shows who
+    cancelled, who reversed, and when.
+    """
+    if not session.is_cancelled:
+        raise SessionError(_("This session is not cancelled, so there is nothing to reverse."))
+
+    before = audit.snapshot(session, ["status", "cancellation_reason"])
+    session.status = SessionStatus.SCHEDULED
+    session.cancellation_reason = None
+
+    audit.record(
+        "session.restore",
+        "session",
+        entity_id=session.id,
+        actor=actor,
+        before=before,
+        after=audit.snapshot(session, ["status", "cancellation_reason"]),
+    )
+    db.session.commit()
+
+
+def shift_sessions_from(
+    actor: User, session: CourseSession, new_date: date
+) -> list[CourseSession]:
+    """Move a session to a new date and slide every later scheduled session by
+    the same offset. The point is fixing the first-session date after
+    generation without having to reschedule each row individually.
+
+    Only sessions with `status == SCHEDULED` move: an already-held session
+    would rewrite history, and a rescheduled or cancelled one is deliberately
+    parked. Returns the list of sessions that were actually shifted (the
+    starting session included).
+    """
+    if session.is_cancelled:
+        raise SessionError(
+            _("A cancelled session cannot be shifted. Restore it first, then shift.")
+        )
+    if session.status is SessionStatus.RESCHEDULED:
+        raise SessionError(
+            _("This session was moved; shift its replacement instead.")
+        )
+    if session.status is not SessionStatus.SCHEDULED:
+        raise SessionError(
+            _("Only scheduled sessions can be shifted; this one has already been held.")
+        )
+
+    original_date = session.session_date
+    if new_date == original_date:
+        return []
+
+    delta = new_date - original_date
+    course = session.course
+    to_shift = [
+        s
+        for s in sorted(course.sessions, key=lambda x: x.sequence_no)
+        if s.sequence_no >= session.sequence_no
+        and s.status is SessionStatus.SCHEDULED
+    ]
+    for s in to_shift:
+        s.session_date = s.session_date + delta
+
+    audit.record(
+        "session.shift",
+        "session",
+        entity_id=session.id,
+        actor=actor,
+        before={
+            "from_date": original_date.isoformat(),
+            "sequence_no": session.sequence_no,
+        },
+        after={
+            "to_date": new_date.isoformat(),
+            "delta_days": delta.days,
+            "sessions_shifted": len(to_shift),
+        },
+    )
+    db.session.commit()
+    return to_shift
+
+
 def reschedule_session(
     actor: User,
     session: CourseSession,

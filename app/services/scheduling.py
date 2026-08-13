@@ -120,6 +120,8 @@ def _build_conflict(course: Course, existing: CourseSlot, candidate: ProposedSlo
     from flask_babel import get_locale
 
     locale = str(get_locale() or "en")
+    from app.formatting import format_time_12h
+
     teacher_name = course.teacher.full_name if course.teacher else _("This teacher")
     message = _(
         "%(teacher)s already teaches «%(course)s» on %(day)s "
@@ -128,10 +130,10 @@ def _build_conflict(course: Course, existing: CourseSlot, candidate: ProposedSlo
         teacher=teacher_name,
         course=course.name,
         day=weekday_label(existing.weekday, locale),
-        existing_start=f"{existing.start_time:%H:%M}",
-        existing_end=f"{existing.end_time:%H:%M}",
-        new_start=f"{candidate.start_time:%H:%M}",
-        new_end=f"{candidate.end_time:%H:%M}",
+        existing_start=format_time_12h(existing.start_time),
+        existing_end=format_time_12h(existing.end_time),
+        new_start=format_time_12h(candidate.start_time),
+        new_end=format_time_12h(candidate.end_time),
     )
     return Conflict(
         course_name=course.name,
@@ -161,15 +163,17 @@ def find_self_overlaps(proposed: list[ProposedSlot]) -> list[str]:
             if intervals_overlap(
                 first.start_time, first.end_time, second.start_time, second.end_time
             ):
+                from app.formatting import format_time_12h
+
                 messages.append(
                     _(
                         "This course has two sessions that overlap on %(day)s: "
                         "%(a_start)s–%(a_end)s and %(b_start)s–%(b_end)s.",
                         day=weekday_label(first.weekday, locale),
-                        a_start=f"{first.start_time:%H:%M}",
-                        a_end=f"{first.end_time:%H:%M}",
-                        b_start=f"{second.start_time:%H:%M}",
-                        b_end=f"{second.end_time:%H:%M}",
+                        a_start=format_time_12h(first.start_time),
+                        a_end=format_time_12h(first.end_time),
+                        b_start=format_time_12h(second.start_time),
+                        b_end=format_time_12h(second.end_time),
                     )
                 )
     return messages

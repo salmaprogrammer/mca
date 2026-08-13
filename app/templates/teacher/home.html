@@ -30,7 +30,7 @@
             {{ session.course.display_title(locale) }}
           </a>
           <span class="muted ltr">
-            · {{ '%02d:%02d'|format(session.start_time.hour, session.start_time.minute) }}
+            · {{ session.start_time|time12 }}
           </span>
         </span>
         <span class="muted">
@@ -52,7 +52,7 @@
         {% for slot, course in entries %}
           <a class="week-grid__slot"
              href="{{ url_for('teacher.course_detail', course_id=course.id) }}">
-            <span class="ltr">{{ '%02d:%02d'|format(slot.start_time.hour, slot.start_time.minute) }}</span>
+            <span class="ltr">{{ slot.start_time|time12 }}</span>
             {{ course.display_title(locale) }}
           </a>
         {% endfor %}

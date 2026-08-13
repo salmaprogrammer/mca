@@ -16,7 +16,7 @@
     </a>
     {{ session_status_pill(session) }}
     <span class="muted ltr">
-      {{ '%02d:%02d'|format(session.start_time.hour, session.start_time.minute) }}–{{ '%02d:%02d'|format(session.end_time.hour, session.end_time.minute) }}
+      {{ session.start_time|time12 }}–{{ session.end_time|time12 }}
     </span>
   </div>
 
