@@ -242,3 +242,47 @@ def archive_course(actor: User, course: Course) -> None:
         after=audit.snapshot(course, ["status"]),
     )
     db.session.commit()
+    def _course_delete_blockers(course: Course) -> list[str]:
+    """Reasons a hard delete would destroy real history."""
+    blockers: list[str] = []
+    if course.enrollments:
+        blockers.append(_("enrolled students"))
+    if course.sessions:
+        blockers.append(_("sessions"))
+    if course.homework:
+        blockers.append(_("homework"))
+    if course.feedback:
+        blockers.append(_("feedback"))
+    if course.materials:
+        blockers.append(_("materials"))
+    return blockers
+
+
+def delete_course(actor: User, course: Course) -> None:
+    """Hard-delete a course only when it has no history; otherwise refuse.
+
+    Unlike users, a course with history is never silently deactivated here —
+    the operator archives it explicitly instead, so "why did this course
+    disappear" always has an intentional answer.
+    """
+    blockers = _course_delete_blockers(course)
+    if blockers:
+        raise CourseError(
+            _(
+                "This course has %(items)s and cannot be deleted. Archive it instead.",
+                items=", ".join(blockers),
+            )
+        )
+
+    before = audit.snapshot(course)
+    if course.cover_image_path:
+        storage.delete(course.cover_image_path)
+    audit.record(
+        "course.delete",
+        "course",
+        entity_id=course.id,
+        actor=actor,
+        before=before,
+    )
+    db.session.delete(course)  # cascades slots via relationship cascade
+    db.session.commit()
