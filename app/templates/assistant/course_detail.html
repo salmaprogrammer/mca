@@ -23,7 +23,7 @@
     <a class="btn btn--ghost" href="{{ url_for('assistant.course_materials', course_id=course.id) }}">
       {{ _('Materials') }}
     </a>
-    {% if course.status.value != 'archived' %}
+   {% if course.status.value != 'archived' %}
       <form class="inline-form" method="post"
             action="{{ url_for('assistant.course_archive', course_id=course.id) }}">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
@@ -32,8 +32,14 @@
     {% else %}
       <span class="pill pill--warn">{{ label_for(course.status) }}</span>
     {% endif %}
+    <form class="inline-form" method="post"
+          data-single-submit
+          data-confirm="{{ _('Delete this course? This cannot be undone.') }}"
+          action="{{ url_for('assistant.course_delete', course_id=course.id) }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <button type="submit" class="btn btn--danger btn--small">{{ _('Delete') }}</button>
+    </form>
   </div>
-
   <div class="two-col">
     <div class="card">
       <div class="field__label">{{ _('Details') }}</div>
