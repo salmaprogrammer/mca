@@ -259,21 +259,7 @@ def archive_course(actor: User, course: Course) -> None:
 
 
 def delete_course(actor: User, course: Course) -> None:
-    """Hard-delete a course only when it has no history; otherwise refuse.
-
-    Unlike users, a course with history is never silently deactivated here —
-    the operator archives it explicitly instead, so "why did this course
-    disappear" always has an intentional answer.
-    """
-    blockers = _course_delete_blockers(course)
-    if blockers:
-        raise CourseError(
-            _(
-                "This course has %(items)s and cannot be deleted. Archive it instead.",
-                items=", ".join(blockers),
-            )
-        )
-
+    """Hard-delete a course unconditionally, regardless of history."""
     before = audit.snapshot(course)
     if course.cover_image_path:
         storage.delete(course.cover_image_path)
