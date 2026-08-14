@@ -32,3 +32,40 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 });
+
+// Tapping a date in the weekly timeline shows only that day's schedule;
+// tapping it again (or the same day twice) restores the full week view.
+document.addEventListener('DOMContentLoaded', function () {
+  var dateButtons = document.querySelectorAll('.week-grid__date');
+  var dayBlocks = document.querySelectorAll('.week-grid__day');
+  if (!dateButtons.length || !dayBlocks.length) return;
+
+  var activeWeekday = null;
+
+  function applyFilter() {
+    dayBlocks.forEach(function (day) {
+      var match = activeWeekday === null || day.dataset.weekday === activeWeekday;
+      day.classList.toggle('is-hidden', !match);
+    });
+    dateButtons.forEach(function (btn) {
+      btn.classList.toggle('is-selected', btn.dataset.weekday === activeWeekday);
+    });
+  }
+
+  function toggleDay(weekday) {
+    activeWeekday = activeWeekday === weekday ? null : weekday;
+    applyFilter();
+  }
+
+  dateButtons.forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      toggleDay(btn.dataset.weekday);
+    });
+    btn.addEventListener('keydown', function (event) {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        toggleDay(btn.dataset.weekday);
+      }
+    });
+  });
+});

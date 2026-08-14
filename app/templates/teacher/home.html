@@ -42,22 +42,40 @@
   </div>
 
   <div class="field__label">{{ _('My weekly calendar') }}</div>
-  <div class="week-grid">
-    {% for weekday, entries in dash.week %}
-      <div class="card week-grid__day">
-        <div class="week-grid__name">{{ weekday_label(weekday, locale) }}</div>
-        {% if not entries %}
-          <div class="muted" style="font-size:11.5px;">—</div>
-        {% endif %}
-        {% for slot, course in entries %}
-          <a class="week-grid__slot"
-             href="{{ url_for('teacher.course_detail', course_id=course.id) }}">
-            <span class="ltr">{{ slot.start_time|time12 }}</span>
-            {{ course.display_title(locale) }}
-          </a>
+  <div class="card">
+    <div class="week-grid">
+      <div class="week-grid__dates">
+        {% for weekday, entries in dash.week %}
+          <div class="week-grid__date {{ 'is-today' if weekday == dash.on.weekday() else '' }}"
+               data-weekday="{{ weekday }}" role="button" tabindex="0">
+            {{ weekday_label(weekday, locale)[:2] }}
+          </div>
         {% endfor %}
       </div>
-    {% endfor %}
+      <div class="week-grid__timeline">
+        {% for weekday, entries in dash.week %}
+          <div class="week-grid__day {{ 'is-today' if weekday == dash.on.weekday() else '' }}"
+               data-weekday="{{ weekday }}">
+            <div class="week-grid__name">
+              {{ weekday_label(weekday, locale) }}
+              {% if weekday == dash.on.weekday() %} — {{ _('Today') }}{% endif %}
+            </div>
+            {% if not entries %}
+              <div class="week-grid__empty">{{ _('No sessions.') }}</div>
+            {% endif %}
+            <div class="week-grid__slots">
+              {% for slot, course in entries %}
+                <a class="week-grid__slot"
+                   href="{{ url_for('teacher.course_detail', course_id=course.id) }}">
+                  <span>{{ course.display_title(locale) }}</span>
+                  <span class="ltr">{{ slot.start_time|time12 }}</span>
+                </a>
+              {% endfor %}
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
   </div>
   {#
     Read-only on purpose. The teacher terms route every schedule change through
