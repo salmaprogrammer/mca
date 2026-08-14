@@ -468,3 +468,60 @@ def delete_user_safely(actor: User, user: User) -> str:
     db.session.delete(user)  # cascades profile + parent_links
     db.session.commit()
     return "deleted"
+
+
+# --------------------------------------------------- parent contact updates
+
+
+def set_student_parent_phone(
+    actor: User, student: User, phone: str, name: str | None = None
+) -> tuple[User, str | None]:
+    """Add or update the parent contact number for a student.
+
+    If the student already has a linked parent, that parent's phone (and
+    name, if given) is updated. If not, a parent account is created (or an
+    existing account with that phone is linked) so the family can be
+    reached — this covers the gap where a student was created without a
+    parent phone at all.
+    """
+    if student.role is not Role.STUDENT:
+        raise AccountError("Only students have a parent to link.")
+
+    new_e164 = normalise_phone(phone)
+    existing_link = student.parent_links[0] if student.parent_links else None
+
+    if existing_link:
+        parent = existing_link.parent
+        update_user_profile(
+            actor, parent, full_name=name if name else None, phone=new_e164
+        )
+        return parent, None
+
+    owner = _phone_owner(new_e164)
+    if owner:
+        if owner.role is not Role.PARENT:
+            raise AccountError(
+                f"The number {phone} already belongs to a {owner.role.value} account."
+            )
+        parent = owner
+        plaintext = None
+    else:
+        parent, plaintext = _create_user(
+            actor=actor,
+            role=Role.PARENT,
+            full_name=(name or f"{student.full_name} — parent").strip(),
+            phone=new_e164,
+        )
+
+    link = ParentLink(parent_id=parent.id, student_id=student.id)
+    db.session.add(link)
+    db.session.flush()
+    audit.record(
+        "parent_link.create",
+        "parent_link",
+        entity_id=link.id,
+        actor=actor,
+        after={"parent_id": parent.id, "student_id": student.id},
+    )
+    db.session.commit()
+    return parent, plaintext

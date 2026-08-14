@@ -60,6 +60,10 @@ class StudentEditForm(FlaskForm):
                            render_kw=_USERNAME_KW)
     school = StringField(_l("School"), validators=[Optional(), Length(max=120)])
     grade = StringField(_l("Grade"), validators=[Optional(), Length(max=40)])
+    parent_name = StringField(_l("Parent name (optional)"),
+                              validators=[Optional(), Length(max=160)])
+    parent_phone = StringField(_l("Parent phone (for WhatsApp contact)"),
+                               validators=[Optional()], render_kw=_PHONE_KW)
     submit = SubmitField(_l("Save changes"))
 
 

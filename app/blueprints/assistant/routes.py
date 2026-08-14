@@ -172,6 +172,9 @@ def person_edit(user_id: int):
             )
             form.school.data = user.student_profile.school if user.student_profile else ""
             form.grade.data = user.student_profile.grade if user.student_profile else ""
+            existing_parent = user.parents[0] if user.parents else None
+            form.parent_name.data = existing_parent.full_name if existing_parent else ""
+            form.parent_phone.data = existing_parent.phone if existing_parent else ""
     elif user.role is Role.PARENT:
         form = ParentEditForm(obj=None)
         if request.method == "GET":
@@ -196,6 +199,18 @@ def person_edit(user_id: int):
 
         try:
             accounts_service.update_user_profile(current_user, user, **fields)
+            if user.role is Role.STUDENT and form.parent_phone.data:
+                parent, plaintext = accounts_service.set_student_parent_phone(
+                    current_user, user, form.parent_phone.data, form.parent_name.data
+                )
+                if plaintext:
+                    _stash_credentials(
+                        accounts_service.CreationResult(
+                            accounts=[
+                                accounts_service.NewAccount(parent, plaintext, "Parent")
+                            ]
+                        )
+                    )
         except PhoneNumberError:
             flash(_("That phone number is not valid. Use the format 01xxxxxxxxx."), "error")
         except UsernameError as exc:

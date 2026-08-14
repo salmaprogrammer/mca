@@ -40,16 +40,26 @@
             {% if not student.username %}
               <span class="pill">{{ _('no login') }}</span>
             {% endif %}
-            {% for parent in student.parents %}
-              <span class="muted">· {{ _('parent') }}: {{ parent.full_name }}</span>
-            {% endfor %}
+            {% if student.parents %}
+              {% for parent in student.parents %}
+                <span class="muted">· {{ _('parent') }}: {{ parent.full_name }}</span>
+              {% endfor %}
+            {% else %}
+              <span class="pill pill--warn">{{ _('no parent linked') }}</span>
+            {% endif %}
           </span>
           <span class="btn-row">
             <span class="muted ltr">{{ student.phone or '—' }}</span>
             <a class="btn btn--small btn--ghost"
                href="{{ url_for('assistant.person_edit', user_id=student.id) }}">
-              {{ _('Edit') }}
+              {{ _('Edit student') }}
             </a>
+            {% if student.parents %}
+              <a class="btn btn--small btn--ghost"
+                 href="{{ url_for('assistant.person_edit', user_id=student.parents[0].id) }}">
+                {{ _('Edit parent') }}
+              </a>
+            {% endif %}
             {% if student.username %}
               <form class="inline-form" method="post" data-single-submit
                     action="{{ url_for('assistant.regenerate_password', user_id=student.id) }}">
