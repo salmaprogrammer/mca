@@ -46,6 +46,9 @@ class User(UserMixin, TimestampMixin, db.Model):
     student_profile = relationship(
         "StudentProfile", back_populates="user", uselist=False, cascade="all, delete-orphan"
     )
+    assistant_profile = relationship(
+        "AssistantProfile", back_populates="user", uselist=False, cascade="all, delete-orphan"
+    )
 
     children_links = relationship(
         "ParentLink",
@@ -109,6 +112,22 @@ class StudentProfile(db.Model):
     notes: Mapped[str | None] = mapped_column(sa.Text)
 
     user = relationship("User", back_populates="student_profile")
+
+
+class AssistantProfile(db.Model):
+    """A display-only job title for an assistant account.
+
+    Purely cosmetic: this never changes what the account can do — that is
+    still governed entirely by `Role.ASSISTANT`. A blank/absent title falls
+    back to the generic "Assistant" label wherever the role is shown.
+    """
+
+    __tablename__ = "assistant_profiles"
+
+    user_id: Mapped[int] = mapped_column(sa.ForeignKey("users.id"), primary_key=True)
+    title: Mapped[str | None] = mapped_column(sa.String(80))
+
+    user = relationship("User", back_populates="assistant_profile")
 
 
 class ParentLink(db.Model):

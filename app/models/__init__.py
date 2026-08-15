@@ -27,13 +27,14 @@ from app.models.messaging import WhatsAppMessage
 from app.models.session import AttendanceRecord, CourseSession
 from app.models.teaching import Feedback, Homework, Material
 from app.models.terms import TermsAcceptance, TermsVersion
-from app.models.user import ParentLink, StudentProfile, TeacherProfile, User
+from app.models.user import AssistantProfile, ParentLink, StudentProfile, TeacherProfile, User
 
 __all__ = [
     "WEEKDAY_LABELS",
     "WEEK_ORDER",
     "AttendanceRecord",
     "AttendanceStatus",
+    "AssistantProfile",
     "AuditLog",
     "BookingStatus",
     "Course",

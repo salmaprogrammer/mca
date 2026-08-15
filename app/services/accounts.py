@@ -14,7 +14,7 @@ from sqlalchemy import select
 
 from app.extensions import db
 from app.models.enums import Role
-from app.models.user import ParentLink, StudentProfile, TeacherProfile, User
+from app.models.user import AssistantProfile, ParentLink, StudentProfile, TeacherProfile, User
 from app.services import audit
 from app.services.auth import (
     UsernameError,
@@ -89,16 +89,25 @@ def _create_user(
 # ---------------------------------------------------------------- assistants
 
 
-def create_assistant(actor: User, full_name: str, phone: str) -> CreationResult:
-    """Admin-only (brief: only the admin creates assistant accounts)."""
+def create_assistant(
+    actor: User, full_name: str, phone: str, title: str | None = None
+) -> CreationResult:
+    """Admin-only (brief: only the admin creates assistant accounts).
+
+    `title` is purely a display label (e.g. "Academic Manager") — it never
+    changes the account's actual permissions, which stay Role.ASSISTANT.
+    """
     normalised = normalise_phone(phone)
     if _phone_owner(normalised):
         raise AccountError(f"The number {phone} already belongs to another account.")
     user, plaintext = _create_user(
         actor=actor, role=Role.ASSISTANT, full_name=full_name, phone=normalised
     )
+    cleaned_title = (title or "").strip() or None
+    if cleaned_title:
+        db.session.add(AssistantProfile(user_id=user.id, title=cleaned_title))
     db.session.commit()
-    return CreationResult(accounts=[NewAccount(user, plaintext, "Assistant")])
+    return CreationResult(accounts=[NewAccount(user, plaintext, cleaned_title or "Assistant")])
 
 
 # ------------------------------------------------------------------ teachers

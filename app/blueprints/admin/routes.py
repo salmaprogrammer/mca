@@ -39,7 +39,7 @@ def assistants():
     if form.validate_on_submit():
         try:
             created = accounts_service.create_assistant(
-                current_user, form.full_name.data, form.phone.data
+                current_user, form.full_name.data, form.phone.data, form.resolved_title
             )
             flash(_("Assistant account created."), "success")
             form = AssistantForm(formdata=None)
