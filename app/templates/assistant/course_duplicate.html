@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% from "partials/field.html" import section_title %}
+{% block title %}{{ _('Duplicate course') }} — {{ center_name }}{% endblock %}
+{% block content %}
+  {% set locale = get_locale()|string %}
+  {{ section_title('📑', _('Duplicate course'), course.display_title(locale)) }}
+  <div class="card">
+    <p class="muted" style="margin-block-end:14px;">
+      {{ _('This creates a new course with the same teacher, weekly schedule, cover image and enrolled students. Each student gets a fresh, unpaid invoice for the new round. Only the start date below is new.') }}
+    </p>
+    <form method="post" novalidate data-single-submit>
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <label class="field">
+        <span class="field__label">{{ _('New start date') }}</span>
+        <input type="date" name="start_date" value="{{ course.start_date or '' }}">
+      </label>
+      <div class="btn-row" style="margin-block-start:14px;">
+        <button type="submit" class="btn">{{ _('Create duplicate') }}</button>
+        <a class="btn btn--ghost" href="{{ url_for('assistant.course_detail', course_id=course.id) }}">
+          {{ _('Cancel') }}
+        </a>
+      </div>
+    </form>
+  </div>
+{% endblock %}

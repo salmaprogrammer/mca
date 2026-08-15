@@ -13,8 +13,8 @@ from sqlalchemy import select
 from werkzeug.datastructures import FileStorage
 
 from app.extensions import db
-from app.models.course import Course, CourseSlot, CourseType
-from app.models.enums import CourseStatus, Role
+from app.models.course import Course, CourseSlot, CourseType, Enrollment
+from app.models.enums import BookingStatus, CourseStatus, PaymentStatus, Role
 from app.models.user import User
 from app.seeds.course_types import COURSE_TYPES
 from app.services import audit, storage
@@ -272,3 +272,72 @@ def delete_course(actor: User, course: Course) -> None:
     )
     db.session.delete(course)  # cascades slots via relationship cascade
     db.session.commit()
+
+
+def duplicate_course(actor: User, course: Course, start_date: date | None = None) -> Course:
+    """Copy a course's schedule, teacher, cover image and roster into a new
+    course instance — for opening a new round of the same course, where only
+    the start date actually changes.
+
+    Enrolled students come along, but each starts a fresh, unpaid invoice: a
+    new round is a new bill, not a carry-over of the old one's payment state.
+    """
+    proposed = [
+        ProposedSlot(
+            weekday=slot.weekday,
+            start_time=slot.start_time,
+            duration_minutes=slot.duration_minutes,
+        )
+        for slot in course.slots
+    ]
+    # Exclude the source course: a deliberate new round keeps the same
+    # weekly slots as its predecessor, which is not a real double-booking.
+    assert_no_conflicts(course.teacher_id, proposed, exclude_course_id=course.id)
+
+    new_course = Course(
+        name=course.name,
+        course_type_id=course.course_type_id,
+        teacher_id=course.teacher_id,
+        description=course.description,
+        cover_image_path=course.cover_image_path,
+        price_egp=course.price_egp,
+        trial_enabled=course.trial_enabled,
+        start_date=start_date,
+        status=CourseStatus.ACTIVE,
+        created_by_id=actor.id,
+    )
+    db.session.add(new_course)
+    db.session.flush()
+
+    for slot in course.slots:
+        db.session.add(
+            CourseSlot(
+                course_id=new_course.id,
+                weekday=slot.weekday,
+                start_time=slot.start_time,
+                duration_minutes=slot.duration_minutes,
+            )
+        )
+
+    for enrollment in course.enrollments:
+        db.session.add(
+            Enrollment(
+                course_id=new_course.id,
+                student_id=enrollment.student_id,
+                booking_status=BookingStatus.BOOKED,
+                payment_status=PaymentStatus.UNPAID,
+                amount_due=new_course.price_egp,
+                created_by_id=actor.id,
+            )
+        )
+
+    db.session.flush()
+    audit.record(
+        "course.duplicate",
+        "course",
+        entity_id=new_course.id,
+        actor=actor,
+        after=audit.snapshot(new_course),
+    )
+    db.session.commit()
+    return new_course

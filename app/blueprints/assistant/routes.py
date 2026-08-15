@@ -79,6 +79,17 @@ def home():
     )
 
 
+@bp.route("/payout-calculator")
+@require_staff
+def payout_calculator():
+    """A quick manual split of an amount between teacher and academy.
+
+    Purely a client-side calculator (see payout-calculator.js) — nothing here
+    is stored or tied to any specific teacher's own payout percentage.
+    """
+    return render_template("assistant/payout_calculator.html")
+
+
 @bp.route("/people/teachers", methods=["GET", "POST"])
 @require_staff
 def teachers():

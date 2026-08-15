@@ -23,6 +23,9 @@
     <a class="btn btn--ghost" href="{{ url_for('assistant.course_materials', course_id=course.id) }}">
       {{ _('Materials') }}
     </a>
+    <a class="btn btn--ghost" href="{{ url_for('assistant.course_duplicate', course_id=course.id) }}">
+      {{ _('Duplicate') }}
+    </a>
    {% if course.status.value != 'archived' %}
       <form class="inline-form" method="post"
             action="{{ url_for('assistant.course_archive', course_id=course.id) }}">

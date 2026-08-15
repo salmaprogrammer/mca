@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from datetime import date
+
 from flask import abort, flash, redirect, render_template, request, url_for
 from flask_babel import gettext as _
 from flask_login import current_user
@@ -178,6 +180,39 @@ def course_archive(course_id: int):
     course_service.archive_course(current_user, course)
     flash(_("Course archived."), "success")
     return redirect(url_for("assistant.courses"))
+
+
+@bp.route("/courses/<int:course_id>/duplicate", methods=["GET", "POST"])
+@require_staff
+def course_duplicate(course_id: int):
+    """Open a new round of an existing course: same teacher, schedule, cover
+    image and roster, with a fresh (unpaid) invoice per student and a new
+    start date — the one thing that actually changes between rounds."""
+    course = get_course_or_404(current_user, course_id, include_archived=True)
+
+    if request.method == "POST":
+        raw_date = request.form.get("start_date")
+        new_start_date = None
+        if raw_date:
+            try:
+                new_start_date = date.fromisoformat(raw_date)
+            except ValueError:
+                flash(_("That is not a valid date."), "error")
+                return render_template("assistant/course_duplicate.html", course=course)
+
+        try:
+            new_course = course_service.duplicate_course(
+                current_user, course, start_date=new_start_date
+            )
+            flash(_("Course duplicated."), "success")
+            return redirect(url_for("assistant.course_detail", course_id=new_course.id))
+        except ScheduleConflictError as exc:
+            for conflict in exc.conflicts:
+                flash(conflict.message, "error")
+        except course_service.CourseError as exc:
+            flash(str(exc), "error")
+
+    return render_template("assistant/course_duplicate.html", course=course)
 @bp.route("/courses/<int:course_id>/delete", methods=["POST"])
 @require_staff
 def course_delete(course_id: int):

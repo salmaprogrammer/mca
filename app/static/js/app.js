@@ -69,3 +69,31 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 });
+
+// Payout calculator: live split of an amount by a manually-entered
+// percentage. Purely client-side, nothing is sent to the server or stored.
+document.addEventListener('DOMContentLoaded', function () {
+  var amountInput = document.getElementById('payout-amount');
+  var percentInput = document.getElementById('payout-percent');
+  var teacherOut = document.getElementById('payout-teacher-amount');
+  var academyOut = document.getElementById('payout-academy-amount');
+  if (!amountInput || !percentInput || !teacherOut || !academyOut) return;
+
+  function recalc() {
+    var amount = parseFloat(amountInput.value);
+    var percent = parseFloat(percentInput.value);
+    if (isNaN(amount) || amount < 0) amount = 0;
+    if (isNaN(percent) || percent < 0) percent = 0;
+    if (percent > 100) percent = 100;
+
+    var teacherShare = amount * (percent / 100);
+    var academyShare = amount - teacherShare;
+
+    teacherOut.textContent = teacherShare.toFixed(2);
+    academyOut.textContent = academyShare.toFixed(2);
+  }
+
+  amountInput.addEventListener('input', recalc);
+  percentInput.addEventListener('input', recalc);
+  recalc();
+});
