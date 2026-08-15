@@ -10,11 +10,13 @@ from app.models.course import (
     Enrollment,
     weekday_label,
 )
+from app.models.finance import Expense
 from app.models.enums import (
     AttendanceStatus,
     BookingStatus,
     CourseCycle,
     CourseStatus,
+    ExpenseCategory,
     MessageStatus,
     PaymentStatus,
     Role,
@@ -41,6 +43,8 @@ __all__ = [
     "CourseStatus",
     "CourseType",
     "Enrollment",
+    "Expense",
+    "ExpenseCategory",
     "Feedback",
     "Homework",
     "Material",

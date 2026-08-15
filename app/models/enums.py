@@ -106,3 +106,16 @@ def enum_column(enum_cls, length: int = 32) -> sa.Enum:
 class CourseCycle(StrEnum):
     MONTH = "month"
     ROUND = "round"
+
+
+class ExpenseCategory(StrEnum):
+    """Fixed monthly bills, plus a catch-all for one-off spending."""
+
+    RENT = "rent"
+    ASSISTANT_SALARY = "assistant_salary"
+    ELECTRICITY = "electricity"
+    INTERNET = "internet"
+    WATER = "water"
+    GAS = "gas"
+    PARTNER_SHARE = "partner_share"
+    OTHER = "other"

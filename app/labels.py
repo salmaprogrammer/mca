@@ -18,6 +18,7 @@ from app.models.enums import (
     AttendanceStatus,
     BookingStatus,
     CourseStatus,
+    ExpenseCategory,
     MessageStatus,
     PaymentStatus,
     Role,
@@ -69,6 +70,17 @@ MESSAGE_STATUS_LABELS = {
     MessageStatus.SENT: _l("sent"),
 }
 
+EXPENSE_CATEGORY_LABELS = {
+    ExpenseCategory.RENT: _l("Rent"),
+    ExpenseCategory.ASSISTANT_SALARY: _l("Assistant salary"),
+    ExpenseCategory.ELECTRICITY: _l("Electricity"),
+    ExpenseCategory.INTERNET: _l("Internet"),
+    ExpenseCategory.WATER: _l("Water"),
+    ExpenseCategory.GAS: _l("Gas"),
+    ExpenseCategory.PARTNER_SHARE: _l("Partner's share"),
+    ExpenseCategory.OTHER: _l("Other"),
+}
+
 _ALL = {}
 for mapping in (
     ATTENDANCE_LABELS,
@@ -78,6 +90,7 @@ for mapping in (
     COURSE_STATUS_LABELS,
     ROLE_LABELS,
     MESSAGE_STATUS_LABELS,
+    EXPENSE_CATEGORY_LABELS,
 ):
     _ALL.update(mapping)
 

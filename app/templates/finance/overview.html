@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% from "partials/field.html" import section_title %}
+{% block title %}{{ _('Budget overview') }} — {{ center_name }}{% endblock %}
+{% block content %}
+  {{ section_title('💰', _('Budget overview'), _('Income for the selected month, plus everything still owed')) }}
+
+  <form method="get" class="btn-row" style="margin-block-end:16px;">
+    <input type="month" name="period" value="{{ on.strftime('%Y-%m') }}"
+           onchange="this.form.submit()">
+  </form>
+
+  <div class="btn-row" style="margin-block-end:16px;">
+    <a class="btn btn--small btn--ghost" href="{{ url_for('finance.expenses', period=on.strftime('%Y-%m')) }}">
+      {{ _('Expenses') }}
+    </a>
+    <a class="btn btn--small btn--ghost" href="{{ url_for('finance.reports', period=on.strftime('%Y-%m')) }}">
+      {{ _('Reports') }}
+    </a>
+  </div>
+
+  <div class="card">
+    <div class="row-list__item">
+      <span class="field__label" style="margin:0;">{{ _('Income this month') }}</span>
+      <span class="amount-due">{{ report.total|round(0, 'floor')|int }} {{ _('EGP') }}</span>
+    </div>
+    {% if not report.lines %}
+      <div class="muted">{{ _('No payments recorded this month.') }}</div>
+    {% endif %}
+    {% for line in report.lines %}
+      <div class="row-list__item">
+        <span>{{ line.student_name }} <span class="muted">· {{ line.course_title }}</span></span>
+        <span class="ltr">{{ line.amount|round(0, 'floor')|int }} {{ _('EGP') }}</span>
+      </div>
+    {% endfor %}
+  </div>
+
+  <div class="card" style="margin-block-start:18px;">
+    <div class="row-list__item">
+      <span class="field__label" style="margin:0;">{{ _('Outstanding (all time)') }}</span>
+      <span class="amount-due">{{ report.outstanding_total|round(0, 'floor')|int }} {{ _('EGP') }}</span>
+    </div>
+    {% if not report.outstanding_lines %}
+      <div class="muted">{{ _('Nothing outstanding.') }}</div>
+    {% endif %}
+    {% for line in report.outstanding_lines %}
+      <div class="row-list__item">
+        <span>{{ line.student_name }} <span class="muted">· {{ line.course_title }}</span></span>
+        <span class="ltr">{{ line.amount|round(0, 'floor')|int }} {{ _('EGP') }}</span>
+      </div>
+    {% endfor %}
+  </div>
+{% endblock %}

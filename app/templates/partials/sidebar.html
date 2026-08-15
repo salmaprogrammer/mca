@@ -13,6 +13,7 @@
       ('assistant.whatsapp_centre', _('WhatsApp')),
       ('assistant.teachers', _('Teachers')),
       ('assistant.students', _('Students')),
+      ('finance.overview', _('Budget')),
     ] -%}
   {%- elif current_user.role == Role.ASSISTANT -%}
     {%- set nav = [

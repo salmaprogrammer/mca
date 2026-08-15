@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% from "partials/field.html" import section_title %}
+{% block title %}{{ _('Reports') }} — {{ center_name }}{% endblock %}
+{% block content %}
+  {{ section_title('📊', _('Budget reports'), _('Income vs expenses across four time frames')) }}
+
+  <form method="get" class="btn-row" style="margin-block-end:16px;">
+    <input type="month" name="period" value="{{ on.strftime('%Y-%m') }}"
+           onchange="this.form.submit()">
+  </form>
+
+  <div class="btn-row" style="margin-block-end:16px;">
+    <a class="btn btn--small btn--ghost" href="{{ url_for('finance.overview', period=on.strftime('%Y-%m')) }}">
+      {{ _('Overview') }}
+    </a>
+    <a class="btn btn--small btn--ghost" href="{{ url_for('finance.expenses', period=on.strftime('%Y-%m')) }}">
+      {{ _('Expenses') }}
+    </a>
+  </div>
+
+  {% for report in [monthly, quarterly, half_yearly, yearly] %}
+    <div class="card" style="margin-block-end:14px;">
+      <div class="field__label">{{ report.label }}</div>
+      <div class="row-list__item">
+        <span>{{ _('Income') }}</span>
+        <span class="ltr">{{ report.income_total|round(0, 'floor')|int }} {{ _('EGP') }}</span>
+      </div>
+      <div class="row-list__item">
+        <span>{{ _('Expenses') }}</span>
+        <span class="ltr">{{ report.expense_total|round(0, 'floor')|int }} {{ _('EGP') }}</span>
+      </div>
+      <div class="row-list__item">
+        <span class="field__label" style="margin:0;">
+          {{ _('Net profit') if report.net >= 0 else _('Net loss') }}
+        </span>
+        <span class="amount-due">{{ report.net|round(0, 'floor')|int }} {{ _('EGP') }}</span>
+      </div>
+    </div>
+  {% endfor %}
+{% endblock %}
