@@ -48,6 +48,63 @@ def courses():
     )
 
 
+@bp.route("/course-types", methods=["GET", "POST"])
+@require_staff
+def course_types():
+    """Rename any course type, and add new ones to the catalogue.
+
+    Renaming is deliberately narrow (label_en/label_ar only) — the
+    structural fields of the six original types stay untouched. New types
+    created here provide all their own fields up front instead."""
+    all_types = course_service.all_course_types()
+
+    if request.method == "POST":
+        action = request.form.get("action")
+
+        if action == "create":
+            from app.models.enums import CourseCycle
+
+            cycle_raw = request.form.get("cycle")
+            try:
+                cycle = CourseCycle(cycle_raw)
+            except ValueError:
+                flash(_("Choose a valid cycle."), "error")
+                return redirect(url_for("assistant.course_types"))
+            try:
+                course_service.create_course_type(
+                    current_user,
+                    code=request.form.get("code", ""),
+                    label_en=request.form.get("new_label_en", ""),
+                    label_ar=request.form.get("new_label_ar", ""),
+                    sessions_per_week=request.form.get("sessions_per_week", type=int) or 0,
+                    cycle=cycle,
+                    total_sessions=request.form.get("total_sessions", type=int) or 0,
+                    has_own_subject=bool(request.form.get("has_own_subject")),
+                )
+                flash(_("Course type created."), "success")
+            except course_service.CourseError as exc:
+                flash(str(exc), "error")
+            return redirect(url_for("assistant.course_types"))
+
+        type_id = request.form.get("course_type_id", type=int)
+        target = next((t for t in all_types if t.id == type_id), None)
+        if target is None:
+            abort(404)
+        try:
+            course_service.update_course_type_labels(
+                current_user,
+                target,
+                request.form.get("label_en", ""),
+                request.form.get("label_ar", ""),
+            )
+            flash(_("Course type updated."), "success")
+        except course_service.CourseError as exc:
+            flash(str(exc), "error")
+        return redirect(url_for("assistant.course_types"))
+
+    return render_template("assistant/course_types.html", course_types=all_types)
+
+
 @bp.route("/courses/new", methods=["GET", "POST"])
 @require_staff
 def course_new():

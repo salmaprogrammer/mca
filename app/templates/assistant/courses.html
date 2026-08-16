@@ -8,6 +8,7 @@
 
   <div class="btn-row" style="margin-block-end:16px;">
     <a class="btn" href="{{ url_for('assistant.course_new') }}">{{ _('Create a course') }}</a>
+    <a class="btn btn--ghost" href="{{ url_for('assistant.course_types') }}">{{ _('Course type names') }}</a>
   </div>
 
   {% if not courses %}

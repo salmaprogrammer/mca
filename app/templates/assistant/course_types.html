@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% from "partials/field.html" import section_title %}
+{% block title %}{{ _('Course types') }} — {{ center_name }}{% endblock %}
+{% block content %}
+  {{ section_title('🏷️', _('Course types'), _('Rename the six fixed course types. Sessions, cycle and pricing stay as they are — only the name changes.')) }}
+
+  <div class="btn-row" style="margin-block-end:16px;">
+    <a class="btn btn--small btn--ghost" href="{{ url_for('assistant.courses') }}">
+      {{ _('Back to courses') }}
+    </a>
+  </div>
+
+  <div class="card" style="margin-block-end:20px;">
+    <div class="field__label">{{ _('Add a new course type') }}</div>
+    <form method="post" novalidate>
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <input type="hidden" name="action" value="create">
+      <div class="two-col">
+        <label class="field">
+          <span class="field__label">{{ _('English name') }}</span>
+          <input type="text" name="new_label_en" class="ltr" required>
+        </label>
+        <label class="field">
+          <span class="field__label">{{ _('Arabic name') }}</span>
+          <input type="text" name="new_label_ar" dir="rtl" required>
+        </label>
+      </div>
+      <div class="two-col">
+        <label class="field">
+          <span class="field__label">{{ _('Code (short, unique, e.g. sat_advanced)') }}</span>
+          <input type="text" name="code" class="ltr" required>
+        </label>
+        <label class="field">
+          <span class="field__label">{{ _('Billing cycle') }}</span>
+          <select name="cycle">
+            <option value="month">{{ _('Monthly') }}</option>
+            <option value="round">{{ _('By round') }}</option>
+          </select>
+        </label>
+      </div>
+      <div class="two-col">
+        <label class="field">
+          <span class="field__label">{{ _('Sessions per week') }}</span>
+          <input type="number" name="sessions_per_week" min="1" value="1">
+        </label>
+        <label class="field">
+          <span class="field__label">{{ _('Total sessions') }}</span>
+          <input type="number" name="total_sessions" min="1" value="1">
+        </label>
+      </div>
+      <label class="field" style="flex-direction:row;align-items:center;gap:8px;">
+        <input type="checkbox" name="has_own_subject" checked style="inline-size:auto;">
+        <span>{{ _('This type has its own subject name (uncheck only for pricing-package types like "Monthly — 4 sessions")') }}</span>
+      </label>
+      <button type="submit" class="btn" style="margin-block-start:10px;">{{ _('Add course type') }}</button>
+    </form>
+  </div>
+
+  <div class="field__label">{{ _('Existing course types') }}</div>
+
+  {% for ct in course_types %}
+    <div class="card" style="margin-block-end:12px;">
+      <form method="post" novalidate>
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <input type="hidden" name="course_type_id" value="{{ ct.id }}">
+        <div class="two-col">
+          <label class="field">
+            <span class="field__label">{{ _('English name') }}</span>
+            <input type="text" name="label_en" value="{{ ct.label_en }}" class="ltr">
+          </label>
+          <label class="field">
+            <span class="field__label">{{ _('Arabic name') }}</span>
+            <input type="text" name="label_ar" value="{{ ct.label_ar }}" dir="rtl">
+          </label>
+        </div>
+        <div class="muted" style="margin-block:6px 10px;">
+          {{ ct.sessions_per_week }} {{ _('sessions/week') }} ·
+          {{ ct.total_sessions }} {{ _('total') }}
+        </div>
+        <button type="submit" class="btn btn--small">{{ _('Save') }}</button>
+      </form>
+    </div>
+  {% endfor %}
+{% endblock %}

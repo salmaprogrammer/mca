@@ -5,6 +5,8 @@ Every function takes the acting user first and writes an audit row.
 
 from __future__ import annotations
 
+import sqlalchemy as sa
+
 from datetime import date, time
 from decimal import Decimal
 
@@ -43,6 +45,91 @@ def seed_course_types() -> int:
 
 def all_course_types() -> list[CourseType]:
     return list(db.session.scalars(select(CourseType).order_by(CourseType.id)))
+
+
+def create_course_type(
+    actor: User,
+    *,
+    code: str,
+    label_en: str,
+    label_ar: str,
+    sessions_per_week: int,
+    cycle: "CourseCycle",
+    total_sessions: int,
+    has_own_subject: bool = True,
+) -> CourseType:
+    """Add a new course type to the catalogue.
+
+    The six original types have hand-assigned IDs (`autoincrement=False`), so
+    a new one needs the next free ID computed explicitly rather than left to
+    the database.
+    """
+    code = (code or "").strip().lower().replace(" ", "_")
+    label_en = (label_en or "").strip()
+    label_ar = (label_ar or "").strip()
+    if not code or not label_en or not label_ar:
+        raise CourseError(_("Code, English name and Arabic name are all required."))
+
+    existing = db.session.scalar(select(CourseType).where(CourseType.code == code))
+    if existing:
+        raise CourseError(_("A course type with that code already exists."))
+
+    if sessions_per_week < 1 or total_sessions < 1:
+        raise CourseError(_("Sessions per week and total sessions must be at least 1."))
+
+    next_id = (db.session.scalar(select(sa.func.max(CourseType.id))) or 0) + 1
+
+    course_type = CourseType(
+        id=next_id,
+        code=code,
+        label_en=label_en,
+        label_ar=label_ar,
+        sessions_per_week=sessions_per_week,
+        cycle=cycle,
+        total_sessions=total_sessions,
+        has_own_subject=has_own_subject,
+    )
+    db.session.add(course_type)
+    db.session.flush()
+    audit.record(
+        "course_type.create",
+        "course_type",
+        entity_id=course_type.id,
+        actor=actor,
+        after=audit.snapshot(course_type),
+    )
+    db.session.commit()
+    return course_type
+
+
+def update_course_type_labels(
+    actor: User, course_type: CourseType, label_en: str, label_ar: str
+) -> CourseType:
+    """Rename a fixed course type's display labels.
+
+    Deliberately narrow: only label_en/label_ar are editable here. Everything
+    else about the six fixed types (sessions_per_week, cycle, total_sessions,
+    has_own_subject) stays structural and untouchable through the app, per
+    the original design note on CourseType.
+    """
+    label_en = (label_en or "").strip()
+    label_ar = (label_ar or "").strip()
+    if not label_en or not label_ar:
+        raise CourseError(_("Both the English and Arabic names are required."))
+
+    before = audit.snapshot(course_type, ["label_en", "label_ar"])
+    course_type.label_en = label_en
+    course_type.label_ar = label_ar
+    audit.record(
+        "course_type.update",
+        "course_type",
+        entity_id=course_type.id,
+        actor=actor,
+        before=before,
+        after=audit.snapshot(course_type, ["label_en", "label_ar"]),
+    )
+    db.session.commit()
+    return course_type
 
 
 # ---------------------------------------------------------------- courses
