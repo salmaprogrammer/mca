@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from flask import flash, render_template, request, url_for
+from flask import flash, redirect, render_template, request, url_for
 from flask_babel import gettext as _
 from flask_login import current_user
 from sqlalchemy import select
@@ -87,6 +87,36 @@ def deactivate(user_id: int):
     accounts_service.set_active(current_user, user, False)
     flash(_("Account deactivated."), "success")
     return _back()
+
+
+@bp.route("/assistants/<int:user_id>/delete", methods=["POST"])
+@require_role(Role.ADMIN)
+def delete_assistant(user_id: int):
+    """Admin-only: only the admin manages assistant accounts, so only the
+    admin can remove one. Hard-deletes when the account has no history
+    (nothing it created is left orphaned — references are nulled first);
+    falls back to deactivation otherwise, same as every other role."""
+    user = get_manageable_user_or_404(current_user, user_id)
+    if user.role is not Role.ASSISTANT:
+        abort(404)
+    if user.id == current_user.id:
+        flash(_("You cannot delete your own account."), "error")
+        return redirect(url_for("admin.assistants"))
+
+    try:
+        outcome = accounts_service.delete_user_safely(current_user, user)
+    except accounts_service.AccountError as exc:
+        flash(str(exc), "error")
+        return redirect(url_for("admin.assistants"))
+
+    if outcome == "deleted":
+        flash(_("Assistant account deleted."), "success")
+    else:
+        flash(
+            _("This account has history and was deactivated instead of deleted."),
+            "success",
+        )
+    return redirect(url_for("admin.assistants"))
 
 
 def _back():

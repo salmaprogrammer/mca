@@ -42,6 +42,14 @@
               <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
               <button type="submit" class="btn btn--small btn--ghost">{{ _('Issue new password') }}</button>
             </form>
+            {% if assistant.id != current_user.id %}
+              <form class="inline-form" method="post" data-single-submit
+                    data-confirm="{{ _('Delete %(name)s? This cannot be undone.', name=assistant.full_name) }}"
+                    action="{{ url_for('admin.delete_assistant', user_id=assistant.id) }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit" class="btn btn--small btn--danger">{{ _('Delete') }}</button>
+              </form>
+            {% endif %}
           </span>
         </div>
       {% endfor %}
